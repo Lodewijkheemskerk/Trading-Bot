@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:docs.kalshi.com)",
+      "WebFetch(domain:docs.polymarket.com)",
+      "WebFetch(domain:www.pmxt.dev)",
+      "WebFetch(domain:github.com)",
+      "Bash(python --version 2>&1 && pip --version 2>&1)",
+      "WebFetch(domain:pypi.org)",
+      "WebFetch(domain:trading-api.readme.io)",
+      "Bash(npm install:*)",
+      "Bash(gsd /login 2>&1)",
+      "Bash(npm search:*)"
+    ]
+  }
+}
