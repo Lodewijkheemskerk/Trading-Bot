@@ -1,0 +1,90 @@
+# ==========================================================
+# Prediction Market Trading Bot — Configuration
+# ==========================================================
+
+bot_name: "predict-market-bot"
+mode: "paper"  # "paper" or "live"
+log_level: "INFO"
+
+# --- Bankroll ---
+bankroll:
+  initial: 500.0
+  currency: "USD"
+
+# --- Scanner (Step 1) ---
+scanner:
+  schedule_minutes: 15
+  min_volume: 20           # Min 24h volume (contracts)
+  max_days_to_expiry: 30
+  min_liquidity: 0         # Min orderbook depth ($)
+  anomaly_price_move: 0.10 # Flag if price moved >10%
+  anomaly_spread: 0.05     # Flag if spread >$0.05
+  volume_spike_multiplier: 2.0
+  skip_categories:         # Ticker prefixes to skip
+    - "KXMVE"
+    - "KXNBA"
+    - "KXNFL"
+    - "KXMLB"
+    - "KXNHL"
+  max_pages: 10            # Max API pages to fetch
+
+# --- Research (Step 2) ---
+research:
+  sources:
+    - "google_news_rss"
+    - "reddit"
+  max_articles_per_source: 20
+  sentiment_threshold: 0.6
+  parallel_workers: 3
+
+# --- Prediction (Step 3) ---
+prediction:
+  min_edge: 0.04
+  min_confidence: 0.65
+  ensemble_models:
+    - name: "claude"
+      role: "news_analyst"
+      weight: 0.50
+    - name: "heuristic_bull"
+      role: "bull_advocate"
+      weight: 0.25
+    - name: "heuristic_bear"
+      role: "bear_advocate"
+      weight: 0.25
+  brier_score_max: 0.25
+
+# --- Risk Management (Step 4) ---
+risk:
+  kelly_fraction: 0.25       # Quarter-Kelly
+  max_position_pct: 0.05     # 5% of bankroll per position
+  max_concurrent_positions: 15
+  max_daily_loss_pct: 0.15   # 15% daily loss -> shutdown
+  max_drawdown_pct: 0.08     # 8% drawdown -> block trades
+  max_slippage_pct: 0.02     # 2% slippage -> abort
+  var_confidence: 0.95
+  max_daily_api_cost: 50.0
+
+# --- Execution (Step 4) ---
+execution:
+  order_type: "limit"
+  retry_attempts: 3
+  retry_delay_seconds: 5
+  kill_switch_file: "STOP"
+
+# --- Compound / Learning (Step 5) ---
+compound:
+  nightly_review_hour: 23
+  min_trades_for_stats: 10
+  performance_targets:
+    win_rate: 0.60
+    sharpe_ratio: 2.0
+    max_drawdown: 0.08
+    profit_factor: 1.5
+    brier_score: 0.25
+
+# --- Kalshi API ---
+kalshi:
+  production_url: "https://api.elections.kalshi.com/trade-api/v2"
+  demo_url: "https://demo-api.kalshi.co/trade-api/v2"
+  # Active URL (switch to production_url for live trading)
+  base_url: "https://api.elections.kalshi.com/trade-api/v2"

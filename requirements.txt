@@ -1,0 +1,11 @@
+# Core
+requests>=2.31.0
+pyyaml>=6.0
+python-dotenv>=1.0.0
+schedule>=1.2.0
+
+# Kalshi SDK (for future live trading)
+# kalshi-python>=2.1.4
+
+# AI (optional — heuristic fallback available)
+# anthropic>=0.40.0

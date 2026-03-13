@@ -13,7 +13,7 @@
 
 ## Slices
 
-- [ ] **S01: Project Foundation + Kalshi Scanner** `risk:medium` `depends:[]`
+- [x] **S01: Project Foundation + Kalshi Scanner** `risk:medium` `depends:[]`
   > After this: User runs `python scripts/scanner.py` and sees a ranked list of tradeable Kalshi markets with volume, prices, spreads, and anomaly flags pulled from the live API.
 
 - [ ] **S02: Research Agent** `risk:medium` `depends:[S01]`
