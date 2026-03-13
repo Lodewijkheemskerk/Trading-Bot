@@ -1,19 +1,28 @@
 """
 Dashboard API — serves pipeline data to the Bloomberg-style frontend.
+Includes manual pipeline trigger endpoint.
 """
 
 import json
 import glob
 import sys
+import subprocess
+import threading
 from pathlib import Path
 from datetime import datetime, timezone
 
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, request
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import load_settings, DATA_DIR, TRADES_DIR, PREDICTIONS_DIR, RESEARCH_DIR, MARKET_DIR, KILL_SWITCH_FILE
 
 app = Flask(__name__, static_folder="static")
+
+# Track pipeline run state
+_pipeline_lock = threading.Lock()
+_pipeline_running = False
+_pipeline_last_run = None
+_pipeline_last_error = None
 
 
 def _load_latest(directory, pattern):
@@ -120,6 +129,56 @@ def api_performance():
 @app.route("/api/kill_switch")
 def api_kill_switch():
     return jsonify({"active": KILL_SWITCH_FILE.exists()})
+
+
+@app.route("/api/run", methods=["POST"])
+def api_run_pipeline():
+    """Trigger a single pipeline run in the background."""
+    global _pipeline_running, _pipeline_last_run, _pipeline_last_error
+
+    with _pipeline_lock:
+        if _pipeline_running:
+            return jsonify({"status": "already_running"}), 409
+
+        _pipeline_running = True
+        _pipeline_last_error = None
+
+    def _run():
+        global _pipeline_running, _pipeline_last_run, _pipeline_last_error
+        try:
+            project_root = Path(__file__).resolve().parent.parent
+            result = subprocess.run(
+                [sys.executable, str(project_root / "scripts" / "pipeline.py"), "--mode", "once"],
+                cwd=str(project_root),
+                capture_output=True,
+                text=True,
+                timeout=120,
+                encoding="utf-8",
+                errors="replace",
+            )
+            _pipeline_last_run = datetime.now(timezone.utc).isoformat()
+            if result.returncode != 0:
+                _pipeline_last_error = result.stderr[-500:] if result.stderr else "Unknown error"
+        except subprocess.TimeoutExpired:
+            _pipeline_last_error = "Pipeline timed out (120s)"
+        except Exception as exc:
+            _pipeline_last_error = str(exc)[:500]
+        finally:
+            with _pipeline_lock:
+                _pipeline_running = False
+
+    threading.Thread(target=_run, daemon=True).start()
+    return jsonify({"status": "started"})
+
+
+@app.route("/api/pipeline_status")
+def api_pipeline_status():
+    """Check if a pipeline run is in progress."""
+    return jsonify({
+        "running": _pipeline_running,
+        "last_run": _pipeline_last_run,
+        "last_error": _pipeline_last_error,
+    })
 
 
 @app.route("/api/config")

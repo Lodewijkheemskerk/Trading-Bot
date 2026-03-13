@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-03-13T14:23:28.576342+00:00",
+  "markets_predicted": 2,
+  "signals": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.535,
+      "market_probability": 0.09,
+      "edge": 0.445,
+      "mispricing_score": 4.45,
+      "expected_value": 0.2626,
+      "direction": "buy_yes",
+      "signal_strength": 0.2626,
+      "confidence": 0.59,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.5,
+          "predicted_probability": 0.75,
+          "confidence": 0.6,
+          "reasoning": "The recent headline from producers saying 'Stay tuned' and hinting they might be ready to show footage, combined with their confidence about meeting the release date, suggests significant progress. With over 16 months until the deadline and typical Marvel/Sony trailer release patterns 6-12 months before films, this timeline is very feasible for a trailer release."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.3,
+          "predicted_probability": 0.5,
+          "confidence": 0.7,
+          "reasoning": "The producers of 'Spider-Man: Beyond the Spider-Verse' have expressed confidence in meeting the release date, indicating that promotional materials, including the official trailer, are likely to be released soon. Additionally, the market appears to undervalue the likelihood of this event occurring, given the positive momentum and hints from insiders."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.09, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T14:23:23.035089+00:00"
+    },
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "ensemble_probability": 0.125,
+      "market_probability": 0.06,
+      "edge": 0.065,
+      "mispricing_score": 0.65,
+      "expected_value": 0.0416,
+      "direction": "buy_yes",
+      "signal_strength": 0.0416,
+      "confidence": 0.64,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.5,
+          "predicted_probability": 0.08,
+          "confidence": 0.7,
+          "reasoning": "The headlines show Bondi facing security threats and moving to military housing, plus congressional subpoenas over Epstein files, but these indicate she's adapting to challenges rather than preparing to resign. Attorney Generals typically don't resign within months of appointment unless facing major scandals, and the base rate for such early departures is very low."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.3,
+          "predicted_probability": 0.25,
+          "confidence": 0.7,
+          "reasoning": "The relocation of Pam Bondi to military housing due to threats indicates significant pressure on her position, which may lead to her departure before April. Additionally, the congressional subpoenas regarding the Epstein probe suggest increasing scrutiny that could further compel her to resign."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.06, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T14:23:28.576342+00:00"
+    }
+  ]
+}

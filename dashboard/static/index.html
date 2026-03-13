@@ -148,6 +148,49 @@ body {
   letter-spacing: 1px;
 }
 
+/* ── Run button ── */
+.run-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(52,211,153,0.3);
+  background: var(--green-bg);
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.run-btn:hover {
+  background: rgba(52,211,153,0.15);
+  border-color: var(--green);
+}
+
+.run-btn:active {
+  transform: scale(0.97);
+}
+
+.run-btn.running {
+  border-color: rgba(251,191,36,0.3);
+  background: var(--amber-bg);
+  color: var(--amber);
+  cursor: wait;
+}
+
+.run-btn.running #runBtnIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
@@ -573,6 +616,10 @@ body {
       <div class="dot"></div>
       <span id="statusLabel">ACTIVE</span>
     </div>
+    <button class="run-btn" id="runBtn" onclick="triggerRun()">
+      <span id="runBtnIcon">&#9654;</span>
+      <span id="runBtnLabel">RUN PIPELINE</span>
+    </button>
     <span class="mode-tag" id="modeTag">PAPER</span>
     <span class="clock" id="clock">--:--:--</span>
   </div>
@@ -947,6 +994,61 @@ function renderTrades(data) {
       </div>
     </div>
   `}).join('');
+}
+
+// ── Manual pipeline trigger ──
+async function triggerRun() {
+  const btn = document.getElementById('runBtn');
+  if (btn.classList.contains('running')) return;
+
+  btn.classList.add('running');
+  document.getElementById('runBtnIcon').textContent = '\u21BB';
+  document.getElementById('runBtnLabel').textContent = 'RUNNING...';
+
+  try {
+    const resp = await fetch('/api/run', { method: 'POST' });
+    const data = await resp.json();
+    if (data.status === 'already_running') {
+      document.getElementById('runBtnLabel').textContent = 'ALREADY RUNNING';
+    }
+    // Poll until done
+    pollPipelineStatus();
+  } catch(e) {
+    btn.classList.remove('running');
+    document.getElementById('runBtnIcon').textContent = '\u25B6';
+    document.getElementById('runBtnLabel').textContent = 'RUN PIPELINE';
+  }
+}
+
+function pollPipelineStatus() {
+  const check = async () => {
+    try {
+      const resp = await fetch('/api/pipeline_status');
+      const data = await resp.json();
+      if (!data.running) {
+        const btn = document.getElementById('runBtn');
+        btn.classList.remove('running');
+        document.getElementById('runBtnIcon').textContent = '\u25B6';
+        if (data.last_error) {
+          document.getElementById('runBtnLabel').textContent = 'ERROR';
+          setTimeout(() => {
+            document.getElementById('runBtnLabel').textContent = 'RUN PIPELINE';
+          }, 3000);
+        } else {
+          document.getElementById('runBtnLabel').textContent = 'DONE';
+          fetchAll(); // Refresh data
+          setTimeout(() => {
+            document.getElementById('runBtnLabel').textContent = 'RUN PIPELINE';
+          }, 2000);
+        }
+        return;
+      }
+      setTimeout(check, 2000);
+    } catch(e) {
+      setTimeout(check, 3000);
+    }
+  };
+  setTimeout(check, 2000);
 }
 
 fetchAll();
