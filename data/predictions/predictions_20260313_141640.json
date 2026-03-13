@@ -1,0 +1,166 @@
+{
+  "timestamp": "2026-03-13T13:16:40.241501+00:00",
+  "markets_predicted": 4,
+  "signals": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.5715,
+      "market_probability": 0.09,
+      "edge": 0.4815,
+      "mispricing_score": 4.81,
+      "expected_value": 0.2937,
+      "direction": "buy_yes",
+      "signal_strength": 0.2937,
+      "confidence": 0.61,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.7,
+          "predicted_probability": 0.75,
+          "confidence": 0.7,
+          "reasoning": "The movie has a confirmed June 2027 release date and producers are dropping hints about showing footage soon, indicating active development. With 14+ months until the April 2026 deadline, there's ample time for a trailer release, which typically comes 6-12 months before theatrical release. The market at 9% appears severely underpriced given the positive producer signals and standard marketing timelines."
+        },
+        {
+          "model_name": "heuristic_bull",
+          "role": "bull_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.26,
+          "confidence": 0.4,
+          "reasoning": "Bull case: market at 0.09, sentiment is neutral (90% conf). Adjusting up by 17% for bull thesis."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.09, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T13:16:29.797941+00:00"
+    },
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "ensemble_probability": 0.098,
+      "market_probability": 0.06,
+      "edge": 0.038,
+      "mispricing_score": 0.38,
+      "expected_value": 0.0232,
+      "direction": "buy_yes",
+      "signal_strength": 0.0232,
+      "confidence": 0.61,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.7,
+          "predicted_probability": 0.08,
+          "confidence": 0.7,
+          "reasoning": "The headlines show Bondi facing external pressures (threats, subpoenas) but moving to secure military housing suggests she's adapting to challenges rather than preparing to resign. Attorney Generals typically serve full terms unless facing major scandals, and the current issues appear manageable for someone in her position."
+        },
+        {
+          "model_name": "heuristic_bull",
+          "role": "bull_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.23,
+          "confidence": 0.4,
+          "reasoning": "Bull case: market at 0.06, sentiment is neutral (90% conf). Adjusting up by 17% for bull thesis."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.06, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T13:16:33.051479+00:00"
+    },
+    {
+      "market_id": "KXLUTNICKOUT-26APR01",
+      "market_title": "Will Howard Lutnick leaves Commerce Secretary in before April?",
+      "ensemble_probability": 0.098,
+      "market_probability": 0.06,
+      "edge": 0.038,
+      "mispricing_score": 0.38,
+      "expected_value": 0.0205,
+      "direction": "buy_yes",
+      "signal_strength": 0.0205,
+      "confidence": 0.54,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.7,
+          "predicted_probability": 0.08,
+          "confidence": 0.6,
+          "reasoning": "The market price of 6% seems roughly calibrated given the short timeframe (before April) and that Lutnick just started as Commerce Secretary. While headlines mention 'resignation calls' and some controversy at Davos, these are relatively minor incidents for a cabinet-level official, and the sentiment analysis may be picking up general cabinet turnover discussion rather than Lutnick-specific risks."
+        },
+        {
+          "model_name": "heuristic_bull",
+          "role": "bull_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.23,
+          "confidence": 0.4,
+          "reasoning": "Bull case: market at 0.06, sentiment is neutral (90% conf). Adjusting up by 17% for bull thesis."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.06, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T13:16:36.745983+00:00"
+    },
+    {
+      "market_id": "KXBANTRANS-26",
+      "market_title": "Will US Supreme Court rule ban transgender girls and women from competing on female sports teams?",
+      "ensemble_probability": 0.624,
+      "market_probability": 0.28,
+      "edge": 0.344,
+      "mispricing_score": 3.44,
+      "expected_value": 0.2339,
+      "direction": "buy_yes",
+      "signal_strength": 0.2339,
+      "confidence": 0.68,
+      "should_trade": true,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.7,
+          "predicted_probability": 0.75,
+          "confidence": 0.8,
+          "reasoning": "Multiple credible news sources consistently report the Supreme Court 'appears likely to uphold' transgender athlete bans based on oral arguments or case analysis. The current market price of 28% seems significantly undervalued given these strong directional signals from legal reporting. The specificity and consistency of headlines about Supreme Court likelihood creates high confidence in a YES resolution."
+        },
+        {
+          "model_name": "heuristic_bull",
+          "role": "bull_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.45,
+          "confidence": 0.4,
+          "reasoning": "Bull case: market at 0.28, sentiment is neutral (90% conf). Adjusting up by 17% for bull thesis."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.21,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.28, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T13:16:40.241501+00:00"
+    }
+  ]
+}

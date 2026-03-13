@@ -10,6 +10,13 @@ import yaml
 from pathlib import Path
 from typing import Any, Optional
 
+# Load .env file if present (for ANTHROPIC_API_KEY, etc.)
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).parent.parent / ".env")
+except ImportError:
+    pass
+
 
 def load_settings() -> dict:
     """Load the full settings dict from settings.yaml."""

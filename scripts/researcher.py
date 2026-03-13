@@ -504,9 +504,9 @@ class NewsResearcher:
         # Scale: 1 article = 0.2, 5 = 0.5, 10 = 0.7, 20+ = 0.9
         confidence = min(0.9, 0.1 + (n / 25.0))
 
-        # Pick key narratives: highest-magnitude non-neutral articles
+        # Pick key narratives: highest-magnitude articles first, then any remaining
         key = sorted(scored_articles, key=lambda a: a["magnitude"], reverse=True)
-        key_narratives = [a["title"] for a in key[:5] if a["magnitude"] > 0]
+        key_narratives = [a["title"] for a in key[:8] if a["title"].strip()]
 
         return SentimentResult(
             source=source_name,

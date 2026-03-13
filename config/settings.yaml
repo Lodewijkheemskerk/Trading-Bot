@@ -44,13 +44,13 @@ prediction:
   ensemble_models:
     - name: "claude"
       role: "news_analyst"
-      weight: 0.50
+      weight: 0.70
     - name: "heuristic_bull"
       role: "bull_advocate"
-      weight: 0.25
+      weight: 0.15
     - name: "heuristic_bear"
       role: "bear_advocate"
-      weight: 0.25
+      weight: 0.15
   brier_score_max: 0.25
 
 # --- Risk Management (Step 4) ---

@@ -228,38 +228,44 @@ class PredictionEngine:
         gap = brief.get("gap", 0.0)
         narrative = brief.get("narrative_summary", "No research available.")
 
-        # Collect source details for richer context
+        # Collect source details and headlines for richer context
         source_details = []
+        all_headlines = []
         for src in brief.get("sources", []):
             source_details.append(
                 f"- {src.get('source', '?')}: bullish={src.get('bullish', 0):.0%}, "
                 f"bearish={src.get('bearish', 0):.0%}, neutral={src.get('neutral', 0):.0%}, "
                 f"confidence={src.get('confidence', 0):.0%}"
             )
+            for h in src.get("key_narratives", [])[:5]:
+                all_headlines.append(f"  [{src.get('source', '?')}] {h}")
         sources_text = "\n".join(source_details) if source_details else "No source data."
+        headlines_text = "\n".join(all_headlines[:10]) if all_headlines else "No headlines available."
 
         system_prompt = (
-            "You are a prediction market analyst. Your job is to estimate the true "
-            "probability of an event occurring based on research data. You must respond "
-            "with ONLY a JSON object, no other text. The JSON must have exactly these fields:\n"
-            '{"probability": <float 0.01-0.99>, "confidence": <float 0.1-0.9>, "reasoning": "<1-2 sentences>"}\n'
-            "Be calibrated: a 70% prediction should resolve YES about 70% of the time. "
-            "Consider base rates, sentiment signals, and market context. "
-            "Do not simply echo the market price — form an independent estimate."
+            "You are a calibrated prediction market analyst. Estimate the TRUE probability "
+            "of the event resolving YES. You must respond with ONLY a JSON object:\n"
+            '{"probability": <float 0.01-0.99>, "confidence": <float 0.1-0.9>, "reasoning": "<2-3 sentences>"}\n\n'
+            "Rules:\n"
+            "- Be calibrated: your 70% predictions should resolve YES ~70% of the time\n"
+            "- Form an INDEPENDENT estimate. The market price is useful context but may be wrong\n"
+            "- Consider: base rates, time to expiry, how specific the event is, headline signals\n"
+            "- High confidence (>0.7) only when multiple strong signals agree\n"
+            "- Low confidence (<0.4) when data is sparse, contradictory, or headlines are irrelevant\n"
+            "- Explain your reasoning: what moved you away from the market price (or didn't)"
         )
 
         user_prompt = (
-            f"Market: {market_title}\n"
-            f"Market ID: {market_id}\n"
-            f"Current market price (YES): {market_prob:.2f}\n\n"
-            f"Research Summary:\n"
-            f"Consensus sentiment: {sentiment}\n"
-            f"Sentiment confidence: {confidence:.2f}\n"
-            f"Sentiment-implied probability vs market gap: {gap:+.4f}\n\n"
-            f"Source breakdown:\n{sources_text}\n\n"
-            f"Narrative: {narrative}\n\n"
-            f"Based on this research, what is the true probability this event resolves YES? "
-            f"Respond with ONLY a JSON object."
+            f"QUESTION: {market_title}\n"
+            f"Current market price (YES): ${market_prob:.2f}\n\n"
+            f"SENTIMENT ANALYSIS:\n"
+            f"Consensus: {sentiment} (confidence: {confidence:.0%})\n"
+            f"Sentiment-implied probability: {market_prob + gap:.2f}\n"
+            f"Gap vs market: {gap:+.1%}\n\n"
+            f"SOURCE SCORES:\n{sources_text}\n\n"
+            f"RECENT HEADLINES:\n{headlines_text}\n\n"
+            f"NARRATIVE: {narrative}\n\n"
+            f"What is the true probability this resolves YES? JSON only."
         )
 
         try:

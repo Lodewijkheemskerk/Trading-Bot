@@ -1,0 +1,17 @@
+{
+  "trade_id": "6284ecb1dfb6",
+  "market_id": "KXBANTRANS-26",
+  "market_title": "Will US Supreme Court rule ban transgender girls and women from competing on female sports teams?",
+  "direction": "buy_yes",
+  "entry_price": 0.28,
+  "position_size_usd": 25.0,
+  "model_probability": 0.624,
+  "signal_strength": 0.2339,
+  "edge": 0.344,
+  "status": "open",
+  "pnl": 0.0,
+  "risk_passed": true,
+  "risk_failures": [],
+  "kelly_fraction": 0.119444,
+  "timestamp": "2026-03-13T13:16:50.766256+00:00"
+}
