@@ -297,8 +297,8 @@ class MarketScanner:
         if m.liquidity < self.min_liquidity:
             return False
 
-        # Expiry window
-        if m.days_to_expiry > self.max_days_to_expiry or m.days_to_expiry < 0:
+        # Expiry window (exclude expired and same-day markets)
+        if m.days_to_expiry > self.max_days_to_expiry or m.days_to_expiry < 1:
             return False
 
         # Skip near-certain markets
