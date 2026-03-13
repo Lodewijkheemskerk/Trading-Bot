@@ -14,7 +14,7 @@ bankroll:
 # --- Scanner (Step 1) ---
 scanner:
   schedule_minutes: 15
-  min_volume: 20           # Min 24h volume (contracts)
+  min_volume: 200          # Min 24h volume (contracts) — per original doc
   max_days_to_expiry: 30
   min_liquidity: 0         # Min orderbook depth ($)
   anomaly_price_move: 0.10 # Flag if price moved >10%
