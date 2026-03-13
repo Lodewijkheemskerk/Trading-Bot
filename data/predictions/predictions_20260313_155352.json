@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-03-13T14:53:52.553818+00:00",
+  "markets_predicted": 2,
+  "signals": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.535,
+      "market_probability": 0.09,
+      "edge": 0.445,
+      "mispricing_score": 4.45,
+      "expected_value": 0.2626,
+      "direction": "buy_yes",
+      "signal_strength": 0.2626,
+      "confidence": 0.59,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.5,
+          "predicted_probability": 0.75,
+          "confidence": 0.6,
+          "reasoning": "The recent headline from producers saying 'Stay tuned' and that they're 'very confident' about meeting release dates suggests active progress and potential trailer readiness. With over 15 months until the April 2026 deadline, there's substantial time for a trailer release, and animated sequels typically release trailers 6-12 months before the film. The market price of $0.09 appears significantly underpriced given these positive signals from the production team."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.3,
+          "predicted_probability": 0.5,
+          "confidence": 0.7,
+          "reasoning": "The producers have hinted at upcoming footage, indicating a strong likelihood of promotional material being released soon. Additionally, with the film's release date approaching, it's reasonable to expect that the official trailer will be unveiled well before April 2026, suggesting the market may be underestimating this event."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.09, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T14:53:45.882271+00:00"
+    },
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "ensemble_probability": 0.125,
+      "market_probability": 0.06,
+      "edge": 0.065,
+      "mispricing_score": 0.65,
+      "expected_value": 0.0416,
+      "direction": "buy_yes",
+      "signal_strength": 0.0416,
+      "confidence": 0.64,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.5,
+          "predicted_probability": 0.08,
+          "confidence": 0.7,
+          "reasoning": "The question appears to have a grammatical error ('leaves Attorney General in before April'), but assuming it asks if Bondi will leave her AG position before April, the base rate for cabinet officials resigning within ~3 months is very low. While headlines mention controversies (Epstein probe, threats requiring military housing), these typically don't lead to immediate resignations, and the market price of 6% seems appropriately calibrated for such a short timeframe."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.3,
+          "predicted_probability": 0.25,
+          "confidence": 0.7,
+          "reasoning": "Recent headlines indicate significant pressure on Pam Bondi, including threats that have led her to relocate to a military base for security. The subpoena from the House Oversight panel in the Epstein probe suggests increasing scrutiny, which may prompt her to step down before April."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.06, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T14:53:52.553818+00:00"
+    }
+  ]
+}

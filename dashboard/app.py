@@ -173,11 +173,27 @@ def api_run_pipeline():
 
 @app.route("/api/pipeline_status")
 def api_pipeline_status():
-    """Check if a pipeline run is in progress."""
+    """Check if a pipeline run is in progress, and compute next loop run time."""
+    # Find last prediction snapshot timestamp as proxy for last completed cycle
+    last_cycle = None
+    preds = sorted(PREDICTIONS_DIR.glob("predictions_*.json"), reverse=True)
+    if preds:
+        # Parse timestamp from filename: predictions_YYYYMMDD_HHMMSS.json
+        # These timestamps are in LOCAL time (not UTC)
+        fname = preds[0].stem  # predictions_20260313_152328
+        try:
+            ts_str = fname.replace("predictions_", "")
+            local_dt = datetime.strptime(ts_str, "%Y%m%d_%H%M%S")
+            # Return as epoch ms so frontend doesn't need timezone math
+            last_cycle = local_dt.timestamp() * 1000
+        except ValueError:
+            pass
+
     return jsonify({
         "running": _pipeline_running,
-        "last_run": _pipeline_last_run,
+        "last_run": _pipeline_last_run or last_cycle,
         "last_error": _pipeline_last_error,
+        "loop_interval_minutes": 30,
     })
 
 

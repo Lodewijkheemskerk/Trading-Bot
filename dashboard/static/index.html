@@ -148,6 +148,32 @@ body {
   letter-spacing: 1px;
 }
 
+/* ── Next run countdown ── */
+.next-run {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 14px;
+  border-radius: 8px;
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border);
+}
+
+.next-run-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--text-dim);
+}
+
+.next-run-time {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--amber);
+  letter-spacing: 1px;
+}
+
 /* ── Run button ── */
 .run-btn {
   display: flex;
@@ -616,6 +642,10 @@ body {
       <div class="dot"></div>
       <span id="statusLabel">ACTIVE</span>
     </div>
+    <div class="next-run" id="nextRunWrap">
+      <span class="next-run-label">NEXT RUN</span>
+      <span class="next-run-time" id="nextRunTime">--:--</span>
+    </div>
     <button class="run-btn" id="runBtn" onclick="triggerRun()">
       <span id="runBtnIcon">&#9654;</span>
       <span id="runBtnLabel">RUN PIPELINE</span>
@@ -1050,6 +1080,46 @@ function pollPipelineStatus() {
   };
   setTimeout(check, 2000);
 }
+
+// ── Next run countdown ──
+let _nextRunTarget = null;
+let _loopInterval = 30;
+
+async function fetchPipelineStatus() {
+  try {
+    const resp = await fetch('/api/pipeline_status');
+    const data = await resp.json();
+    _loopInterval = data.loop_interval_minutes || 30;
+    if (data.last_run) {
+      // last_run is epoch ms (local time from server)
+      const lastRunMs = typeof data.last_run === 'number' ? data.last_run : new Date(data.last_run).getTime();
+      _nextRunTarget = new Date(lastRunMs + _loopInterval * 60 * 1000);
+    }
+  } catch(e) {}
+}
+
+function updateCountdown() {
+  const el = document.getElementById('nextRunTime');
+  if (!_nextRunTarget) { el.textContent = '--:--'; return; }
+
+  const now = new Date();
+  const diff = _nextRunTarget - now;
+
+  if (diff <= 0) {
+    el.textContent = 'NOW';
+    el.style.color = 'var(--green)';
+    return;
+  }
+
+  el.style.color = 'var(--amber)';
+  const mins = Math.floor(diff / 60000);
+  const secs = Math.floor((diff % 60000) / 1000);
+  el.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+}
+
+setInterval(updateCountdown, 1000);
+fetchPipelineStatus();
+setInterval(fetchPipelineStatus, 30000);
 
 fetchAll();
 setInterval(fetchAll, 15000);
