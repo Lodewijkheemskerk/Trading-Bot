@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-03-13T12:09:06.331650+00:00",
+  "total_signals": 1,
+  "executed": 0,
+  "blocked": 1,
+  "trades": [
+    {
+      "trade_id": "d7bed9f9f378",
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "direction": "buy_yes",
+      "entry_price": 0.06,
+      "position_size_usd": 0.0,
+      "model_probability": 0.14,
+      "signal_strength": 0.032,
+      "edge": 0.08,
+      "status": "no_signal",
+      "pnl": 0.0,
+      "risk_passed": false,
+      "risk_failures": [
+        "should_trade=False (below signal thresholds)"
+      ],
+      "kelly_fraction": 0.0,
+      "timestamp": "2026-03-13T12:09:06.331650+00:00"
+    }
+  ]
+}

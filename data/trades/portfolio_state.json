@@ -1,0 +1,10 @@
+{
+  "initial_bankroll": 500.0,
+  "current_bankroll": 451.25,
+  "peak_bankroll": 500.0,
+  "open_positions": 2,
+  "daily_pnl": 0.0,
+  "daily_api_cost": 0.002,
+  "daily_date": "2026-03-13",
+  "total_trades": 2
+}

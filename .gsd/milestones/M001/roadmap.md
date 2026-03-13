@@ -22,7 +22,7 @@
 - [x] **S03: Prediction Engine** `risk:high` `depends:[S02]`
   > After this: User runs `python scripts/predictor.py` with a research brief and gets an ensemble probability estimate, edge calculation, mispricing Z-score, and a trade/no-trade signal.
 
-- [ ] **S04: Risk Management + Paper Execution** `risk:medium` `depends:[S03]`
+- [x] **S04: Risk Management + Paper Execution** `risk:medium` `depends:[S03]`
   > After this: User runs `python scripts/executor.py` with a trade signal and sees all 10 risk checks pass/fail, Kelly-sized position, and a simulated paper trade logged to disk.
 
 - [ ] **S05: Compound Learning + Full Pipeline** `risk:low` `depends:[S04]`
