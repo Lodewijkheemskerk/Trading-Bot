@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "41a0a8f3",
+    "label": "dashboard",
+    "command": "cd \"C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot\" && python dashboard/app.py",
+    "cwd": "C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot",
+    "startedAt": 1773405360992,
+    "processType": "server",
+    "group": null,
+    "readyPattern": null,
+    "readyPort": 5000,
+    "pid": 19968
+  }
+]

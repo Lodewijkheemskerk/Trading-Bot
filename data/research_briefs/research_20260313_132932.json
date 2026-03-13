@@ -1,0 +1,149 @@
+{
+  "timestamp": "2026-03-13T12:29:32.691504+00:00",
+  "markets_researched": 4,
+  "briefs": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "current_yes_price": 0.09,
+      "sources": [
+        {
+          "source": "google_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.9,
+          "key_narratives": []
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.05,
+          "bearish": 0.05,
+          "neutral": 0.9,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Insider Cryptic HD QUALITY (@Cryptic4KQual) is teasing that the Moana Live-Action official trailer will be released very soon (swipe the images)",
+            "Official Discussion - Hoppers [SPOILERS]"
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.9,
+      "sentiment_implied_probability": 0.5,
+      "gap": 0.41,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across google_news (neutral, 90% conf), reddit (neutral, 90% conf) shows neutral sentiment with 90% confidence. Market appears underpriced by 41.0% based on sentiment signals. Key headline: \"Insider Cryptic HD QUALITY (@Cryptic4KQual) is teasing that the Moana Live-Actio\".",
+      "timestamp": "2026-03-13T12:29:25.920555+00:00"
+    },
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "current_yes_price": 0.06,
+      "sources": [
+        {
+          "source": "google_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.9,
+          "key_narratives": []
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.15,
+          "bearish": 0.0,
+          "neutral": 0.85,
+          "confidence": 0.9,
+          "key_narratives": [
+            "MMW: The United States Attorney General Pam Bondi Will Plead The Fifth Amendment multiple times",
+            "Pam Bondi Declares Herself God-Empress Of Ethics",
+            "Most of the website is completely ignoring that Pam Bondi had to move to a military base because of assassination threats."
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.9,
+      "sentiment_implied_probability": 0.5337,
+      "gap": 0.4737,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across google_news (neutral, 90% conf), reddit (bullish, 90% conf) shows neutral sentiment with 90% confidence. Market appears underpriced by 47.4% based on sentiment signals. Key headline: \"MMW: The United States Attorney General Pam Bondi Will Plead The Fifth Amendment\".",
+      "timestamp": "2026-03-13T12:29:28.162230+00:00"
+    },
+    {
+      "market_id": "KXLUTNICKOUT-26APR01",
+      "market_title": "Will Howard Lutnick leaves Commerce Secretary in before April?",
+      "current_yes_price": 0.06,
+      "sources": [
+        {
+          "source": "google_news",
+          "bullish": 0.05,
+          "bearish": 0.05,
+          "neutral": 0.9,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Canada’s US trade minister exits DC as tariff talks stall",
+            "Pam Bondi’s Chances of Leaving Cabinet Surge Past Kristi Noem’s"
+          ]
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.15,
+          "bearish": 0.0,
+          "neutral": 0.85,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Nintendo Is Suing The US Government Over Illegal Tariffs",
+            "Meet the quiet winners of the Supreme Court tariff ruling: hedge funds creating a $100 billion market snapping up rights to importers’ tariff refunds",
+            "Coming here as someone who often defend Nintendo. Can this moment be a time where we can unanimously agree they’re doing the right thing?"
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.9,
+      "sentiment_implied_probability": 0.5338,
+      "gap": 0.4738,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across google_news (neutral, 90% conf), reddit (bullish, 90% conf) shows neutral sentiment with 90% confidence. Market appears underpriced by 47.4% based on sentiment signals. Key headline: \"Canada’s US trade minister exits DC as tariff talks stall\".",
+      "timestamp": "2026-03-13T12:29:30.298027+00:00"
+    },
+    {
+      "market_id": "KXBANTRANS-26",
+      "market_title": "Will US Supreme Court rule ban transgender girls and women from competing on female sports teams?",
+      "current_yes_price": 0.28,
+      "sources": [
+        {
+          "source": "google_news",
+          "bullish": 0.25,
+          "bearish": 0.0,
+          "neutral": 0.75,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Supreme Court appears likely to uphold transgender athlete bans",
+            "Supreme Court appears likely to uphold state bans on transgender athletes",
+            "US Supreme Court appears likely to uphold restrictions on transgender athletes",
+            "LISTEN: Supreme Court seems likely to uphold states' bans on transgender students playing school sports",
+            "Supreme Court will hear cases in January on transgender athletes, gun rights, and Trump’s firing of Fed governor"
+          ]
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.05,
+          "bearish": 0.05,
+          "neutral": 0.9,
+          "confidence": 0.9,
+          "key_narratives": [
+            "\"Supreme Court’s Gay Marriage Ruling Faces New Threat\" -- Thoughts?",
+            "Meet the quiet winners of the Supreme Court tariff ruling: hedge funds creating a $100 billion market snapping up rights to importers’ tariff refunds"
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.9,
+      "sentiment_implied_probability": 0.5563,
+      "gap": 0.2763,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across google_news (bullish, 90% conf), reddit (neutral, 90% conf) shows neutral sentiment with 90% confidence. Market appears underpriced by 27.6% based on sentiment signals. Key headline: \"Supreme Court appears likely to uphold transgender athlete bans\".",
+      "timestamp": "2026-03-13T12:29:32.691504+00:00"
+    }
+  ]
+}

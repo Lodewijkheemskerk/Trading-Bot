@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PREDICT MKT // Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-panel: #0d0d14;
+  --bg-panel-alt: #10101a;
+  --bg-row-hover: #141420;
+  --border: #1a1a2e;
+  --border-bright: #252540;
+  --text-primary: #c8c8d4;
+  --text-secondary: #6a6a80;
+  --text-dim: #3d3d55;
+  --amber: #ffb700;
+  --amber-dim: #9e7200;
+  --green: #00e676;
+  --green-dim: #00843f;
+  --red: #ff1744;
+  --red-dim: #8b0022;
+  --blue: #448aff;
+  --blue-dim: #1a3d7a;
+  --cyan: #00e5ff;
+  --magenta: #e040fb;
+  --orange: #ff9100;
+
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+  --font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ── Scanline overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Top bar ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: linear-gradient(180deg, #12121e 0%, #0d0d16 100%);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--amber);
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(255,183,0,0.3);
+}
+
+.logo-sub {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.clock {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cyan);
+  letter-spacing: 1px;
+}
+
+.mode-badge {
+  padding: 2px 10px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.mode-paper {
+  background: var(--amber-dim);
+  color: var(--amber);
+  border: 1px solid var(--amber);
+}
+
+.kill-switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.kill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s infinite;
+}
+
+.kill-dot.active {
+  background: var(--red);
+  box-shadow: 0 0 12px var(--red);
+  animation: pulse-red 0.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── Grid layout ── */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 1px;
+  background: var(--border);
+  margin: 1px;
+}
+
+.grid > .panel {
+  background: var(--bg-panel);
+}
+
+/* ── Panel ── */
+.panel {
+  padding: 0;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-panel-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.panel-meta {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.panel-body {
+  padding: 8px;
+  overflow-y: auto;
+  max-height: 340px;
+}
+
+/* ── Stats row (portfolio bar) ── */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin: 1px;
+  margin-top: 0;
+}
+
+.stat-cell {
+  background: var(--bg-panel);
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.stat-value.green { color: var(--green); }
+.stat-value.red { color: var(--red); }
+.stat-value.amber { color: var(--amber); }
+.stat-value.cyan { color: var(--cyan); }
+.stat-value.blue { color: var(--blue); }
+
+/* ── Tables ── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 5px 8px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg-panel);
+}
+
+.data-table th.r { text-align: right; }
+
+.data-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid rgba(26,26,46,0.5);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.data-table td.r { text-align: right; }
+.data-table td.mono { font-family: var(--font-mono); }
+
+.data-table tr:hover {
+  background: var(--bg-row-hover);
+}
+
+.data-table td.title-cell {
+  max-width: 260px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+/* ── Value colors ── */
+.val-pos { color: var(--green); }
+.val-neg { color: var(--red); }
+.val-neutral { color: var(--text-secondary); }
+.val-amber { color: var(--amber); }
+.val-blue { color: var(--blue); }
+.val-cyan { color: var(--cyan); }
+.val-magenta { color: var(--magenta); }
+
+/* ── Badges ── */
+.badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.badge-bullish { background: rgba(0,230,118,0.12); color: var(--green); border: 1px solid rgba(0,230,118,0.25); }
+.badge-bearish { background: rgba(255,23,68,0.12); color: var(--red); border: 1px solid rgba(255,23,68,0.25); }
+.badge-neutral { background: rgba(106,106,128,0.12); color: var(--text-secondary); border: 1px solid rgba(106,106,128,0.25); }
+.badge-pass { background: rgba(0,230,118,0.12); color: var(--green); border: 1px solid rgba(0,230,118,0.25); }
+.badge-fail { background: rgba(255,23,68,0.12); color: var(--red); border: 1px solid rgba(255,23,68,0.25); }
+.badge-open { background: rgba(68,138,255,0.12); color: var(--blue); border: 1px solid rgba(68,138,255,0.25); }
+.badge-blocked { background: rgba(255,145,0,0.12); color: var(--orange); border: 1px solid rgba(255,145,0,0.25); }
+
+/* ── Risk checks grid ── */
+.risk-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 4px;
+}
+
+.risk-item {
+  padding: 6px 8px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.risk-item.pass {
+  border-color: rgba(0,230,118,0.2);
+  background: rgba(0,230,118,0.04);
+}
+
+.risk-item.fail {
+  border-color: rgba(255,23,68,0.3);
+  background: rgba(255,23,68,0.06);
+}
+
+.risk-name {
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 2px;
+}
+
+.risk-status {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ── Anomaly marker ── */
+.anomaly-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 4px var(--orange);
+  margin-right: 4px;
+}
+
+/* ── Edge bar ── */
+.edge-bar-wrap {
+  width: 60px;
+  height: 6px;
+  background: var(--bg-primary);
+  border-radius: 1px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.edge-bar-fill {
+  height: 100%;
+  border-radius: 1px;
+  transition: width 0.5s ease;
+}
+
+/* ── Full-width panels ── */
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* ── Loading shimmer ── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.loading {
+  background: linear-gradient(90deg, var(--bg-panel) 25%, var(--bg-panel-alt) 50%, var(--bg-panel) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  min-height: 100px;
+}
+
+/* ── Ticker tape ── */
+.ticker-tape {
+  display: flex;
+  overflow: hidden;
+  background: var(--bg-panel-alt);
+  border-bottom: 1px solid var(--border);
+  padding: 4px 0;
+}
+
+.ticker-track {
+  display: flex;
+  gap: 32px;
+  animation: scroll-left 30s linear infinite;
+  white-space: nowrap;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.ticker-symbol {
+  color: var(--cyan);
+  font-weight: 600;
+}
+
+.ticker-price {
+  color: var(--text-primary);
+}
+
+.ticker-edge {
+  font-weight: 500;
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Confidence bar ── */
+.conf-bar {
+  width: 40px;
+  height: 4px;
+  background: var(--bg-primary);
+  border-radius: 1px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 4px;
+  overflow: hidden;
+}
+
+.conf-fill {
+  height: 100%;
+  background: var(--amber);
+  border-radius: 1px;
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div>
+      <div class="logo">PREDICT MKT</div>
+      <div class="logo-sub">AI Trading Terminal v1.0</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="kill-switch">
+      <div class="kill-dot" id="killDot"></div>
+      <span id="killLabel">SYSTEM ACTIVE</span>
+    </div>
+    <span class="mode-badge mode-paper" id="modeBadge">PAPER</span>
+    <span class="clock" id="clock">--:--:--</span>
+  </div>
+</div>
+
+<!-- ── TICKER TAPE ── -->
+<div class="ticker-tape">
+  <div class="ticker-track" id="tickerTrack">
+    <span class="ticker-item"><span class="ticker-symbol">LOADING</span></span>
+  </div>
+</div>
+
+<!-- ── STATS BAR ── -->
+<div class="stats-bar" id="statsBar">
+  <div class="stat-cell"><div class="stat-label">Bankroll</div><div class="stat-value cyan" id="sBankroll">--</div></div>
+  <div class="stat-cell"><div class="stat-label">Open Pos</div><div class="stat-value" id="sOpen">--</div></div>
+  <div class="stat-cell"><div class="stat-label">Daily P&L</div><div class="stat-value" id="sDailyPnl">--</div></div>
+  <div class="stat-cell"><div class="stat-label">Total Trades</div><div class="stat-value" id="sTotalTrades">--</div></div>
+  <div class="stat-cell"><div class="stat-label">Win Rate</div><div class="stat-value" id="sWinRate">--</div></div>
+  <div class="stat-cell"><div class="stat-label">Total P&L</div><div class="stat-value" id="sTotalPnl">--</div></div>
+  <div class="stat-cell"><div class="stat-label">Executed</div><div class="stat-value green" id="sExecuted">--</div></div>
+  <div class="stat-cell"><div class="stat-label">Blocked</div><div class="stat-value red" id="sBlocked">--</div></div>
+</div>
+
+<!-- ── MAIN GRID ── -->
+<div class="grid">
+
+  <!-- MARKET SCANNER -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Market Scanner</span>
+      <span class="panel-meta" id="scanMeta">--</span>
+    </div>
+    <div class="panel-body">
+      <table class="data-table" id="scanTable">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Market</th>
+            <th class="r">YES</th>
+            <th class="r">Vol24h</th>
+            <th class="r">Spread</th>
+            <th class="r">Days</th>
+            <th class="r">Score</th>
+          </tr>
+        </thead>
+        <tbody id="scanBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RESEARCH / SENTIMENT -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Sentiment Research</span>
+      <span class="panel-meta" id="researchMeta">--</span>
+    </div>
+    <div class="panel-body">
+      <table class="data-table" id="researchTable">
+        <thead>
+          <tr>
+            <th>Market</th>
+            <th>Sentiment</th>
+            <th class="r">Conf</th>
+            <th class="r">Implied</th>
+            <th class="r">Gap</th>
+            <th>Direction</th>
+          </tr>
+        </thead>
+        <tbody id="researchBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PREDICTIONS -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Ensemble Predictions</span>
+      <span class="panel-meta" id="predMeta">--</span>
+    </div>
+    <div class="panel-body">
+      <table class="data-table" id="predTable">
+        <thead>
+          <tr>
+            <th>Market</th>
+            <th class="r">Ensemble</th>
+            <th class="r">Market</th>
+            <th class="r">Edge</th>
+            <th>Dir</th>
+            <th class="r">Signal</th>
+            <th>Trade</th>
+          </tr>
+        </thead>
+        <tbody id="predBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RISK CHECKS -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Risk Validation</span>
+      <span class="panel-meta" id="riskMeta">10 checks</span>
+    </div>
+    <div class="panel-body" id="riskBody">
+      <div class="risk-grid" id="riskGrid"></div>
+    </div>
+  </div>
+
+  <!-- TRADES -->
+  <div class="panel full-width">
+    <div class="panel-header">
+      <span class="panel-title">Trade Execution Log</span>
+      <span class="panel-meta" id="tradeMeta">--</span>
+    </div>
+    <div class="panel-body">
+      <table class="data-table" id="tradeTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Market</th>
+            <th>Dir</th>
+            <th class="r">Entry</th>
+            <th class="r">Size</th>
+            <th class="r">Edge</th>
+            <th class="r">Kelly</th>
+            <th>Status</th>
+            <th class="r">P&L</th>
+          </tr>
+        </thead>
+        <tbody id="tradeBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Utility ──
+const fmt = (n, d=2) => n != null ? Number(n).toFixed(d) : '--';
+const fmtPct = (n) => n != null ? (n * 100).toFixed(1) + '%' : '--';
+const fmtUsd = (n) => n != null ? '$' + Number(n).toFixed(2) : '--';
+const edgeColor = (e) => e > 0 ? 'val-pos' : e < 0 ? 'val-neg' : 'val-neutral';
+const sentBadge = (s) => s === 'bullish' ? 'badge-bullish' : s === 'bearish' ? 'badge-bearish' : 'badge-neutral';
+
+function truncate(str, len=35) {
+  return str && str.length > len ? str.slice(0, len) + '...' : (str || '');
+}
+
+// ── Clock ──
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('en-GB', { hour12: false }) + ' UTC' +
+    (now.getTimezoneOffset() > 0 ? '-' : '+') +
+    Math.abs(now.getTimezoneOffset() / 60);
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── Fetch all data ──
+async function fetchAll() {
+  try {
+    const [scan, research, pred, trades, portfolio, perf, kill, config] = await Promise.all([
+      fetch('/api/scan').then(r => r.json()),
+      fetch('/api/research').then(r => r.json()),
+      fetch('/api/predictions').then(r => r.json()),
+      fetch('/api/trades').then(r => r.json()),
+      fetch('/api/portfolio').then(r => r.json()),
+      fetch('/api/performance').then(r => r.json()),
+      fetch('/api/kill_switch').then(r => r.json()),
+      fetch('/api/config').then(r => r.json()),
+    ]);
+
+    renderKillSwitch(kill);
+    renderMode(config);
+    renderStats(portfolio, perf);
+    renderScan(scan);
+    renderResearch(research);
+    renderPredictions(pred);
+    renderTrades(trades);
+    renderTicker(pred, scan);
+    renderRiskChecks(pred, config);
+  } catch(e) {
+    console.error('Fetch error:', e);
+  }
+}
+
+// ── Kill switch ──
+function renderKillSwitch(data) {
+  const dot = document.getElementById('killDot');
+  const label = document.getElementById('killLabel');
+  if (data.active) {
+    dot.classList.add('active');
+    label.textContent = 'KILL SWITCH';
+    label.style.color = 'var(--red)';
+  } else {
+    dot.classList.remove('active');
+    label.textContent = 'SYSTEM ACTIVE';
+    label.style.color = 'var(--text-dim)';
+  }
+}
+
+// ── Mode badge ──
+function renderMode(config) {
+  const badge = document.getElementById('modeBadge');
+  badge.textContent = (config.mode || 'paper').toUpperCase();
+}
+
+// ── Stats bar ──
+function renderStats(port, perf) {
+  document.getElementById('sBankroll').textContent = fmtUsd(port.current_bankroll);
+  document.getElementById('sOpen').textContent = port.open_positions || 0;
+
+  const dpnl = document.getElementById('sDailyPnl');
+  dpnl.textContent = fmtUsd(port.daily_pnl);
+  dpnl.className = 'stat-value ' + (port.daily_pnl > 0 ? 'green' : port.daily_pnl < 0 ? 'red' : '');
+
+  document.getElementById('sTotalTrades').textContent = perf.total_trades || 0;
+
+  const wr = document.getElementById('sWinRate');
+  wr.textContent = fmtPct(perf.win_rate);
+  wr.className = 'stat-value ' + (perf.win_rate >= 0.6 ? 'green' : perf.win_rate > 0 ? 'amber' : '');
+
+  const tp = document.getElementById('sTotalPnl');
+  tp.textContent = fmtUsd(perf.total_pnl);
+  tp.className = 'stat-value ' + (perf.total_pnl > 0 ? 'green' : perf.total_pnl < 0 ? 'red' : '');
+
+  document.getElementById('sExecuted').textContent = perf.executed || 0;
+  document.getElementById('sBlocked').textContent = perf.blocked || 0;
+}
+
+// ── Scanner table ──
+function renderScan(data) {
+  const markets = data.markets || [];
+  document.getElementById('scanMeta').textContent =
+    markets.length + ' markets | ' + (data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : '--');
+
+  const body = document.getElementById('scanBody');
+  body.innerHTML = markets.map(m => `
+    <tr>
+      <td>${m.is_anomaly ? '<span class="anomaly-dot"></span>' : ''}</td>
+      <td class="title-cell" title="${m.title}">${truncate(m.title, 40)}</td>
+      <td class="r val-cyan">${fmt(m.yes_price)}</td>
+      <td class="r">${Math.round(m.volume_24h || 0)}</td>
+      <td class="r">${fmt(m.spread, 3)}</td>
+      <td class="r">${m.days_to_expiry}d</td>
+      <td class="r val-amber">${fmt(m.opportunity_score, 1)}</td>
+    </tr>
+  `).join('');
+}
+
+// ── Research table ──
+function renderResearch(data) {
+  const briefs = data.briefs || [];
+  document.getElementById('researchMeta').textContent =
+    briefs.length + ' briefs | ' + (data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : '--');
+
+  const body = document.getElementById('researchBody');
+  body.innerHTML = briefs.map(b => `
+    <tr>
+      <td class="title-cell" title="${b.market_title}">${truncate(b.market_title, 32)}</td>
+      <td><span class="badge ${sentBadge(b.consensus_sentiment)}">${b.consensus_sentiment}</span></td>
+      <td class="r">${fmtPct(b.consensus_confidence)}<span class="conf-bar"><span class="conf-fill" style="width:${(b.consensus_confidence*100)}%"></span></span></td>
+      <td class="r">${fmt(b.sentiment_implied_probability)}</td>
+      <td class="r ${edgeColor(b.gap)}">${b.gap > 0 ? '+' : ''}${fmtPct(b.gap)}</td>
+      <td><span class="badge ${b.gap_direction === 'underpriced' ? 'badge-bullish' : b.gap_direction === 'overpriced' ? 'badge-bearish' : 'badge-neutral'}">${b.gap_direction}</span></td>
+    </tr>
+  `).join('');
+}
+
+// ── Predictions table ──
+function renderPredictions(data) {
+  const signals = data.signals || [];
+  document.getElementById('predMeta').textContent =
+    signals.length + ' signals | ' + (data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : '--');
+
+  const body = document.getElementById('predBody');
+  body.innerHTML = signals.map(s => {
+    const edgePct = Math.min(Math.abs(s.edge) / 0.20 * 100, 100);
+    const edgeFillColor = s.edge > 0 ? 'var(--green)' : 'var(--red)';
+    return `
+    <tr>
+      <td class="title-cell" title="${s.market_title}">${truncate(s.market_title, 30)}</td>
+      <td class="r val-cyan">${fmt(s.ensemble_probability, 3)}</td>
+      <td class="r">${fmt(s.market_probability, 3)}</td>
+      <td class="r">
+        <span class="edge-bar-wrap"><span class="edge-bar-fill" style="width:${edgePct}%;background:${edgeFillColor}"></span></span>
+        <span class="${edgeColor(s.edge)}">${s.edge > 0 ? '+' : ''}${fmt(s.edge, 3)}</span>
+      </td>
+      <td><span class="${s.direction === 'buy_yes' ? 'val-pos' : 'val-neg'}">${s.direction === 'buy_yes' ? 'BUY YES' : 'BUY NO'}</span></td>
+      <td class="r">${fmt(s.signal_strength, 3)}</td>
+      <td>${s.should_trade ? '<span class="badge badge-pass">TRADE</span>' : '<span class="badge badge-fail">SKIP</span>'}</td>
+    </tr>
+  `}).join('');
+}
+
+// ── Risk checks ──
+function renderRiskChecks(pred, config) {
+  const riskCfg = config.risk || {};
+  const predCfg = config.prediction || {};
+
+  // Build risk check display from config
+  const checks = [
+    { name: 'Min Edge', threshold: predCfg.min_edge || 0.04 },
+    { name: 'Min Conf', threshold: predCfg.min_confidence || 0.65 },
+    { name: 'Max Pos', threshold: fmtPct(riskCfg.max_position_pct || 0.05) },
+    { name: 'Max Open', threshold: riskCfg.max_concurrent_positions || 15 },
+    { name: 'Daily Loss', threshold: fmtPct(riskCfg.max_daily_loss_pct || 0.15) },
+    { name: 'Drawdown', threshold: fmtPct(riskCfg.max_drawdown_pct || 0.08) },
+    { name: 'Kill Switch', threshold: 'OFF' },
+    { name: 'Slippage', threshold: fmtPct(riskCfg.max_slippage_pct || 0.02) },
+    { name: 'Bankroll', threshold: '> $0' },
+    { name: 'API Cost', threshold: '$' + (riskCfg.max_daily_api_cost || 50) },
+  ];
+
+  // Try to infer pass/fail from signals
+  const signals = (pred.signals || []);
+  const hasSignals = signals.length > 0;
+  const firstSig = signals[0] || {};
+  const edge = Math.abs(firstSig.edge || 0);
+  const conf = firstSig.confidence || 0;
+
+  const passStatus = [
+    edge >= (predCfg.min_edge || 0.04),
+    conf >= (predCfg.min_confidence || 0.65),
+    true, true, true, true, true, true, true, true,
+  ];
+
+  const grid = document.getElementById('riskGrid');
+  grid.innerHTML = checks.map((c, i) => `
+    <div class="risk-item ${hasSignals ? (passStatus[i] ? 'pass' : 'fail') : ''}">
+      <div class="risk-name">${c.name}</div>
+      <div class="risk-status ${hasSignals ? (passStatus[i] ? 'val-pos' : 'val-neg') : 'val-neutral'}">
+        ${hasSignals ? (passStatus[i] ? 'PASS' : 'FAIL') : '--'}
+      </div>
+      <div style="font-size:8px;color:var(--text-dim);margin-top:2px">${c.threshold}</div>
+    </div>
+  `).join('');
+}
+
+// ── Trades table ──
+function renderTrades(data) {
+  const trades = data.trades || [];
+  document.getElementById('tradeMeta').textContent =
+    trades.length + ' records | ' + (data.timestamp ? new Date(data.timestamp).toLocaleTimeString() : '--');
+
+  const body = document.getElementById('tradeBody');
+  if (trades.length === 0) {
+    body.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--text-dim)">No trades executed yet</td></tr>';
+    return;
+  }
+
+  body.innerHTML = trades.map(t => {
+    const statusClass = t.status === 'open' ? 'badge-open' :
+                        t.status === 'blocked' ? 'badge-blocked' :
+                        t.status === 'no_signal' ? 'badge-neutral' :
+                        t.status === 'closed' ? 'badge-pass' : 'badge-neutral';
+    return `
+    <tr>
+      <td class="val-blue" style="font-size:10px">${(t.trade_id || '--').slice(0,8)}</td>
+      <td class="title-cell" title="${t.market_title}">${truncate(t.market_title, 30)}</td>
+      <td><span class="${t.direction === 'buy_yes' ? 'val-pos' : 'val-neg'}">${t.direction === 'buy_yes' ? 'YES' : 'NO'}</span></td>
+      <td class="r">${fmt(t.entry_price, 3)}</td>
+      <td class="r">${fmtUsd(t.position_size_usd)}</td>
+      <td class="r ${edgeColor(t.edge)}">${t.edge > 0 ? '+' : ''}${fmt(t.edge, 3)}</td>
+      <td class="r">${fmt(t.kelly_fraction, 4)}</td>
+      <td><span class="badge ${statusClass}">${t.status}</span></td>
+      <td class="r ${t.pnl > 0 ? 'val-pos' : t.pnl < 0 ? 'val-neg' : ''}">${fmtUsd(t.pnl)}</td>
+    </tr>
+  `}).join('');
+}
+
+// ── Ticker tape ──
+function renderTicker(pred, scan) {
+  const signals = pred.signals || [];
+  const markets = scan.markets || [];
+
+  if (signals.length === 0 && markets.length === 0) return;
+
+  const items = [];
+
+  signals.forEach(s => {
+    items.push(`
+      <span class="ticker-item">
+        <span class="ticker-symbol">${(s.market_id || '').slice(0,16)}</span>
+        <span class="ticker-price">${fmt(s.market_probability, 2)}</span>
+        <span class="ticker-edge ${edgeColor(s.edge)}">${s.edge > 0 ? '+' : ''}${fmt(s.edge, 3)}</span>
+      </span>
+    `);
+  });
+
+  markets.forEach(m => {
+    if (!signals.find(s => s.market_id === m.market_id)) {
+      items.push(`
+        <span class="ticker-item">
+          <span class="ticker-symbol">${(m.market_id || '').slice(0,16)}</span>
+          <span class="ticker-price">${fmt(m.yes_price, 2)}</span>
+          <span style="color:var(--text-dim)">vol:${Math.round(m.volume_24h || 0)}</span>
+        </span>
+      `);
+    }
+  });
+
+  // Duplicate for seamless scroll
+  const track = document.getElementById('tickerTrack');
+  const content = items.join('');
+  track.innerHTML = content + content;
+}
+
+// ── Init ──
+fetchAll();
+setInterval(fetchAll, 15000); // Refresh every 15s
+</script>
+</body>
+</html>
