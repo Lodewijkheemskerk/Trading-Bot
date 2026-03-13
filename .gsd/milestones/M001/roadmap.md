@@ -16,7 +16,7 @@
 - [x] **S01: Project Foundation + Kalshi Scanner** `risk:medium` `depends:[]`
   > After this: User runs `python scripts/scanner.py` and sees a ranked list of tradeable Kalshi markets with volume, prices, spreads, and anomaly flags pulled from the live API.
 
-- [ ] **S02: Research Agent** `risk:medium` `depends:[S01]`
+- [x] **S02: Research Agent** `risk:medium` `depends:[S01]`
   > After this: User runs `python scripts/researcher.py` and sees sentiment analysis from Google News + Reddit for any market, with bullish/bearish/neutral classification and gap analysis vs market price.
 
 - [ ] **S03: Prediction Engine** `risk:high` `depends:[S02]`

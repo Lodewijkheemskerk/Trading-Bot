@@ -1,0 +1,40 @@
+{
+  "timestamp": "2026-03-13T09:57:31.372119+00:00",
+  "markets_researched": 1,
+  "briefs": [
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "current_yes_price": 0.06,
+      "sources": [
+        {
+          "source": "google_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.9,
+          "key_narratives": []
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.15,
+          "bearish": 0.0,
+          "neutral": 0.85,
+          "confidence": 0.9,
+          "key_narratives": [
+            "MMW: The United States Attorney General Pam Bondi Will Plead The Fifth Amendment multiple times",
+            "Pam Bondi Declares Herself God-Empress Of Ethics",
+            "Most of the website is completely ignoring that Pam Bondi had to move to a military base because of assassination threats."
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.9,
+      "sentiment_implied_probability": 0.5337,
+      "gap": 0.4737,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across google_news (neutral, 90% conf), reddit (bullish, 90% conf) shows neutral sentiment with 90% confidence. Market appears underpriced by 47.4% based on sentiment signals. Key headline: \"MMW: The United States Attorney General Pam Bondi Will Plead The Fifth Amendment\".",
+      "timestamp": "2026-03-13T09:57:31.372119+00:00"
+    }
+  ]
+}
