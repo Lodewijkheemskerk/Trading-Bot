@@ -44,10 +44,11 @@ DATA_DIR = PROJECT_ROOT / "data"
 TRADES_DIR = DATA_DIR / "trades"
 MARKET_DIR = DATA_DIR / "market_snapshots"
 RESEARCH_DIR = DATA_DIR / "research_briefs"
+PREDICTIONS_DIR = DATA_DIR / "predictions"
 LOGS_DIR = PROJECT_ROOT / "logs"
 REFERENCES_DIR = PROJECT_ROOT / "references"
 KILL_SWITCH_FILE = PROJECT_ROOT / get_setting("execution.kill_switch_file", "STOP")
 
 # Auto-create data directories on import
-for _dir in (DATA_DIR, TRADES_DIR, MARKET_DIR, RESEARCH_DIR, LOGS_DIR):
+for _dir in (DATA_DIR, TRADES_DIR, MARKET_DIR, RESEARCH_DIR, PREDICTIONS_DIR, LOGS_DIR):
     _dir.mkdir(parents=True, exist_ok=True)

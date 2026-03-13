@@ -19,7 +19,7 @@
 - [x] **S02: Research Agent** `risk:medium` `depends:[S01]`
   > After this: User runs `python scripts/researcher.py` and sees sentiment analysis from Google News + Reddit for any market, with bullish/bearish/neutral classification and gap analysis vs market price.
 
-- [ ] **S03: Prediction Engine** `risk:high` `depends:[S02]`
+- [x] **S03: Prediction Engine** `risk:high` `depends:[S02]`
   > After this: User runs `python scripts/predictor.py` with a research brief and gets an ensemble probability estimate, edge calculation, mispricing Z-score, and a trade/no-trade signal.
 
 - [ ] **S04: Risk Management + Paper Execution** `risk:medium` `depends:[S03]`

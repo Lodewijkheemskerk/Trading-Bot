@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-03-13T10:10:08.502896+00:00",
+  "markets_predicted": 1,
+  "signals": [
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "ensemble_probability": 0.14,
+      "market_probability": 0.06,
+      "edge": 0.08,
+      "mispricing_score": 0.8,
+      "expected_value": 0.032,
+      "direction": "buy_yes",
+      "signal_strength": 0.032,
+      "confidence": 0.4,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "heuristic_bull",
+          "role": "bull_advocate",
+          "weight": 0.25,
+          "predicted_probability": 0.23,
+          "confidence": 0.4,
+          "reasoning": "Bull case: market at 0.06, sentiment is neutral (90% conf). Adjusting up by 17% for bull thesis."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.25,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.06, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T10:10:08.502896+00:00"
+    }
+  ]
+}
