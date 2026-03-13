@@ -95,6 +95,10 @@ class PredictionEngine:
         self._claude_client = None
         self._claude_available = None  # None = not checked yet
 
+        # Lazy OpenAI client — only created when needed
+        self._openai_client = None
+        self._openai_available = None  # None = not checked yet
+
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
@@ -121,10 +125,16 @@ class PredictionEngine:
         if claude_pred is not None:
             predictions.append(claude_pred)
 
-        # --- Heuristic bull ---
-        bull_cfg = self.model_configs.get("heuristic_bull", {"role": "bull_advocate", "weight": 0.25})
-        bull_pred = self._predict_heuristic_bull(research_brief, bull_cfg)
-        predictions.append(bull_pred)
+        # --- GPT-4o bull advocate (falls back to heuristic) ---
+        gpt4o_cfg = self.model_configs.get("gpt4o", {"role": "bull_advocate", "weight": 0.30})
+        gpt4o_pred = self._predict_gpt4o(research_brief, gpt4o_cfg)
+        if gpt4o_pred is not None:
+            predictions.append(gpt4o_pred)
+        else:
+            # Fallback to heuristic bull if GPT-4o unavailable
+            bull_cfg = self.model_configs.get("heuristic_bull", {"role": "bull_advocate", "weight": gpt4o_cfg.get("weight", 0.30)})
+            bull_pred = self._predict_heuristic_bull(research_brief, bull_cfg)
+            predictions.append(bull_pred)
 
         # --- Heuristic bear ---
         bear_cfg = self.model_configs.get("heuristic_bear", {"role": "bear_advocate", "weight": 0.25})
@@ -345,6 +355,118 @@ class PredictionEngine:
 
         logger.warning("Could not parse Claude response: %s", text[:200])
         return {"probability": 0.5, "confidence": 0.3, "reasoning": "Failed to parse Claude response."}
+
+    # ------------------------------------------------------------------
+    # GPT-4o model
+    # ------------------------------------------------------------------
+
+    def _get_openai_client(self):
+        """Lazy-initialize OpenAI client. Returns None if API key not available."""
+        if self._openai_available is False:
+            return None
+
+        if self._openai_client is not None:
+            return self._openai_client
+
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            logger.warning("OPENAI_API_KEY not set -- GPT-4o unavailable, using heuristic fallback")
+            self._openai_available = False
+            return None
+
+        try:
+            from openai import OpenAI
+            self._openai_client = OpenAI(api_key=api_key)
+            self._openai_available = True
+            return self._openai_client
+        except Exception as exc:
+            logger.warning("Failed to initialize OpenAI client: %s", exc)
+            self._openai_available = False
+            return None
+
+    def _predict_gpt4o(self, brief: Dict[str, Any], cfg: dict) -> Optional[ModelPrediction]:
+        """
+        Use GPT-4o as bull advocate — looks for reasons the event WILL happen.
+
+        Returns None if OpenAI is unavailable (triggers heuristic fallback).
+        """
+        client = self._get_openai_client()
+        if client is None:
+            return None
+
+        market_id = brief.get("market_id", "unknown")
+        market_title = brief.get("market_title", "")
+        market_prob = brief.get("current_yes_price", 0.5)
+        sentiment = brief.get("consensus_sentiment", "neutral")
+        confidence = brief.get("consensus_confidence", 0.5)
+        gap = brief.get("gap", 0.0)
+        narrative = brief.get("narrative_summary", "No research available.")
+
+        # Collect headlines
+        all_headlines = []
+        for src in brief.get("sources", []):
+            for h in src.get("key_narratives", [])[:5]:
+                all_headlines.append(f"  [{src.get('source', '?')}] {h}")
+        headlines_text = "\n".join(all_headlines[:10]) if all_headlines else "No headlines available."
+
+        system_prompt = (
+            "You are a BULL ADVOCATE for prediction markets. Your job is to find reasons "
+            "why this event WILL happen. Look for confirming evidence, positive momentum, "
+            "and reasons the market may be underpricing YES.\n\n"
+            "Respond with ONLY a JSON object:\n"
+            '{"probability": <float 0.01-0.99>, "confidence": <float 0.1-0.9>, "reasoning": "<2-3 sentences>"}\n\n'
+            "Rules:\n"
+            "- You have a bull bias but stay calibrated. Don't say 90% unless evidence is overwhelming\n"
+            "- Focus on: confirming headlines, momentum, precedent, insider signals\n"
+            "- Your probability should lean higher than the market price when bull evidence exists\n"
+            "- Confidence reflects how much bull evidence you found, not how sure you are of YES"
+        )
+
+        user_prompt = (
+            f"QUESTION: {market_title}\n"
+            f"Current market price (YES): ${market_prob:.2f}\n\n"
+            f"SENTIMENT: {sentiment} (confidence: {confidence:.0%})\n"
+            f"Gap vs market: {gap:+.1%}\n\n"
+            f"HEADLINES:\n{headlines_text}\n\n"
+            f"NARRATIVE: {narrative}\n\n"
+            f"As a bull advocate, what probability do you assign to YES? JSON only."
+        )
+
+        try:
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                max_tokens=256,
+                temperature=0.3,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+            )
+
+            text = response.choices[0].message.content.strip()
+            parsed = self._parse_claude_response(text)  # Same JSON parser works
+
+            prob = max(0.01, min(0.99, parsed["probability"]))
+            conf = max(0.1, min(0.9, parsed["confidence"]))
+            reasoning = parsed.get("reasoning", "No reasoning provided.")
+
+            logger.info(
+                "%s: GPT-4o predicted %.3f (confidence=%.2f)",
+                market_id, prob, conf,
+            )
+
+            return ModelPrediction(
+                model_name="gpt4o",
+                role=cfg.get("role", "bull_advocate"),
+                weight=cfg.get("weight", 0.30),
+                predicted_probability=round(prob, 4),
+                confidence=round(conf, 3),
+                reasoning=reasoning,
+            )
+
+        except Exception as exc:
+            logger.warning("%s: GPT-4o API error: %s -- falling back to heuristic", market_id, exc)
+            return None
 
     # ------------------------------------------------------------------
     # Heuristic models
