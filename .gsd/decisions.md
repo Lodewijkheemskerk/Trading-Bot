@@ -23,3 +23,6 @@
 | D015 | M001/S04 | arch | Risk check implementation | All 10 checks in deterministic Python | No LLM output used in risk decisions. Checks use config thresholds and portfolio state only. Enforces D005. | No |
 | D016 | M001/S04 | arch | Kelly fraction | Quarter-Kelly (0.25x) from config | Conservative sizing to survive variance. Standard practice for prediction market beginners. | Yes — adjustable via config |
 | D017 | M001/S04 | convention | Blocked trade recording | Record with status="blocked" | Blocked trades are persisted for post-hoc analysis of risk check false negatives. Not silently skipped. | No |
+| D018 | M001/S05 | arch | Pipeline error handling | Per-step catch, continue in loop | Each pipeline step has its own try/except. A failure in one step aborts the current cycle but loop mode continues to the next cycle. | No |
+| D019 | M001/S05 | arch | Kill switch granularity | Check before cycle + every 10s during sleep | Ensures STOP file is detected within 10 seconds even during long sleep intervals. | No |
+| D020 | M001/S05 | convention | Console output encoding | ASCII-only in print statements | Avoids Windows cp1252 UnicodeEncodeError. All emoji replaced with ASCII equivalents ([!], [OK], >>). | No |

@@ -25,7 +25,7 @@
 - [x] **S04: Risk Management + Paper Execution** `risk:medium` `depends:[S03]`
   > After this: User runs `python scripts/executor.py` with a trade signal and sees all 10 risk checks pass/fail, Kelly-sized position, and a simulated paper trade logged to disk.
 
-- [ ] **S05: Compound Learning + Full Pipeline** `risk:low` `depends:[S04]`
+- [x] **S05: Compound Learning + Full Pipeline** `risk:low` `depends:[S04]`
   > After this: User runs `python scripts/pipeline.py --mode once` for the complete end-to-end pipeline, and `--status` shows performance metrics. The bot learns from every trade outcome.
 
 ---
