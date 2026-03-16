@@ -12,15 +12,15 @@
     "pid": 28492
   },
   {
-    "id": "105aa421",
+    "id": "46c838d6",
     "label": "dashboard",
     "command": "cd \"C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot\" && python dashboard/app.py",
     "cwd": "C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot",
-    "startedAt": 1773676725851,
+    "startedAt": 1773677249258,
     "processType": "server",
     "group": null,
     "readyPattern": null,
     "readyPort": 5000,
-    "pid": 12456
+    "pid": 32944
   }
 ]

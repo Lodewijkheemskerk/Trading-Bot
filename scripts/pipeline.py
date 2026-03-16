@@ -52,6 +52,16 @@ class TradingPipeline:
         logger.info("Pipeline cycle %d starting at %s", self._step_count, cycle_start.isoformat())
         logger.info("="*60)
 
+        # Refresh API health cache (non-blocking, failures are non-fatal)
+        try:
+            from scripts.api_health import check_all as _check_api_health
+            health = _check_api_health()
+            down = [k for k, v in health.items() if not v.get("ok")]
+            if down:
+                logger.warning("API health issues: %s", ", ".join(down))
+        except Exception as exc:
+            logger.debug("API health check failed: %s", exc)
+
         # Check kill switch before starting
         if self._check_kill_switch():
             summary["success"] = False

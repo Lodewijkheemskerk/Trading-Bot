@@ -693,6 +693,36 @@ body {
   font-size: 13px;
 }
 
+/* ── Health banner ── */
+.health-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(239,68,68,0.12);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 8px;
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.health-banner svg { flex-shrink: 0; }
+.health-banner .health-recheck {
+  margin-left: auto;
+  background: none;
+  border: 1px solid rgba(239,68,68,0.4);
+  color: var(--red);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.health-banner .health-recheck:hover {
+  background: rgba(239,68,68,0.15);
+}
+
 /* ── Balance grid ── */
 .balance-grid {
   display: grid;
@@ -895,6 +925,13 @@ body {
       <div class="stat-label">Win Rate</div>
       <div class="stat-value" id="sWinRate">--</div>
     </div>
+  </div>
+
+  <!-- API Health Alerts -->
+  <div class="health-banner" id="healthBanner" style="display:none">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span id="healthText">--</span>
+    <button class="health-recheck" onclick="recheckHealth()">Recheck</button>
   </div>
 
   <!-- Kalshi Exchange (visible in demo/live mode) -->
@@ -1481,6 +1518,64 @@ function updateCountdown() {
 }
 fetchPipelineStatus();
 setInterval(fetchPipelineStatus, 30000);
+
+// ── API Health ──
+async function fetchHealth() {
+  try {
+    const data = await (await fetch('/api/health')).json();
+    renderHealth(data);
+  } catch(e) { console.error('Health fetch error:', e); }
+}
+
+function renderHealth(data) {
+  const banner = document.getElementById('healthBanner');
+  const text = document.getElementById('healthText');
+  const failures = [];
+
+  for (const [key, info] of Object.entries(data)) {
+    if (info && info.ok === false) {
+      const name = {openai:'OpenAI', anthropic:'Anthropic', deepseek:'DeepSeek',
+                    grok:'Grok', gemini:'Gemini', kalshi:'Kalshi'}[key] || key;
+      failures.push(`${name}: ${info.error || info.status}`);
+    }
+  }
+
+  if (failures.length > 0) {
+    text.textContent = failures.join(' · ');
+    banner.style.display = 'flex';
+  } else {
+    banner.style.display = 'none';
+  }
+
+  // Also update balance cards with health dots
+  for (const [key, info] of Object.entries(data)) {
+    const card = document.querySelector(`[data-balance-key="${key}"]`);
+    if (!card) continue;
+    const nameEl = card.querySelector('.provider-name');
+    if (!nameEl) continue;
+    // Remove old health dot if any
+    const old = nameEl.querySelector('.health-dot');
+    if (old) old.remove();
+    const dot = document.createElement('span');
+    dot.className = 'health-dot';
+    dot.style.cssText = `display:inline-block;width:6px;height:6px;border-radius:50%;margin-left:6px;vertical-align:middle;background:${info && info.ok ? 'var(--green)' : 'var(--red)'}`;
+    dot.title = info && info.ok ? 'Connected' : (info?.error || 'Error');
+    nameEl.appendChild(dot);
+  }
+}
+
+async function recheckHealth() {
+  const btn = document.querySelector('.health-recheck');
+  if (btn) { btn.textContent = 'Checking...'; btn.disabled = true; }
+  try {
+    const data = await (await fetch('/api/health', {method:'POST'})).json();
+    renderHealth(data);
+  } catch(e) { console.error('Health recheck error:', e); }
+  if (btn) { btn.textContent = 'Recheck'; btn.disabled = false; }
+}
+
+fetchHealth();
+setInterval(fetchHealth, 120000); // check every 2 min (uses cache, not live calls)
 
 // ── AI Balances ──
 async function fetchBalances() {

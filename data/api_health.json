@@ -1,0 +1,37 @@
+{
+  "openai": {
+    "status": "ok",
+    "ok": true,
+    "checked_at": "2026-03-16T16:07:48.094576+00:00"
+  },
+  "anthropic": {
+    "status": "ok",
+    "ok": true,
+    "checked_at": "2026-03-16T16:07:48.094576+00:00"
+  },
+  "deepseek": {
+    "status": "ok",
+    "ok": true,
+    "checked_at": "2026-03-16T16:07:48.094576+00:00"
+  },
+  "grok": {
+    "status": "ok",
+    "ok": true,
+    "checked_at": "2026-03-16T16:07:48.094576+00:00"
+  },
+  "gemini": {
+    "status": "ok",
+    "ok": true,
+    "checked_at": "2026-03-16T16:07:48.094576+00:00"
+  },
+  "kalshi": {
+    "status": "ok",
+    "ok": true,
+    "balance": {
+      "balance": 100000,
+      "portfolio_value": 0,
+      "updated_ts": 1773677270
+    },
+    "checked_at": "2026-03-16T16:07:48.094576+00:00"
+  }
+}

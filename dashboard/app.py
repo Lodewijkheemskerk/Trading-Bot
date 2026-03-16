@@ -592,6 +592,25 @@ def api_trading_hours_save():
     return jsonify({"saved": True})
 
 
+@app.route("/api/health", methods=["GET", "POST"])
+def api_health():
+    """GET: return cached health. POST: trigger fresh check."""
+    try:
+        if request.method == "POST":
+            from scripts.api_health import check_all
+            return jsonify(check_all())
+        else:
+            from scripts.api_health import get_cached_health
+            data = get_cached_health()
+            if not data:
+                # No cached data — run first check
+                from scripts.api_health import check_all
+                data = check_all()
+            return jsonify(data)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
 @app.route("/api/balances", methods=["GET", "POST"])
 def api_balances():
     """GET: fetch all provider balances. POST: update a manual balance."""
