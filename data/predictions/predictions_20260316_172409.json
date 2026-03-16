@@ -1,0 +1,118 @@
+{
+  "timestamp": "2026-03-16T16:24:09.980818+00:00",
+  "markets_predicted": 2,
+  "signals": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.496,
+      "market_probability": 0.05,
+      "edge": 0.446,
+      "mispricing_score": 4.46,
+      "expected_value": 0.2765,
+      "direction": "buy_yes",
+      "signal_strength": 0.2765,
+      "confidence": 0.62,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.75,
+          "confidence": 0.65,
+          "reasoning": "I estimate a 75% chance the official trailer for Spider-Man: Beyond the Spider-Verse will be released before April 1, 2026, based on recent updates from producers Phil Lord and Chris Miller indicating progress and confidence in meeting release timelines, as well as a new, earlier release date reported in headlines. Historical precedent for animated sequels suggests trailers often drop 1-2 years before release, and with the film being the final in a trilogy, marketing is likely to ramp up well before the deadline. While the market price of $0.05 seems overly pessimistic, I temper confidence due to past delays in the franchise and limited concrete trailer release commitments in current news."
+        },
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.2,
+          "predicted_probability": 0.75,
+          "confidence": 0.6,
+          "reasoning": "The market at $0.05 appears significantly underpriced given multiple recent headlines about producers discussing footage plans and giving updates, with one specifically mentioning they might be 'ready to show us some footage.' With over 15 months until April 2026, there's ample time for a trailer release, and the recent producer communications suggest active development and potential marketing preparation."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.53,
+          "confidence": 0.7,
+          "reasoning": "Recent headlines indicate that the producers are confident about meeting the release date and are hinting at upcoming footage, suggesting a strong promotional push. Additionally, the new earlier release date signals positive momentum, which may lead to an official trailer being released well before April 2026."
+        },
+        {
+          "model_name": "gemini",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.02,
+          "confidence": 0.8,
+          "reasoning": "The film has faced significant and well-documented production delays, leading to its original March 2024 release date being pulled with no new official date announced. An official worldwide trailer typically requires substantial completed animation and is tied to a firm theatrical release date, which currently does not exist for Beyond the Spider-Verse, making a release by April 2026 highly improbable."
+        },
+        {
+          "model_name": "deepseek",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.08,
+          "confidence": 0.3,
+          "reasoning": "The market price of $0.05 is a strong anchor, but recent headlines indicate active production and potential footage reveals, suggesting some chance of a trailer before April 2026. However, release delays are common in animation, and the timeline remains uncertain, so I only slightly adjust upward with low confidence due to sparse concrete timing data."
+        }
+      ],
+      "timestamp": "2026-03-16T16:23:48.858973+00:00"
+    },
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "ensemble_probability": 0.1305,
+      "market_probability": 0.06,
+      "edge": 0.0705,
+      "mispricing_score": 0.7,
+      "expected_value": 0.0296,
+      "direction": "buy_yes",
+      "signal_strength": 0.0296,
+      "confidence": 0.42,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.15,
+          "confidence": 0.3,
+          "reasoning": "The probability of Pam Bondi leaving her Attorney General position before April is estimated at 0.15, higher than the market price of 0.06, due to recent headlines about her relocating to a military base amid security threats, which could signal instability. However, there is no direct evidence of resignation or intent to leave, and historical precedent suggests Attorneys General rarely resign abruptly without clear cause. Confidence is low due to the speculative nature of the headlines and lack of concrete data on her intentions."
+        },
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.2,
+          "predicted_probability": 0.08,
+          "confidence": 0.6,
+          "reasoning": "The headlines show Pam Bondi moving to a secure military base due to security threats, not resignation from her AG position. Moving residences for security reasons is normal for high-profile officials and doesn't indicate leaving office. The market price of 6% seems appropriately low given the lack of any credible resignation signals."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.25,
+          "confidence": 0.6,
+          "reasoning": "The recent headlines indicate a significant shift in Pam Bondi's situation, particularly her relocation to a secure military base due to rising threats. This suggests that her current role as Attorney General may be untenable, increasing the likelihood of her departure before April. The market seems to be underestimating these developments."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.06, sentiment is neutral (71% conf). Adjusting down by 7% for bear thesis."
+        },
+        {
+          "model_name": "deepseek",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.08,
+          "confidence": 0.2,
+          "reasoning": "The market price of $0.06 is the strongest signal, but headlines about Bondi leaving her DC residence and moving to a military base suggest some possibility of departure, though not clearly tied to leaving the Attorney General role before April. The ambiguous resolution criteria and lack of direct evidence for resignation keep the estimate close to the market with low confidence."
+        }
+      ],
+      "timestamp": "2026-03-16T16:24:09.980818+00:00"
+    }
+  ]
+}

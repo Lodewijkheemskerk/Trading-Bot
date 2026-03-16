@@ -110,7 +110,20 @@ body {
   user-select: none;
 }
 
-.status-pill:hover { filter: brightness(1.15); }
+.status-pill:hover { filter: brightness(1.15); transform: scale(1.03); }
+.status-pill .toggle-hint {
+  font-size: 10px;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.status-pill:hover .toggle-hint {
+  opacity: 0.7;
+  max-width: 80px;
+  margin-left: 4px;
+}
 
 .status-pill .dot {
   width: 7px;
@@ -869,9 +882,10 @@ body {
     </div>
   </div>
   <div class="topbar-center">
-    <div class="status-pill status-active" id="statusPill" onclick="togglePause()" title="Click to pause/resume">
+    <div class="status-pill status-active" id="statusPill" onclick="togglePause()" title="Click to pause/resume auto-runs">
       <div class="dot"></div>
       <span id="statusLabel">ACTIVE</span>
+      <span class="toggle-hint" id="toggleHint">⏸ Pause</span>
     </div>
   </div>
   <div class="topbar-right">
@@ -1108,15 +1122,19 @@ async function fetchAll() {
 function renderStatus(kill, pause) {
   const pill = document.getElementById('statusPill');
   const label = document.getElementById('statusLabel');
+  const hint = document.getElementById('toggleHint');
   if (kill.active) {
     pill.className = 'status-pill status-kill';
     label.textContent = 'KILL SWITCH';
+    hint.textContent = '';
   } else if (pause && pause.paused) {
     pill.className = 'status-pill status-paused';
     label.textContent = 'PAUSED';
+    hint.textContent = '▶ Resume';
   } else {
     pill.className = 'status-pill status-active';
     label.textContent = 'ACTIVE';
+    hint.textContent = '⏸ Pause';
   }
 }
 

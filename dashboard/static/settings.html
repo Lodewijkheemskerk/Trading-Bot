@@ -506,11 +506,35 @@ function setDirty(dirty) {
   if (dirty) { el.textContent = 'Unsaved changes'; el.className = 'sidebar-status unsaved'; }
   else       { el.textContent = 'All saved';        el.className = 'sidebar-status saved'; }
 }
-function checkDirty() {
+function isDirty() {
   const eDirty = snapshot() !== _savedState;
   const rDirty = _riskSavedState !== null && riskSnapshot() !== _riskSavedState;
-  setDirty(eDirty || rDirty);
+  return eDirty || rDirty;
 }
+function checkDirty() {
+  setDirty(isDirty());
+}
+
+// Warn on navigation away with unsaved changes
+window.addEventListener('beforeunload', function(e) {
+  if (isDirty()) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
+// Intercept sidebar nav links
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.sidebar a').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      if (isDirty()) {
+        if (!confirm('You have unsaved settings changes. Leave without saving?')) {
+          e.preventDefault();
+        }
+      }
+    });
+  });
+});
 
 // ═══════════════════════════════════════════════════════════════
 // Load ensemble

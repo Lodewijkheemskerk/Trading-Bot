@@ -1,0 +1,306 @@
+{
+  "timestamp": "2026-03-16T16:18:42.243662+00:00",
+  "duration_seconds": 83.0,
+  "cycle_number": 1,
+  "scan": {
+    "success": true,
+    "markets_found": 3,
+    "markets": [
+      {
+        "platform": "kalshi",
+        "market_id": "KXBONDIOUT-26APR01",
+        "title": "Will Pam Bondi leaves Attorney General in before April?",
+        "description": "::",
+        "category": "Politics",
+        "event_ticker": "KXBONDIOUT",
+        "yes_price": 0.06,
+        "no_price": 0.95,
+        "yes_bid": 0.05,
+        "spread": 0.01,
+        "volume_24h": 1286.0,
+        "total_volume": 51174.0,
+        "liquidity": 0.0,
+        "open_interest": 29647.0,
+        "expiry_date": "2026-04-08T14:00:00Z",
+        "days_to_expiry": 22,
+        "last_price": 0.06,
+        "url": "https://kalshi.com/markets/KXBONDIOUT-26APR01",
+        "price_move_24h": 0.0,
+        "volume_spike": 0.0,
+        "is_anomaly": false,
+        "anomaly_reasons": "",
+        "opportunity_score": 53.0
+      },
+      {
+        "platform": "kalshi",
+        "market_id": "KXLUTNICKOUT-26APR01",
+        "title": "Will Howard Lutnick leaves Commerce Secretary in before April?",
+        "description": "::",
+        "category": "Politics",
+        "event_ticker": "KXLUTNICKOUT",
+        "yes_price": 0.05,
+        "no_price": 0.97,
+        "yes_bid": 0.03,
+        "spread": 0.02,
+        "volume_24h": 1951.0,
+        "total_volume": 38964.0,
+        "liquidity": 0.0,
+        "open_interest": 25933.0,
+        "expiry_date": "2026-04-08T14:00:00Z",
+        "days_to_expiry": 22,
+        "last_price": 0.03,
+        "url": "https://kalshi.com/markets/KXLUTNICKOUT-26APR01",
+        "price_move_24h": 0.0,
+        "volume_spike": 0.0,
+        "is_anomaly": false,
+        "anomaly_reasons": "",
+        "opportunity_score": 51.0
+      },
+      {
+        "platform": "kalshi",
+        "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+        "title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+        "description": "",
+        "category": "Entertainment",
+        "event_ticker": "KXMEDIARELEASESPIDERMAN",
+        "yes_price": 0.05,
+        "no_price": 0.98,
+        "yes_bid": 0.02,
+        "spread": 0.03,
+        "volume_24h": 1093.0,
+        "total_volume": 3758.0,
+        "liquidity": 0.0,
+        "open_interest": 2121.0,
+        "expiry_date": "2026-04-08T14:00:00Z",
+        "days_to_expiry": 22,
+        "last_price": 0.02,
+        "url": "https://kalshi.com/markets/KXMEDIARELEASESPIDERMAN-APR26",
+        "price_move_24h": 0.0,
+        "volume_spike": 0.0,
+        "is_anomaly": false,
+        "anomaly_reasons": "",
+        "opportunity_score": 49.0
+      }
+    ]
+  },
+  "research": {
+    "success": true,
+    "markets_researched": 3
+  },
+  "predict": {
+    "success": true,
+    "signals": 3,
+    "tradeable": 1,
+    "signals_data": [
+      {
+        "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+        "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+        "ensemble_probability": 0.5175,
+        "market_probability": 0.05,
+        "edge": 0.4675,
+        "mispricing_score": 4.67,
+        "expected_value": 0.3086,
+        "direction": "buy_yes",
+        "signal_strength": 0.3086,
+        "confidence": 0.66,
+        "should_trade": true,
+        "model_predictions": [
+          {
+            "model_name": "grok",
+            "role": "primary_forecaster",
+            "weight": 0.3,
+            "predicted_probability": 0.75,
+            "confidence": 0.65,
+            "reasoning": "I estimate a 75% chance the official trailer for Spider-Man: Beyond the Spider-Verse will be released before April 1, 2026, based on recent updates from producers Phil Lord and Chris Miller indicating progress and confidence in meeting release timelines, as well as a new, earlier release date reported in headlines. Historical precedent for animated films suggests trailers often drop 12-18 months before release, and with the film seemingly on track, a trailer within the next two years is likely. While the market price of $0.05 seems undervalued, I temper confidence due to past delays in the franchise and lack of a confirmed release date."
+          },
+          {
+            "model_name": "claude",
+            "role": "news_analyst",
+            "weight": 0.2,
+            "predicted_probability": 0.85,
+            "confidence": 0.8,
+            "reasoning": "The headlines indicate active production with producers discussing footage plans and confirming ongoing recording, plus mentions of meeting release dates and earlier release dates being announced. With over 16 months until the April 2026 deadline, this gives substantial time for a trailer release, and animated films typically release trailers 6-12 months before the movie debuts."
+          },
+          {
+            "model_name": "gpt4o",
+            "role": "bull_advocate",
+            "weight": 0.2,
+            "predicted_probability": 0.53,
+            "confidence": 0.7,
+            "reasoning": "The producers of 'Spider-Man: Beyond the Spider-Verse' have expressed confidence in meeting the release date, indicating that they are prepared to showcase footage soon. Additionally, the recent headlines suggest positive momentum with an earlier release date, which supports the likelihood of the official trailer being released worldwide before April 1, 2026."
+          },
+          {
+            "model_name": "gemini",
+            "role": "bear_advocate",
+            "weight": 0.15,
+            "predicted_probability": 0.03,
+            "confidence": 0.8,
+            "reasoning": "Production for 'Beyond the Spider-Verse' is known for significant delays and taking a long time, with voice recording reportedly still ongoing. Creating an 'official trailer' requires substantial finished animation, which is unlikely to be ready nearly two years ahead of a likely 2027+ film release, especially given current production challenges and the complex animation style."
+          },
+          {
+            "model_name": "deepseek",
+            "role": "risk_manager",
+            "weight": 0.15,
+            "predicted_probability": 0.08,
+            "confidence": 0.3,
+            "reasoning": "The market price of $0.05 is a strong anchor, but headlines indicate active production updates and a new earlier release date, suggesting some forward momentum. However, trailer timing is highly uncertain, and the market's low price reflects significant delays and skepticism. I slightly adjust upward due to concrete news but remain conservative given the long timeframe and historical delays in this franchise."
+          }
+        ],
+        "timestamp": "2026-03-16T16:19:25.350624+00:00"
+      },
+      {
+        "market_id": "KXLUTNICKOUT-26APR01",
+        "market_title": "Will Howard Lutnick leaves Commerce Secretary in before April?",
+        "ensemble_probability": 0.1925,
+        "market_probability": 0.05,
+        "edge": 0.1425,
+        "mispricing_score": 1.42,
+        "expected_value": 0.077,
+        "direction": "buy_yes",
+        "signal_strength": 0.077,
+        "confidence": 0.54,
+        "should_trade": false,
+        "model_predictions": [
+          {
+            "model_name": "grok",
+            "role": "primary_forecaster",
+            "weight": 0.3,
+            "predicted_probability": 0.15,
+            "confidence": 0.4,
+            "reasoning": "The probability of Howard Lutnick leaving as Commerce Secretary before April is estimated at 0.15, higher than the market price of 0.05, due to emerging headlines about his Epstein connections and potential subpoenas which could pressure his position. However, there is no concrete evidence of resignation or dismissal, and sentiment analysis remains largely neutral, limiting confidence. Confidence is low at 0.4 because the data is speculative and lacks definitive indicators of an imminent departure."
+          },
+          {
+            "model_name": "claude",
+            "role": "news_analyst",
+            "weight": 0.2,
+            "predicted_probability": 0.15,
+            "confidence": 0.6,
+            "reasoning": "The headlines reveal significant Epstein-related scandal pressure on Lutnick, with House panel testimony and contradictions to previous claims creating political liability. However, the market price of $0.05 suggests very low probability, and cabinet resignations are historically rare even under scandal pressure. The April timeline is short, giving limited time for pressure to build to resignation level."
+          },
+          {
+            "model_name": "gpt4o",
+            "role": "bull_advocate",
+            "weight": 0.2,
+            "predicted_probability": 0.52,
+            "confidence": 0.6,
+            "reasoning": "The headlines indicate significant scrutiny on Howard Lutnick, particularly regarding his connections to Epstein, which could lead to increased pressure for him to resign. The mention of a possible subpoena suggests that legal challenges may be mounting, creating a scenario where his departure from the cabinet becomes more likely. Given the market's low pricing, there appears to be an opportunity for a higher probability of him leaving before April."
+          },
+          {
+            "model_name": "gemini",
+            "role": "bear_advocate",
+            "weight": 0.15,
+            "predicted_probability": 0.01,
+            "confidence": 0.9,
+            "reasoning": "Howard Lutnick is not currently, nor has he ever been, the U.S. Commerce Secretary; he is the CEO of Cantor Fitzgerald. One cannot 'leave' a position they do not hold. Therefore, the event as stated is based on a false premise and cannot occur."
+          },
+          {
+            "model_name": "deepseek",
+            "role": "risk_manager",
+            "weight": 0.15,
+            "predicted_probability": 0.08,
+            "confidence": 0.3,
+            "reasoning": "The market price of $0.05 is the primary anchor, but headlines indicate political pressure and scrutiny related to Epstein, which could increase departure risk slightly. However, evidence is speculative and lacks concrete resignation or removal signals, warranting low confidence due to ambiguous resolution criteria and potential information asymmetry."
+          }
+        ],
+        "timestamp": "2026-03-16T16:19:42.608723+00:00"
+      },
+      {
+        "market_id": "KXBONDIOUT-26APR01",
+        "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+        "ensemble_probability": 0.1095,
+        "market_probability": 0.06,
+        "edge": 0.0495,
+        "mispricing_score": 0.49,
+        "expected_value": 0.0262,
+        "direction": "buy_yes",
+        "signal_strength": 0.0262,
+        "confidence": 0.53,
+        "should_trade": false,
+        "model_predictions": [
+          {
+            "model_name": "grok",
+            "role": "primary_forecaster",
+            "weight": 0.3,
+            "predicted_probability": 0.1,
+            "confidence": 0.3,
+            "reasoning": "The probability of Pam Bondi leaving her Attorney General position before April is estimated at 0.10, slightly above the market price of 0.06, due to recent headlines about security concerns and her relocation to a military base amid threats. However, there is no concrete evidence of resignation or intent to leave, and most news remains neutral on her tenure, with sentiment analysis showing no strong directional signal. Confidence is low at 0.3 due to thin and speculative data regarding her potential departure."
+          },
+          {
+            "model_name": "claude",
+            "role": "news_analyst",
+            "weight": 0.2,
+            "predicted_probability": 0.08,
+            "confidence": 0.7,
+            "reasoning": "The question appears to have a grammatical error ('leaves Attorney General in before April'), but interpreting it as asking whether Bondi will leave her AG position before April, the headlines show no credible signals of resignation or departure - only controversies and security concerns that are typical for high-profile officials. The market price of 6% seems reasonable given the short timeframe and lack of substantive departure signals."
+          },
+          {
+            "model_name": "gpt4o",
+            "role": "bull_advocate",
+            "weight": 0.2,
+            "predicted_probability": 0.25,
+            "confidence": 0.6,
+            "reasoning": "Despite the neutral sentiment, there are significant indicators suggesting Pam Bondi may leave her position. The headlines about her moving to a secure military base due to rising threats imply a challenging environment, which could motivate her to step down. Additionally, the mention of her leaving a mess for her successor suggests internal pressures that could lead to her departure before April."
+          },
+          {
+            "model_name": "gemini",
+            "role": "bear_advocate",
+            "weight": 0.15,
+            "predicted_probability": 0.01,
+            "confidence": 0.9,
+            "reasoning": "Pam Bondi is not currently serving as an Attorney General, having left her role as Florida Attorney General in January 2019. As she does not hold this position, she cannot 'leave' it before April, making the event described a logical impossibility."
+          },
+          {
+            "model_name": "deepseek",
+            "role": "risk_manager",
+            "weight": 0.15,
+            "predicted_probability": 0.08,
+            "confidence": 0.3,
+            "reasoning": "The market price of $0.06 is the strongest signal, but recent headlines about Bondi leaving her DC residence and moving to a military base suggest heightened personal security concerns, which could plausibly increase near-term departure risk. However, the evidence is speculative and ambiguous regarding an official resignation before April, so I only slightly adjust upward with low confidence due to sparse, contradictory information."
+          }
+        ],
+        "timestamp": "2026-03-16T16:20:04.183905+00:00"
+      }
+    ]
+  },
+  "execute": {
+    "success": true,
+    "executed": 0,
+    "blocked": 1
+  },
+  "monitor": {
+    "success": true,
+    "positions_checked": 0,
+    "exits_triggered": 0,
+    "exits_by_reason": {},
+    "exit_pnl": 0.0,
+    "held": 0
+  },
+  "resolve": {
+    "success": true,
+    "resolved": 0,
+    "still_open": 0,
+    "pnl_resolved": 0.0
+  },
+  "compound": {
+    "success": true,
+    "newly_analyzed": 0,
+    "failures_logged": 0,
+    "total_trades": 1,
+    "win_rate": 0.0,
+    "total_pnl": 0
+  },
+  "markets_scanned": 0,
+  "markets_passed": 3,
+  "markets_researched": 3,
+  "predictions_made": 3,
+  "trades_executed": 0,
+  "trades_blocked": 1,
+  "estimated_cost_usd": 0.040581,
+  "models_called": [
+    "claude",
+    "deepseek",
+    "gemini",
+    "gpt4o",
+    "grok"
+  ]
+}

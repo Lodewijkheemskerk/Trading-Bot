@@ -611,8 +611,8 @@ if __name__ == "__main__":
         help="Run mode: 'once' for single cycle, 'loop' for continuous.",
     )
     parser.add_argument(
-        "--interval", type=int, default=15,
-        help="Loop interval in minutes (default: 15). Only used with --mode loop.",
+        "--interval", type=int, default=None,
+        help="Loop interval in minutes (default: from settings.yaml). Only used with --mode loop.",
     )
     parser.add_argument(
         "--status", action="store_true",
@@ -698,9 +698,11 @@ if __name__ == "__main__":
             print(f"\nTotal time: {result['elapsed_seconds']:.1f}s")
 
     elif args.mode == "loop":
-        print(f"\n>> Starting pipeline loop (interval: {args.interval} minutes)")
+        interval = args.interval  # None means read from settings.yaml
+        effective = interval or pipeline.settings.get("scanner", {}).get("schedule_minutes", 15)
+        print(f"\n>> Starting pipeline loop (interval: {effective} minutes)")
         print(f"   Create '{KILL_SWITCH_FILE}' to stop trading\n")
         try:
-            pipeline.run_loop(interval_minutes=args.interval)
+            pipeline.run_loop(interval_minutes=interval)
         except KeyboardInterrupt:
             print("\n\nPipeline stopped by user (Ctrl+C)")
