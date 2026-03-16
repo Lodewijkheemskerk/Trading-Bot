@@ -592,6 +592,24 @@ def api_trading_hours_save():
     return jsonify({"saved": True})
 
 
+@app.route("/api/runs", methods=["GET"])
+def api_runs():
+    """Return recent pipeline run history with costs."""
+    try:
+        from scripts.run_logger import load_runs, get_cost_summary
+        limit = request.args.get("limit", 50, type=int)
+        runs = load_runs(limit=limit)
+        cost_today = get_cost_summary(days=1)
+        cost_week = get_cost_summary(days=7)
+        return jsonify({
+            "runs": runs,
+            "cost_today": cost_today,
+            "cost_week": cost_week,
+        })
+    except Exception as exc:
+        return jsonify({"runs": [], "error": str(exc)})
+
+
 @app.route("/backtest")
 def backtest_page():
     return send_from_directory("static", "backtest.html")

@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-03-16T15:39:27.198300+00:00",
+  "markets_researched": 1,
+  "briefs": [
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "current_yes_price": 0.05,
+      "sources": [
+        {
+          "source": "bing_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.34,
+          "key_narratives": [
+            "Where is Pam Bondi? Attorney general no longer at DC residence amid security concerns",
+            "Where is Pam Bondi? AG leaves Washington DC residence, moves into secure military base amid rising threats",
+            "Everything to Know About Pam Bondi, the Trump-Loyal Attorney General",
+            "Pam Bondi Flees to U.S. Military Base After Reported Spike in Threats",
+            "Pam Bondi is leaving her Democratic successor a mess",
+            "US Attorney General Pam Bondi to face questions in Epstein probe"
+          ]
+        },
+        {
+          "source": "google_news",
+          "bullish": 0.05,
+          "bearish": 0.05,
+          "neutral": 0.9,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Attorney General Bondi likely to hang onto Florida law license despite evidence of misconduct",
+            "Pam Bondi's Fox News Mini-Scandal Was An Embarrassing Reach For The Spotlight",
+            "Opinion: The Trump administration floats a new way to humiliate the legal profession",
+            "Proposed rule allowing DOJ to interfere with state bar discipline proceedings ‘legally flawed’",
+            "Editorial: Pam Bondi’s legally suspect Bar fight",
+            "Attorney General Pam Bondi is said to have quietly relocated to one of several military bases in the Washington area where other Trump administration officials also live, after facing threats from drug cartels and critics of her actions in handling the Jeffrey Epste",
+            "Where is Pam Bondi Now? US Attorney General Missing From DC Home, Reportedly Moves to Secure Military Base Amid Jeffrey Epstein Case",
+            "Meet the Attorney General"
+          ]
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.2,
+          "bearish": 0.0,
+          "neutral": 0.8,
+          "confidence": 0.9,
+          "key_narratives": [
+            "In a massive blow to the first amendment, Trump administration wins its first “antifa case”. Pam Bondi made the stakes clear: \"Today's verdict will not be the last.\"",
+            "MMW: The United States Attorney General Pam Bondi Will Plead The Fifth Amendment multiple times",
+            "Most of the website is completely ignoring that Pam Bondi had to move to a military base because of assassination threats.",
+            "Pam Bondi moves into secure military housing amid Epstein outrage",
+            "Personal thoughts about the book  \"Saint Luigi : How to respond to the violence of capitalism\" by Nicolas Framont",
+            "Trio of Habba successors are unlawfully leading NJ US attorney’s office, judge rules",
+            "The Zorro Ranch Dossier: Beyond the \"Massage Parlor\" Cover-Up",
+            "What A Day: ICE Barbie's Next Act by Matt Berg &amp; Crooked Media (03/11/26)"
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.713,
+      "sentiment_implied_probability": 0.53,
+      "gap": 0.48,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across bing_news (neutral, 34% conf), google_news (neutral, 90% conf), reddit (bullish, 90% conf) shows neutral sentiment with 71% confidence. Market appears underpriced by 48.0% based on sentiment signals. Key headline: \"Where is Pam Bondi? Attorney general no longer at DC residence amid security con\".",
+      "timestamp": "2026-03-16T15:39:27.198300+00:00"
+    }
+  ]
+}

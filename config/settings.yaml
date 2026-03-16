@@ -1,8 +1,8 @@
 bot_name: predict-market-bot
-mode: paper
+mode: demo
 log_level: INFO
 bankroll:
-  initial: 500.0
+  initial: 1000.0
   currency: USD
 scanner:
   schedule_minutes: 30

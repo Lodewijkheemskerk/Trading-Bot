@@ -693,6 +693,33 @@ body {
   font-size: 13px;
 }
 
+/* ── Runs table ── */
+.runs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.runs-table th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+.runs-table td {
+  padding: 8px 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(30,41,59,0.3);
+}
+.runs-table tr:hover { background: var(--bg-hover); }
+.runs-table .cost { color: var(--amber); text-align: right; }
+.runs-table .zero { color: var(--text-dim); }
+
 /* ── Confidence bar ── */
 .conf-bar-wrap {
   display: flex;
@@ -891,6 +918,33 @@ body {
         <span class="panel-meta" id="tradeMeta">--</span>
       </div>
       <div class="panel-body" id="tradeBody"></div>
+    </div>
+  </div>
+
+  <!-- Run History -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">Run History</span>
+      <span class="panel-meta" id="runsMeta">--</span>
+    </div>
+    <div class="panel-body" style="padding:0;overflow-x:auto;">
+      <table class="runs-table" id="runsTable">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Duration</th>
+            <th>Scanned</th>
+            <th>Passed</th>
+            <th>Predicted</th>
+            <th>Traded</th>
+            <th>Models</th>
+            <th style="text-align:right">Cost</th>
+          </tr>
+        </thead>
+        <tbody id="runsBody">
+          <tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:24px;">No runs recorded yet</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -1362,6 +1416,52 @@ function updateCountdown() {
 }
 fetchPipelineStatus();
 setInterval(fetchPipelineStatus, 30000);
+
+// ── Run History ──
+async function fetchRuns() {
+  try {
+    const data = await (await fetch('/api/runs?limit=20')).json();
+    renderRuns(data);
+  } catch(e) { console.error('Runs fetch error:', e); }
+}
+
+function renderRuns(data) {
+  const runs = data.runs || [];
+  const meta = document.getElementById('runsMeta');
+  const tbody = document.getElementById('runsBody');
+  const costToday = data.cost_today || {};
+
+  meta.textContent = runs.length + ' runs · today: $' + (costToday.total_cost_usd || 0).toFixed(4);
+
+  if (!runs.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:24px;">No runs recorded yet</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = runs.slice(0, 15).map(r => {
+    const ts = new Date(r.timestamp);
+    const time = ts.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    const date = ts.toLocaleDateString([], {month:'short',day:'numeric'});
+    const dur = r.duration_seconds ? r.duration_seconds.toFixed(0) + 's' : '--';
+    const traded = r.trades_executed || 0;
+    const tradedClass = traded > 0 ? 'style="color:var(--green);font-weight:700"' : 'class="zero"';
+    const models = (r.models_called || []).join(', ') || '--';
+    const cost = r.estimated_cost_usd || 0;
+    return `<tr>
+      <td>${date} ${time}</td>
+      <td>${dur}</td>
+      <td>${r.markets_scanned || 0}</td>
+      <td>${r.markets_passed || 0}</td>
+      <td>${r.predictions_made || 0}</td>
+      <td ${tradedClass}>${traded}</td>
+      <td style="font-size:11px;color:var(--text-dim)">${models}</td>
+      <td class="cost">$${cost.toFixed(4)}</td>
+    </tr>`;
+  }).join('');
+}
+
+fetchRuns();
+setInterval(fetchRuns, 30000);
 
 fetchAll();
 setInterval(fetchAll, 15000);

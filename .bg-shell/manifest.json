@@ -1,14 +1,26 @@
 [
   {
-    "id": "f1e17493",
+    "id": "6517107e",
     "label": "dashboard",
     "command": "cd \"C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot\" && python dashboard/app.py",
     "cwd": "C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot",
-    "startedAt": 1773670962207,
+    "startedAt": 1773676042484,
     "processType": "server",
     "group": null,
     "readyPattern": null,
     "readyPort": 5000,
-    "pid": 34596
+    "pid": 40192
+  },
+  {
+    "id": "17fd0abf",
+    "label": "pipeline-loop",
+    "command": "cd \"C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot\" && python scripts/pipeline.py --mode loop 2>&1",
+    "cwd": "C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot",
+    "startedAt": 1773676199984,
+    "processType": "server",
+    "group": null,
+    "readyPattern": "Sleeping",
+    "readyPort": null,
+    "pid": 28492
   }
 ]

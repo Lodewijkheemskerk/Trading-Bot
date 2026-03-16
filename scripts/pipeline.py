@@ -109,6 +109,35 @@ class TradingPipeline:
         summary["elapsed_seconds"] = round(elapsed, 1)
         logger.info("Pipeline cycle %d complete in %.1fs", self._step_count, elapsed)
 
+        # Save run log with cost estimate
+        try:
+            from scripts.run_logger import RunEntry, estimate_cycle_cost, save_run
+            signals = predict_result.get("signals_data", [])
+            cost, models = estimate_cycle_cost(signals)
+            entry = RunEntry(
+                timestamp=cycle_start.isoformat(),
+                duration_seconds=round(elapsed, 1),
+                cycle_number=self._step_count,
+                scan=scan_result,
+                research=research_result,
+                predict=predict_result,
+                execute=execute_result,
+                monitor=monitor_result,
+                resolve=resolve_result,
+                compound=compound_result,
+                markets_scanned=scan_result.get("markets_scanned", 0),
+                markets_passed=scan_result.get("markets_found", 0),
+                markets_researched=research_result.get("markets_researched", 0),
+                predictions_made=predict_result.get("signals", 0),
+                trades_executed=execute_result.get("executed", 0),
+                trades_blocked=execute_result.get("blocked", 0),
+                estimated_cost_usd=cost,
+                models_called=models,
+            )
+            save_run(entry)
+        except Exception as exc:
+            logger.warning("Failed to save run log: %s", exc)
+
         return summary
 
     def run_loop(self, interval_minutes: int = None):
@@ -265,10 +294,21 @@ class TradingPipeline:
 
             tradeable = sum(1 for s in signals if s.should_trade)
             logger.info("Predict complete: %d signals, %d tradeable", len(signals), tradeable)
+
+            # Serialize signals for run logger cost estimation
+            from dataclasses import asdict
+            signals_data = []
+            for s in signals:
+                try:
+                    signals_data.append(asdict(s))
+                except Exception:
+                    signals_data.append({})
+
             return {
                 "success": True,
                 "signals": len(signals),
                 "tradeable": tradeable,
+                "signals_data": signals_data,
             }
         except Exception as exc:
             logger.error("Predict failed: %s", exc, exc_info=True)
