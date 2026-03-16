@@ -46,7 +46,8 @@ body {
   color: var(--text);
   font-family: var(--font-body);
   line-height: 1.5;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -55,7 +56,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 28px;
+  padding: 0 28px;
+  height: 52px;
   background: var(--bg-card);
   border-bottom: 1px solid var(--border);
   position: sticky;
@@ -67,37 +69,53 @@ body {
   display: flex;
   align-items: center;
   gap: 20px;
+  min-width: 200px;
 }
 
 .logo {
   font-family: var(--font-mono);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 4px;
   color: var(--amber);
+  line-height: 1;
 }
 
 .logo-sub {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-dim);
   letter-spacing: 0.5px;
+  margin-top: 1px;
 }
 
-.topbar-right {
+/* Center zone: status pill (clickable to toggle pause) */
+.topbar-center {
   display: flex;
   align-items: center;
-  gap: 24px;
+  justify-content: center;
 }
 
 .status-pill {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
+  padding: 6px 16px;
   border-radius: 20px;
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.status-pill:hover { filter: brightness(1.15); }
+
+.status-pill .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
 }
 
 .status-active {
@@ -105,13 +123,19 @@ body {
   border: 1px solid rgba(52,211,153,0.2);
   color: var(--green);
 }
-
 .status-active .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
   background: var(--green);
   animation: pulse 2s ease infinite;
+}
+
+.status-paused {
+  background: var(--amber-bg);
+  border: 1px solid rgba(251,191,36,0.2);
+  color: var(--amber);
+}
+.status-paused .dot {
+  background: var(--amber);
+  animation: none;
 }
 
 .status-kill {
@@ -119,38 +143,97 @@ body {
   border: 1px solid rgba(248,113,113,0.2);
   color: var(--red);
 }
-
 .status-kill .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
   background: var(--red);
   animation: pulse-fast 0.6s ease infinite;
 }
 
+/* Right zone */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+  justify-content: flex-end;
+}
+
 .mode-tag {
-  padding: 5px 12px;
-  border-radius: 6px;
+  padding: 4px 10px;
+  border-radius: 5px;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
+}
+
+.mode-paper {
   background: var(--amber-bg);
-  border: 1px solid rgba(251,191,36,0.25);
+  border: 1px solid rgba(251,191,36,0.2);
   color: var(--amber);
+}
+
+.mode-demo {
+  background: var(--green-bg);
+  border: 1px solid rgba(52,211,153,0.2);
+  color: var(--green);
+}
+
+.mode-live {
+  background: var(--red-bg);
+  border: 1px solid rgba(248,113,113,0.2);
+  color: var(--red);
+}
+
+.topbar-sep {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
 }
 
 .clock {
   font-family: var(--font-mono);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  letter-spacing: 1px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.5px;
+  min-width: 65px;
+  text-align: right;
 }
 
-/* ── Next run countdown ── */
+/* ── Left Sidebar Nav ── */
+.app-layout { display: flex; height: calc(100vh - 52px); }
+.sidebar-nav {
+  width: 56px; flex-shrink: 0;
+  background: var(--bg-card); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 16px 0; gap: 4px;
+}
+.sidebar-nav-item {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim); text-decoration: none; transition: all 0.15s;
+  position: relative;
+}
+.sidebar-nav-item:hover { background: var(--bg-hover); color: var(--text-secondary); }
+.sidebar-nav-item.active { background: var(--amber-bg); color: var(--amber); }
+.sidebar-nav-item.active::before {
+  content: ''; position: absolute; left: 0; top: 8px; bottom: 8px;
+  width: 3px; border-radius: 0 2px 2px 0; background: var(--amber);
+}
+.sidebar-nav-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sidebar-nav-tooltip {
+  display: none; position: absolute; left: 54px; top: 50%;
+  transform: translateY(-50%); padding: 4px 10px; border-radius: 6px;
+  background: var(--bg-hover); border: 1px solid var(--border-light);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+  color: var(--text); white-space: nowrap; z-index: 200;
+  font-family: var(--font-mono);
+}
+.sidebar-nav-item:hover .sidebar-nav-tooltip { display: block; }
+
+/* ── (next-run removed — elements live in JS timer only) ── */
 .next-run {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   padding: 4px 14px;
@@ -174,18 +257,56 @@ body {
   letter-spacing: 1px;
 }
 
-/* ── Run button ── */
-.run-btn {
+/* ── Pause button ── */
+.pause-btn {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 18px;
   border-radius: 8px;
+  border: 1px solid rgba(251,191,36,0.3);
+  background: var(--amber-bg);
+  color: var(--amber);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pause-btn:hover {
+  background: rgba(251,191,36,0.15);
+  border-color: var(--amber);
+}
+
+.pause-btn:active {
+  transform: scale(0.97);
+}
+
+.pause-btn.paused {
+  border-color: rgba(248,113,113,0.3);
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.pause-btn.paused:hover {
+  background: rgba(248,113,113,0.15);
+  border-color: var(--red);
+}
+
+/* ── Run button ── */
+.run-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 6px;
   border: 1px solid rgba(52,211,153,0.3);
   background: var(--green-bg);
   color: var(--green);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 1px;
   cursor: pointer;
@@ -229,8 +350,8 @@ body {
 
 /* ── Container ── */
 .container {
-  max-width: 1400px;
-  margin: 0 auto;
+  flex: 1;
+  overflow-y: auto;
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -279,6 +400,7 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .panel-header {
@@ -637,26 +759,44 @@ body {
       <div class="logo-sub">AI Trading Terminal</div>
     </div>
   </div>
-  <div class="topbar-right">
-    <div class="status-pill status-active" id="statusPill">
+  <div class="topbar-center">
+    <div class="status-pill status-active" id="statusPill" onclick="togglePause()" title="Click to pause/resume">
       <div class="dot"></div>
       <span id="statusLabel">ACTIVE</span>
     </div>
-    <div class="next-run" id="nextRunWrap">
-      <span class="next-run-label">NEXT RUN</span>
-      <span class="next-run-time" id="nextRunTime">--:--</span>
-    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="mode-tag mode-paper" id="modeTag">PAPER</span>
+    <div class="topbar-sep"></div>
     <button class="run-btn" id="runBtn" onclick="triggerRun()">
       <span id="runBtnIcon">&#9654;</span>
-      <span id="runBtnLabel">RUN PIPELINE</span>
+      <span id="runBtnLabel">RUN</span>
     </button>
-    <span class="mode-tag" id="modeTag">PAPER</span>
-    <span class="clock" id="clock">--:--:--</span>
+    <span class="clock" id="clock">--:--</span>
   </div>
 </div>
 
-<!-- ── MAIN CONTENT ── -->
-<div class="container">
+<!-- ── APP LAYOUT: sidebar + content ── -->
+<div class="app-layout">
+
+  <!-- Left nav sidebar -->
+  <nav class="sidebar-nav">
+    <a href="/" class="sidebar-nav-item active" title="Dashboard">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span class="sidebar-nav-tooltip">Dashboard</span>
+    </a>
+    <a href="/backtest" class="sidebar-nav-item" title="Backtest">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span class="sidebar-nav-tooltip">Backtest</span>
+    </a>
+    <a href="/settings" class="sidebar-nav-item" title="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="sidebar-nav-tooltip">Settings</span>
+    </a>
+  </nav>
+
+  <!-- Main content -->
+  <div class="container">
 
   <!-- Stats -->
   <div class="stats-grid" id="statsGrid">
@@ -675,6 +815,35 @@ body {
     <div class="stat-card">
       <div class="stat-label">Win Rate</div>
       <div class="stat-value" id="sWinRate">--</div>
+    </div>
+  </div>
+
+  <!-- Kalshi Exchange (visible in demo/live mode) -->
+  <div class="panel" id="kalshiPanel" style="display:none">
+    <div class="panel-header">
+      <span class="panel-title">Kalshi Exchange</span>
+      <span class="panel-meta" id="kalshiMeta">--</span>
+    </div>
+    <div class="panel-body">
+      <div class="stats-grid" style="margin-bottom:12px">
+        <div class="stat-card" style="min-width:auto">
+          <div class="stat-label">Exchange Balance</div>
+          <div class="stat-value cyan" id="kalshiBalance">--</div>
+        </div>
+        <div class="stat-card" style="min-width:auto">
+          <div class="stat-label">Portfolio Value</div>
+          <div class="stat-value" id="kalshiPortfolio">--</div>
+        </div>
+        <div class="stat-card" style="min-width:auto">
+          <div class="stat-label">Open Orders</div>
+          <div class="stat-value" id="kalshiOrders">--</div>
+        </div>
+        <div class="stat-card" style="min-width:auto">
+          <div class="stat-label">Positions</div>
+          <div class="stat-value" id="kalshiPositions">--</div>
+        </div>
+      </div>
+      <div id="kalshiFills" style="font-size:12px;color:var(--muted)"></div>
     </div>
   </div>
 
@@ -711,7 +880,7 @@ body {
     <div class="panel">
       <div class="panel-header">
         <span class="panel-title">Risk Checks</span>
-        <span class="panel-meta">10 checks required</span>
+        <span class="panel-meta">12 checks required</span>
       </div>
       <div id="riskBody"></div>
     </div>
@@ -725,7 +894,8 @@ body {
     </div>
   </div>
 
-</div>
+</div><!-- /container -->
+</div><!-- /app-layout -->
 
 <script>
 const fmt = (n, d=2) => n != null ? Number(n).toFixed(d) : '--';
@@ -740,9 +910,18 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
+let _lastKalshi = { mode:'paper', connected:false, balance:0, portfolio_value:0, positions:[], open_orders:[], recent_fills:[] };
+
+function fetchWithTimeout(url, ms) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, { signal: ctrl.signal }).then(r => { clearTimeout(timer); return r.json(); });
+}
+
 async function fetchAll() {
   try {
-    const [scan, research, pred, trades, portfolio, perf, kill, config] = await Promise.all([
+    // Core data (fast, local files) — never blocked by external APIs
+    const [scan, research, pred, trades, portfolio, perf, kill, config, pause] = await Promise.all([
       fetch('/api/scan').then(r => r.json()),
       fetch('/api/research').then(r => r.json()),
       fetch('/api/predictions').then(r => r.json()),
@@ -751,11 +930,17 @@ async function fetchAll() {
       fetch('/api/performance').then(r => r.json()),
       fetch('/api/kill_switch').then(r => r.json()),
       fetch('/api/config').then(r => r.json()),
+      fetch('/api/pause').then(r => r.json()),
     ]);
 
-    renderStatus(kill);
-    renderMode(config);
-    renderStats(portfolio, perf);
+    // Kalshi: separate, with 5s timeout — uses last-known data on failure
+    let kalshi = _lastKalshi;
+    try { kalshi = await fetchWithTimeout('/api/kalshi', 5000); _lastKalshi = kalshi; } catch(e) { /* use cached */ }
+
+    renderStatus(kill, pause);
+    renderMode(config, kalshi);
+    renderStats(portfolio, perf, kalshi);
+    renderKalshi(kalshi);
     renderScan(scan);
     renderResearch(research);
     renderPredictions(pred);
@@ -764,24 +949,52 @@ async function fetchAll() {
   } catch(e) { console.error('Fetch error:', e); }
 }
 
-function renderStatus(kill) {
+function renderStatus(kill, pause) {
   const pill = document.getElementById('statusPill');
   const label = document.getElementById('statusLabel');
   if (kill.active) {
     pill.className = 'status-pill status-kill';
     label.textContent = 'KILL SWITCH';
+  } else if (pause && pause.paused) {
+    pill.className = 'status-pill status-paused';
+    label.textContent = 'PAUSED';
   } else {
     pill.className = 'status-pill status-active';
     label.textContent = 'ACTIVE';
   }
 }
 
-function renderMode(config) {
-  document.getElementById('modeTag').textContent = (config.mode || 'paper').toUpperCase();
+async function togglePause() {
+  try {
+    const resp = await fetch('/api/pause', { method: 'POST' });
+    await resp.json();
+    fetchAll();
+  } catch(e) { console.error('Pause toggle error:', e); }
 }
 
-function renderStats(port, perf) {
-  document.getElementById('sBankroll').textContent = fmtUsd(port.current_bankroll);
+function renderMode(config, kalshi) {
+  const mode = kalshi && kalshi.mode !== 'paper' ? kalshi.mode : (config.mode || 'paper');
+  const tag = document.getElementById('modeTag');
+  const connected = kalshi && kalshi.connected;
+
+  // Build label: "DEMO · KALSHI" or "PAPER" or "LIVE · KALSHI"
+  let label = mode.toUpperCase();
+  if (connected) label += ' \u00b7 KALSHI';
+  tag.textContent = label;
+
+  // Apply color class
+  tag.className = 'mode-tag';
+  if (mode === 'demo') tag.classList.add('mode-demo');
+  else if (mode === 'live') tag.classList.add('mode-live');
+  else tag.classList.add('mode-paper');
+}
+
+function renderStats(port, perf, kalshi) {
+  // If connected to Kalshi, show exchange balance as the bankroll
+  const bankroll = (kalshi && kalshi.connected)
+    ? kalshi.balance + kalshi.portfolio_value
+    : port.current_bankroll;
+  document.getElementById('sBankroll').textContent = fmtUsd(bankroll);
 
   const open = document.getElementById('sOpen');
   open.textContent = port.open_positions || 0;
@@ -794,6 +1007,46 @@ function renderStats(port, perf) {
   const wr = document.getElementById('sWinRate');
   wr.textContent = fmtPct(perf.win_rate);
   wr.className = 'stat-value ' + (perf.win_rate >= 0.6 ? 'green' : perf.win_rate > 0 ? 'amber' : '');
+}
+
+function renderKalshi(data) {
+  const panel = document.getElementById('kalshiPanel');
+  if (!data || data.mode === 'paper') {
+    panel.style.display = 'none';
+    return;
+  }
+  panel.style.display = 'block';
+
+  const meta = document.getElementById('kalshiMeta');
+  meta.textContent = data.connected
+    ? `${data.mode.toUpperCase()} \u2022 Connected`
+    : `${data.mode.toUpperCase()} \u2022 Disconnected`;
+  meta.style.color = data.connected ? 'var(--green)' : 'var(--red)';
+
+  document.getElementById('kalshiBalance').textContent = fmtUsd(data.balance || 0);
+  document.getElementById('kalshiPortfolio').textContent = fmtUsd(data.portfolio_value || 0);
+  document.getElementById('kalshiOrders').textContent = (data.open_orders || []).length;
+  document.getElementById('kalshiPositions').textContent = (data.positions || []).length;
+
+  // Recent fills
+  const fills = data.recent_fills || [];
+  const fillsEl = document.getElementById('kalshiFills');
+  if (fills.length === 0) {
+    fillsEl.innerHTML = '<span style="color:var(--muted)">No recent fills</span>';
+  } else {
+    fillsEl.innerHTML = '<div style="margin-bottom:4px;color:var(--text)">Recent Fills:</div>' +
+      fills.slice(0, 8).map(f => {
+        const side = (f.side || '?').toUpperCase();
+        const color = side === 'YES' ? 'var(--green)' : 'var(--red)';
+        const price = f.yes_price_dollars || f.no_price_dollars || '?';
+        return `<div style="padding:2px 0">
+          <span style="color:${color};font-weight:bold">${f.action || '?'} ${side}</span>
+          <span>${(f.ticker || '').substring(0, 30)}</span>
+          <span style="color:var(--cyan)">$${price}</span>
+          <span>\u00D7${f.count_fp || f.count || '?'}</span>
+        </div>`;
+      }).join('');
+  }
 }
 
 function renderScan(data) {
@@ -892,8 +1145,12 @@ function renderPredictions(data) {
 
     // Model breakdown pills
     const models = (s.model_predictions || []).map(mp => {
-      const color = mp.model_name === 'claude' ? 'var(--cyan)' :
-                    mp.model_name === 'gpt4o' ? 'var(--green)' : 'var(--amber)';
+      const color = mp.model_name === 'grok' ? 'var(--red)' :
+                    mp.model_name === 'claude' ? 'var(--cyan)' :
+                    mp.model_name === 'gpt4o' ? 'var(--green)' :
+                    mp.model_name === 'gemini' ? 'var(--blue)' :
+                    mp.model_name === 'deepseek' ? '#a78bfa' :
+                    mp.model_name === 'heuristic_risk' ? '#a78bfa' : 'var(--amber)';
       return `<div class="model-pill">
         <span class="model-name">${mp.model_name}</span>
         <span class="model-prob" style="color:${color}">${fmt(mp.predicted_probability, 2)}</span>
@@ -958,6 +1215,8 @@ function renderRisk(pred, config) {
     { name: 'Slippage', threshold: fmtPct(riskCfg.max_slippage_pct), pass: true },
     { name: 'Bankroll', threshold: '> $0', pass: true },
     { name: 'API Cost', threshold: '$'+riskCfg.max_daily_api_cost, pass: true },
+    { name: 'VaR 95%', threshold: fmtPct(riskCfg.max_var_pct || 0.10), pass: true },
+    { name: 'Exposure', threshold: fmtPct(riskCfg.max_total_exposure_pct || 0.40), pass: true },
   ];
 
   document.getElementById('riskBody').innerHTML = `
@@ -1099,25 +1358,8 @@ async function fetchPipelineStatus() {
 }
 
 function updateCountdown() {
-  const el = document.getElementById('nextRunTime');
-  if (!_nextRunTarget) { el.textContent = '--:--'; return; }
-
-  const now = new Date();
-  const diff = _nextRunTarget - now;
-
-  if (diff <= 0) {
-    el.textContent = 'NOW';
-    el.style.color = 'var(--green)';
-    return;
-  }
-
-  el.style.color = 'var(--amber)';
-  const mins = Math.floor(diff / 60000);
-  const secs = Math.floor((diff % 60000) / 1000);
-  el.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+  // Countdown removed from header — kept for potential future use
 }
-
-setInterval(updateCountdown, 1000);
 fetchPipelineStatus();
 setInterval(fetchPipelineStatus, 30000);
 

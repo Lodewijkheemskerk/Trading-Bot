@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-03-13T16:30:04.835505+00:00",
+  "markets_predicted": 1,
+  "signals": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.3845,
+      "market_probability": 0.09,
+      "edge": 0.2945,
+      "mispricing_score": 2.94,
+      "expected_value": 0.1428,
+      "direction": "buy_yes",
+      "signal_strength": 0.1428,
+      "confidence": 0.485,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.35,
+          "confidence": 0.4,
+          "reasoning": "The probability of the official trailer for Spider-Man: Beyond the Spider-Verse being released before April 1, 2026, is estimated at 0.35, considering the neutral sentiment across sources and the lack of concrete release timelines. While producers' hints about upcoming footage are mildly bullish, there is no definitive evidence or historical precedent confirming a trailer release within the specified timeframe. The market price of 0.09 seems overly pessimistic, but thin data and speculative headlines limit confidence in a higher estimate."
+        },
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.2,
+          "predicted_probability": 0.75,
+          "confidence": 0.6,
+          "reasoning": "The recent headline about producers dropping 'big hints' about showing footage and being 'very confident' about meeting release dates suggests development is progressing well. With over a year until the April 2026 deadline and typical marketing timelines for major animated sequels, a trailer release seems likely. The market price of $0.09 appears significantly undervalued given these positive signals from the producers themselves."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.5,
+          "confidence": 0.7,
+          "reasoning": "The producers of Spider-Man: Beyond the Spider-Verse have hinted at upcoming footage, indicating a strong likelihood of a trailer release. Additionally, the positive momentum surrounding the film's release schedule suggests that the market may be underestimating the timing of promotional materials."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.09, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        },
+        {
+          "model_name": "heuristic_risk",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.1467,
+          "confidence": 0.3,
+          "reasoning": "Risk view: market at 0.09 is the best prior. Gap of +41.0% is suspicious. Adjusted +0.055 from market anchor."
+        }
+      ],
+      "timestamp": "2026-03-13T16:30:04.835505+00:00"
+    }
+  ]
+}

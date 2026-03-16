@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-03-13T17:08:08.291683+00:00",
+  "markets_predicted": 1,
+  "signals": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.3575,
+      "market_probability": 0.09,
+      "edge": 0.2675,
+      "mispricing_score": 2.67,
+      "expected_value": 0.1371,
+      "direction": "buy_yes",
+      "signal_strength": 0.1371,
+      "confidence": 0.5125,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.35,
+          "confidence": 0.4,
+          "reasoning": "While the market price is low at 0.09, recent headlines suggest potential footage release with producers hinting at progress and confidence in meeting deadlines. However, there is no concrete evidence or official announcement confirming a trailer release before April 1, 2026, and historical delays in the Spider-Verse franchise temper optimism. The neutral sentiment across sources and lack of specific timeline data keep confidence low."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.75,
+          "confidence": 0.7,
+          "reasoning": "Producers' hints and official updates suggest a high likelihood of the trailer being released before April 2026, and recent industry momentum indicates they are preparing for a rollout. The market undervaluing this event by 41% also supports a higher probability."
+        },
+        {
+          "model_name": "gemini",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.06,
+          "confidence": 0.7,
+          "reasoning": "The film has a history of significant delays with an unconfirmed release date, likely late 2026 or beyond. Producer statements like 'stay tuned' and 'might be ready to show some footage' are vague and suggest ongoing production challenges, making an official trailer before April 2026 unlikely. Marketing typically aligns closer to a firm release date, which is currently missing."
+        },
+        {
+          "model_name": "heuristic_risk",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.1467,
+          "confidence": 0.3,
+          "reasoning": "Risk view: market at 0.09 is the best prior. Gap of +41.0% is suspicious. Adjusted +0.055 from market anchor."
+        }
+      ],
+      "timestamp": "2026-03-13T17:08:08.291683+00:00"
+    }
+  ]
+}

@@ -5,6 +5,10 @@ Connects to the Kalshi REST API, fetches active markets with cursor
 pagination, parses dollar-string fields, filters by volume / liquidity /
 expiry / category, flags anomalies, scores opportunities, and saves
 scan snapshots to disk.
+
+Before scoring, reads failure_log.md to check past mistakes and
+deprioritize markets where the bot has previously lost money due to
+systematic issues (Bad Prediction, External Shock).
 """
 
 import json
@@ -13,15 +17,15 @@ import math
 import sys
 import time
 from dataclasses import dataclass, asdict, field
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date, timedelta
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 import requests
 
 # Allow running both as `python scripts/scanner.py` and as an import
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from config import load_settings, MARKET_DIR
+from config import load_settings, MARKET_DIR, DATA_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -92,6 +96,7 @@ class MarketScanner:
         s = settings or load_settings()
         scan = s.get("scanner", {})
         kalshi = s.get("kalshi", {})
+        exec_cfg = s.get("execution", {})
 
         self.base_url = kalshi.get("base_url", "https://api.elections.kalshi.com/trade-api/v2")
         self.min_volume = scan.get("min_volume", 50)
@@ -103,8 +108,122 @@ class MarketScanner:
         self.skip_prefixes = tuple(scan.get("skip_categories", []))
         self.max_pages = scan.get("max_pages", 10)
 
+        # Retry config
+        self.retry_attempts = exec_cfg.get("retry_attempts", 3)
+        self.retry_delay = exec_cfg.get("retry_delay_seconds", 5)
+
         self.session = requests.Session()
         self.session.headers.update({"Accept": "application/json"})
+
+        # Load past failures to deprioritize problematic markets
+        self.past_failures = self._load_past_failures()
+
+        # Volume history for 7-day average spike detection
+        self._volume_history_file = DATA_DIR / "volume_history.json"
+        self._volume_history = self._load_volume_history()
+
+    # ------------------------------------------------------------------
+    # Volume history (7-day rolling average for spike detection)
+    # ------------------------------------------------------------------
+
+    def _load_volume_history(self) -> Dict[str, Dict[str, float]]:
+        """
+        Load volume history from disk.
+
+        Structure: { "MARKET_ID": { "2026-03-15": 1200.0, "2026-03-14": 800.0, ... } }
+        """
+        if self._volume_history_file.exists():
+            try:
+                with open(self._volume_history_file, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except (json.JSONDecodeError, OSError) as exc:
+                logger.warning("Failed to load volume history: %s", exc)
+        return {}
+
+    def _save_volume_history(self) -> None:
+        """Persist volume history to disk."""
+        try:
+            self._volume_history_file.parent.mkdir(parents=True, exist_ok=True)
+            with open(self._volume_history_file, "w", encoding="utf-8") as f:
+                json.dump(self._volume_history, f, indent=1, ensure_ascii=False)
+        except OSError as exc:
+            logger.warning("Failed to save volume history: %s", exc)
+
+    def _record_volume(self, market_id: str, volume_24h: float) -> None:
+        """Record today's volume for a market."""
+        today = date.today().isoformat()
+        if market_id not in self._volume_history:
+            self._volume_history[market_id] = {}
+        self._volume_history[market_id][today] = volume_24h
+
+    def _get_7day_avg_volume(self, market_id: str) -> Optional[float]:
+        """
+        Compute the 7-day average volume for a market.
+
+        Returns None if fewer than 2 days of history (can't detect a spike
+        with only one data point).
+        """
+        history = self._volume_history.get(market_id, {})
+        if len(history) < 2:
+            return None
+
+        # Get volumes from the last 7 days (excluding today)
+        today = date.today()
+        volumes = []
+        for days_back in range(1, 8):
+            day_str = (today - timedelta(days=days_back)).isoformat()
+            if day_str in history:
+                volumes.append(history[day_str])
+
+        if not volumes:
+            return None
+
+        return sum(volumes) / len(volumes)
+
+    def _prune_old_volume_history(self, max_days: int = 14) -> None:
+        """Remove volume entries older than max_days to keep file small."""
+        cutoff = (date.today() - timedelta(days=max_days)).isoformat()
+        for market_id in list(self._volume_history):
+            history = self._volume_history[market_id]
+            pruned = {d: v for d, v in history.items() if d >= cutoff}
+            if pruned:
+                self._volume_history[market_id] = pruned
+            else:
+                del self._volume_history[market_id]
+
+    # ------------------------------------------------------------------
+    # Failure log integration
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _load_past_failures() -> dict:
+        """
+        Load failure_log.md and build a lookup of market_id → failure info.
+
+        Returns dict mapping market_id to list of failure dicts.
+        Used during scoring to penalize markets with past systematic failures.
+        """
+        try:
+            from scripts.compounder import Compounder
+            entries = Compounder.load_failure_log()
+        except Exception as exc:
+            logger.debug("Could not load failure log: %s", exc)
+            return {}
+
+        failures_by_market: dict = {}
+        for entry in entries:
+            mid = entry.get("market_id", "")
+            if mid:
+                failures_by_market.setdefault(mid, []).append(entry)
+
+        if failures_by_market:
+            logger.info(
+                "Loaded %d past failures across %d markets from failure log",
+                sum(len(v) for v in failures_by_market.values()),
+                len(failures_by_market),
+            )
+
+        return failures_by_market
 
     # ------------------------------------------------------------------
     # Public API
@@ -120,9 +239,15 @@ class MarketScanner:
         for raw in raw_markets:
             m = self._parse_market(raw)
             if m and self._passes_filters(m):
+                # Record volume for 7-day history before checking anomalies
+                self._record_volume(m.market_id, m.volume_24h)
                 self._check_anomalies(m)
                 m.opportunity_score = self._score(m)
                 parsed.append(m)
+
+        # Persist volume history and prune old entries
+        self._prune_old_volume_history()
+        self._save_volume_history()
 
         parsed.sort(key=lambda m: m.opportunity_score, reverse=True)
 
@@ -186,13 +311,18 @@ class MarketScanner:
                 params["cursor"] = cursor
 
             try:
-                resp = self.session.get(
+                from scripts.retry import retry_call
+                resp = retry_call(
+                    self.session.get,
                     f"{self.base_url}/events", params=params, timeout=20,
+                    max_attempts=self.retry_attempts,
+                    base_delay=self.retry_delay,
+                    context=f"Kalshi events page {page}",
                 )
                 resp.raise_for_status()
                 data = resp.json()
             except requests.RequestException as exc:
-                logger.warning("Kalshi API error (page %d): %s", page, exc)
+                logger.warning("Kalshi API error (page %d) after retries: %s", page, exc)
                 break
 
             events = data.get("events", [])
@@ -321,7 +451,18 @@ class MarketScanner:
             reasons.append(f"price moved {m.price_move_24h:.0%} in 24h")
         if m.spread > self.anomaly_spread:
             reasons.append(f"wide spread ${m.spread:.2f}")
-        # volume_spike would need 7-day average — skip for now; use total as proxy
+
+        # Volume spike: compare today's volume to 7-day rolling average
+        avg_vol = self._get_7day_avg_volume(m.market_id)
+        if avg_vol is not None and avg_vol > 0:
+            spike_ratio = m.volume_24h / avg_vol
+            m.volume_spike = round(spike_ratio, 2)
+            if spike_ratio >= self.volume_spike_mult:
+                reasons.append(
+                    f"volume spike {spike_ratio:.1f}x vs 7d avg "
+                    f"({m.volume_24h:.0f} vs {avg_vol:.0f})"
+                )
+
         if reasons:
             m.is_anomaly = True
             m.anomaly_reasons = "; ".join(reasons)
@@ -330,8 +471,7 @@ class MarketScanner:
     # Scoring
     # ------------------------------------------------------------------
 
-    @staticmethod
-    def _score(m: Market) -> float:
+    def _score(self, m: Market) -> float:
         score = 0.0
 
         # Volume (log scale, max 30 pts)
@@ -357,6 +497,20 @@ class MarketScanner:
         # Anomaly bonus
         if m.is_anomaly:
             score += 15
+
+        # Failure log penalty: deprioritize markets with past losses.
+        # -15 per Bad Prediction or External Shock (systematic issues),
+        # -5 per Bad Timing (may be worth retrying with different conditions).
+        # This doesn't hard-block — just pushes them down the ranked list.
+        failures = self.past_failures.get(m.market_id, [])
+        for f in failures:
+            category = f.get("category", "")
+            if category in ("Bad Prediction", "External Shock"):
+                score -= 15
+            elif category == "Bad Timing":
+                score -= 5
+            else:
+                score -= 10
 
         return round(score, 2)
 

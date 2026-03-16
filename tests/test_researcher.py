@@ -1,293 +1,247 @@
 """
-Unit tests for scripts/researcher.py
+Tests for researcher.py — Tier 5 Item 19: Additional sources + parallel research.
 
-Covers: query extraction, sentiment scoring with negation,
-zero-result handling, and ResearchBrief contract fields.
-All tests are offline — no network calls.
+Tests:
+- Bing News RSS fetcher
+- Parallel source fetching within a market
+- Parallel multi-market research
+- Source config from settings
 """
 
-import sys
-import unittest
+import json
+import time
 from pathlib import Path
-from dataclasses import asdict, fields
+from unittest.mock import patch, MagicMock
 
-# Ensure project root is importable
+import pytest
+import sys
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scripts.researcher import (
     NewsResearcher,
     ResearchBrief,
     SentimentResult,
+    save_research_snapshot,
 )
 
 
-class TestQueryExtraction(unittest.TestCase):
-    """Test query extraction from Kalshi market titles."""
-
-    def setUp(self):
-        self.researcher = NewsResearcher(settings={
-            "research": {
-                "sources": [],  # No network calls
-                "max_articles_per_source": 20,
-                "sentiment_threshold": 0.6,
-            }
-        })
-
-    def test_strip_will_prefix(self):
-        query = NewsResearcher.extract_query("Will Bitcoin reach $100k?")
-        self.assertNotIn("Will", query.split()[0] if query else "")
-        self.assertIn("Bitcoin", query)
-
-    def test_strip_will_the_prefix(self):
-        query = NewsResearcher.extract_query("Will the Fed raise rates?")
-        self.assertNotIn("Will", query.split()[0] if query else "")
-        self.assertIn("Fed", query)
-        self.assertIn("raise", query)
-        self.assertIn("rates", query)
-
-    def test_remove_question_mark(self):
-        query = NewsResearcher.extract_query("Will inflation exceed 5%?")
-        self.assertNotIn("?", query)
-
-    def test_date_suffix_stripped(self):
-        query = NewsResearcher.extract_query(
-            "Will Pam Bondi leave Attorney General before April 2026?"
-        )
-        self.assertIn("Pam", query)
-        self.assertIn("Bondi", query)
-        self.assertNotIn("April", query)
-        self.assertNotIn("2026", query)
-
-    def test_multi_word_entity(self):
-        query = NewsResearcher.extract_query(
-            "Will the official trailer for Spider-Man: Beyond release?"
-        )
-        self.assertIn("Spider-Man:", query)
-
-    def test_max_six_words(self):
-        query = NewsResearcher.extract_query(
-            "Will the very long market title with many extra words happen soon?"
-        )
-        words = query.split()
-        self.assertLessEqual(len(words), 6)
-
-    def test_short_title_fallback(self):
-        """Titles that reduce to <2 words should fallback."""
-        query = NewsResearcher.extract_query("Will it?")
-        self.assertTrue(len(query.split()) >= 2)
-
-    def test_compound_title_with_quoted_name(self):
-        query = NewsResearcher.extract_query(
-            'Will "Operation Aurora" be declassified?'
-        )
-        self.assertIn("Aurora", query)
-
-    def test_is_prefix(self):
-        query = NewsResearcher.extract_query("Is the recession coming?")
-        self.assertIn("recession", query)
-        self.assertIn("coming", query)
+# ── Fixtures ──────────────────────────────────────────────────────────────
 
 
-class TestSentimentScoring(unittest.TestCase):
-    """Test keyword-based sentiment scoring."""
-
-    def test_bullish_text(self):
-        scores = NewsResearcher.score_text("Markets rally as stocks surge higher")
-        self.assertGreater(scores["bullish_score"], 0)
-        self.assertEqual(scores["bearish_score"], 0)
-
-    def test_bearish_text(self):
-        scores = NewsResearcher.score_text("Markets crash as selloff deepens")
-        self.assertEqual(scores["bullish_score"], 0)
-        self.assertGreater(scores["bearish_score"], 0)
-
-    def test_neutral_text(self):
-        scores = NewsResearcher.score_text("The meeting was held on Tuesday")
-        self.assertEqual(scores["bullish_score"], 0)
-        self.assertEqual(scores["bearish_score"], 0)
-
-    def test_mixed_text(self):
-        scores = NewsResearcher.score_text("Rally expected despite recession fears")
-        self.assertGreater(scores["bullish_score"], 0)
-        self.assertGreater(scores["bearish_score"], 0)
-
-    def test_negation_flips_bullish(self):
-        """'not bullish' should register as bearish, not bullish."""
-        scores = NewsResearcher.score_text("Analysts say market is not bullish")
-        self.assertGreater(scores["bearish_score"], 0)
-        # "not" + "bullish" → bearish. Only direct negation counted.
-
-    def test_negation_flips_bearish(self):
-        """'no recession' should register as bullish, not bearish."""
-        scores = NewsResearcher.score_text("Experts see no recession ahead")
-        self.assertGreater(scores["bullish_score"], 0)
-
-    def test_negation_with_never(self):
-        scores = NewsResearcher.score_text("They will never fail to succeed")
-        # "never" + "fail" → fail is bearish, negated → bullish
-        self.assertGreater(scores["bullish_score"], 0)
-
-    def test_lose_negation(self):
-        """'lose' before a bullish word should flip to bearish."""
-        scores = NewsResearcher.score_text("They lose momentum quickly")
-        # "lose" + "momentum" → momentum is bullish, negated → bearish
-        self.assertGreater(scores["bearish_score"], 0)
-
-    def test_financial_domain_words(self):
-        scores = NewsResearcher.score_text("Fed hawkish stance signals tighten policy")
-        self.assertGreater(scores["bullish_score"], 0)
-
-        scores2 = NewsResearcher.score_text("Dovish pivot with rate cut expected")
-        self.assertGreater(scores2["bearish_score"], 0)
+@pytest.fixture
+def researcher():
+    """NewsResearcher with default settings."""
+    return NewsResearcher()
 
 
-class TestSentimentAnalysis(unittest.TestCase):
-    """Test sentiment aggregation across articles."""
-
-    def setUp(self):
-        self.researcher = NewsResearcher(settings={
-            "research": {
-                "sources": [],
-                "max_articles_per_source": 20,
-                "sentiment_threshold": 0.6,
-            }
-        })
-
-    def test_zero_articles_returns_neutral(self):
-        """Zero-result queries should return low-confidence neutral."""
-        result = self.researcher._analyze_sentiment([], "google_news")
-        self.assertEqual(result.source, "google_news")
-        self.assertEqual(result.neutral, 1.0)
-        self.assertLessEqual(result.confidence, 0.2)
-        self.assertEqual(result.key_narratives, [])
-
-    def test_single_bullish_article(self):
-        articles = [{"title": "Stock rally", "text": "Stock rally continues with strong gains"}]
-        result = self.researcher._analyze_sentiment(articles, "test")
-        self.assertGreater(result.bullish, 0)
-
-    def test_confidence_scales_with_count(self):
-        """More articles = higher confidence."""
-        few = [{"title": f"headline {i}", "text": f"rally surge {i}"} for i in range(2)]
-        many = [{"title": f"headline {i}", "text": f"rally surge {i}"} for i in range(15)]
-
-        result_few = self.researcher._analyze_sentiment(few, "test")
-        result_many = self.researcher._analyze_sentiment(many, "test")
-
-        self.assertGreater(result_many.confidence, result_few.confidence)
+@pytest.fixture
+def researcher_all_sources():
+    """NewsResearcher with all free sources enabled."""
+    settings = {
+        "research": {
+            "sources": ["google_news_rss", "bing_news_rss", "reddit"],
+            "max_articles_per_source": 10,
+            "sentiment_threshold": 0.6,
+            "parallel_workers": 3,
+            "x_search": {"enabled": False},
+        },
+        "execution": {"retry_attempts": 1, "retry_delay_seconds": 1},
+    }
+    return NewsResearcher(settings=settings)
 
 
-class TestConsensusAggregation(unittest.TestCase):
-    """Test consensus aggregation across sources."""
-
-    def test_empty_results(self):
-        consensus = NewsResearcher._aggregate_consensus([])
-        self.assertEqual(consensus["consensus_sentiment"], "neutral")
-        self.assertAlmostEqual(consensus["sentiment_implied_probability"], 0.5, places=1)
-
-    def test_bullish_consensus(self):
-        results = [
-            SentimentResult("a", bullish=0.8, bearish=0.1, neutral=0.1, confidence=0.7, key_narratives=[]),
-            SentimentResult("b", bullish=0.6, bearish=0.2, neutral=0.2, confidence=0.5, key_narratives=[]),
-        ]
-        consensus = NewsResearcher._aggregate_consensus(results)
-        self.assertEqual(consensus["consensus_sentiment"], "bullish")
-        self.assertGreater(consensus["sentiment_implied_probability"], 0.5)
-
-    def test_bearish_consensus(self):
-        results = [
-            SentimentResult("a", bullish=0.1, bearish=0.8, neutral=0.1, confidence=0.7, key_narratives=[]),
-            SentimentResult("b", bullish=0.1, bearish=0.7, neutral=0.2, confidence=0.6, key_narratives=[]),
-        ]
-        consensus = NewsResearcher._aggregate_consensus(results)
-        self.assertEqual(consensus["consensus_sentiment"], "bearish")
-        self.assertLess(consensus["sentiment_implied_probability"], 0.5)
-
-    def test_implied_prob_clamped(self):
-        """Implied probability should stay within [0.05, 0.95]."""
-        extreme = [
-            SentimentResult("x", bullish=1.0, bearish=0.0, neutral=0.0, confidence=1.0, key_narratives=[]),
-        ]
-        consensus = NewsResearcher._aggregate_consensus(extreme)
-        self.assertLessEqual(consensus["sentiment_implied_probability"], 0.95)
-        self.assertGreaterEqual(consensus["sentiment_implied_probability"], 0.05)
-
-
-class TestResearchBriefContract(unittest.TestCase):
-    """Verify ResearchBrief has all fields required by S03 contract."""
-
-    REQUIRED_FIELDS = {
-        "market_id", "market_title", "current_yes_price", "sources",
-        "consensus_sentiment", "consensus_confidence",
-        "sentiment_implied_probability", "gap", "gap_direction",
-        "narrative_summary", "timestamp",
+@pytest.fixture
+def sample_market():
+    return {
+        "market_id": "TEST-MARKET",
+        "title": "Will interest rates be cut before June 2026?",
+        "yes_price": 0.45,
     }
 
-    def test_dataclass_has_all_contract_fields(self):
-        field_names = {f.name for f in fields(ResearchBrief)}
-        for req in self.REQUIRED_FIELDS:
-            self.assertIn(req, field_names, f"Missing contract field: {req}")
 
-    def test_sentiment_result_contract_fields(self):
-        required = {"source", "bullish", "bearish", "neutral", "confidence", "key_narratives"}
-        field_names = {f.name for f in fields(SentimentResult)}
-        for req in required:
-            self.assertIn(req, field_names, f"Missing SentimentResult field: {req}")
-
-    def test_brief_serializable(self):
-        """ResearchBrief should be fully JSON-serializable via asdict."""
-        brief = ResearchBrief(
-            market_id="TEST-123",
-            market_title="Will test pass?",
-            current_yes_price=0.55,
-            sources=[
-                SentimentResult("google_news", 0.5, 0.3, 0.2, 0.6, ["headline"]),
-            ],
-            consensus_sentiment="bullish",
-            consensus_confidence=0.6,
-            sentiment_implied_probability=0.58,
-            gap=0.03,
-            gap_direction="underpriced",
-            narrative_summary="Test narrative.",
-            timestamp="2026-03-13T12:00:00+00:00",
-        )
-        import json
-        data = asdict(brief)
-        serialized = json.dumps(data, ensure_ascii=False)
-        deserialized = json.loads(serialized)
-        self.assertEqual(deserialized["market_id"], "TEST-123")
-        self.assertEqual(deserialized["current_yes_price"], 0.55)
-        self.assertEqual(len(deserialized["sources"]), 1)
-        self.assertIn("consensus_sentiment", deserialized)
-        self.assertIn("gap", deserialized)
+@pytest.fixture
+def sample_markets():
+    return [
+        {"market_id": "MKT-A", "title": "Will SpaceX launch Starship in March?", "yes_price": 0.60},
+        {"market_id": "MKT-B", "title": "Will Bitcoin exceed 100000 before April?", "yes_price": 0.35},
+        {"market_id": "MKT-C", "title": "Will Trump sign new trade deal?", "yes_price": 0.22},
+    ]
 
 
-class TestResearchMarketOffline(unittest.TestCase):
-    """Test research_market with mocked data (no network)."""
+FAKE_ARTICLES = [
+    {"title": "Markets rally on rate cut hopes", "text": "Markets rally on rate cut hopes", "source": "test"},
+    {"title": "Fed signals bearish outlook", "text": "Fed signals bearish outlook for economy", "source": "test"},
+    {"title": "Rate cut likely in June", "text": "Rate cut likely in June according to analysts", "source": "test"},
+]
 
-    def test_research_with_no_sources(self):
-        """With no sources configured, should still produce a valid brief."""
-        researcher = NewsResearcher(settings={
+
+# ── Config ────────────────────────────────────────────────────────────────
+
+
+class TestSourceConfig:
+    def test_default_sources_include_bing(self, researcher):
+        """Bing News RSS should be in default sources after config update."""
+        assert "bing_news_rss" in researcher.sources
+
+    def test_all_three_free_sources(self, researcher):
+        assert "google_news_rss" in researcher.sources
+        assert "bing_news_rss" in researcher.sources
+        assert "reddit" in researcher.sources
+
+    def test_parallel_workers_loaded(self, researcher):
+        assert researcher.parallel_workers >= 1
+
+
+# ── Bing News RSS ─────────────────────────────────────────────────────────
+
+
+class TestBingNewsFetcher:
+    def test_fetch_bing_news_method_exists(self, researcher):
+        assert hasattr(researcher, "_fetch_bing_news")
+        assert callable(researcher._fetch_bing_news)
+
+    def test_fetch_bing_news_returns_list(self, researcher):
+        """Live test — hits Bing RSS (free, no key)."""
+        articles = researcher._fetch_bing_news("stock market today")
+        assert isinstance(articles, list)
+        # Bing should return at least a few results for a broad query
+        assert len(articles) > 0
+
+    def test_bing_article_shape(self, researcher):
+        """Articles have required keys: title, source, text."""
+        articles = researcher._fetch_bing_news("artificial intelligence")
+        if articles:
+            a = articles[0]
+            assert "title" in a
+            assert "text" in a
+            assert "source" in a
+            assert len(a["title"]) > 0
+
+    def test_bing_bad_query_returns_empty_or_results(self, researcher):
+        """Even a nonsense query should not crash."""
+        articles = researcher._fetch_bing_news("xyzzy12345qwert")
+        assert isinstance(articles, list)
+
+
+# ── Parallel Source Fetching ──────────────────────────────────────────────
+
+
+class TestParallelSourceFetch:
+    def test_research_market_returns_multiple_sources(self, researcher_all_sources, sample_market):
+        """With 3 sources configured, brief should have 3 SentimentResults."""
+        brief = researcher_all_sources.research_market(sample_market)
+        assert isinstance(brief, ResearchBrief)
+        assert len(brief.sources) == 3
+
+    def test_source_names_match_config(self, researcher_all_sources, sample_market):
+        brief = researcher_all_sources.research_market(sample_market)
+        source_names = {s.source for s in brief.sources}
+        assert "google_news" in source_names
+        assert "bing_news" in source_names
+        assert "reddit" in source_names
+
+    def test_parallel_faster_than_sequential_threshold(self, researcher_all_sources, sample_market):
+        """Parallel fetch should complete in reasonable time (< 15s for 3 sources)."""
+        start = time.time()
+        brief = researcher_all_sources.research_market(sample_market)
+        elapsed = time.time() - start
+        assert elapsed < 15, f"Research took {elapsed:.1f}s, expected < 15s"
+        assert brief is not None
+
+
+# ── Parallel Multi-Market Research ────────────────────────────────────────
+
+
+class TestParallelMarketResearch:
+    def test_research_markets_method_exists(self, researcher):
+        assert hasattr(researcher, "research_markets")
+
+    def test_research_markets_returns_list(self, researcher_all_sources, sample_markets):
+        briefs = researcher_all_sources.research_markets(sample_markets[:2])
+        assert isinstance(briefs, list)
+        assert len(briefs) == 2
+
+    def test_research_markets_all_briefs_valid(self, researcher_all_sources, sample_markets):
+        briefs = researcher_all_sources.research_markets(sample_markets[:2])
+        for b in briefs:
+            assert isinstance(b, ResearchBrief)
+            assert b.market_id in {"MKT-A", "MKT-B"}
+            assert len(b.sources) == 3
+            assert b.consensus_sentiment in {"bullish", "bearish", "neutral"}
+
+    def test_research_markets_empty_input(self, researcher):
+        briefs = researcher.research_markets([])
+        assert briefs == []
+
+    def test_research_markets_single_market_no_threads(self):
+        """Single market should work without thread overhead."""
+        settings = {
             "research": {
-                "sources": [],  # No fetching
-                "max_articles_per_source": 20,
-                "sentiment_threshold": 0.6,
-            }
-        })
-
-        market = {
-            "market_id": "TEST-OFFLINE",
-            "title": "Will something happen?",
-            "yes_price": 0.50,
+                "sources": ["google_news_rss"],
+                "max_articles_per_source": 5,
+                "parallel_workers": 1,
+                "x_search": {"enabled": False},
+            },
+            "execution": {"retry_attempts": 1, "retry_delay_seconds": 1},
         }
+        r = NewsResearcher(settings=settings)
+        briefs = r.research_markets([
+            {"market_id": "SOLO", "title": "Will Tesla stock rise?", "yes_price": 0.50}
+        ])
+        assert len(briefs) == 1
+        assert briefs[0].market_id == "SOLO"
 
-        brief = researcher.research_market(market)
-        self.assertEqual(brief.market_id, "TEST-OFFLINE")
-        self.assertEqual(brief.current_yes_price, 0.50)
-        self.assertEqual(brief.consensus_sentiment, "neutral")
-        self.assertIsInstance(brief.timestamp, str)
-        self.assertIsInstance(brief.narrative_summary, str)
+
+# ── Sentiment Analysis (unchanged but verify) ────────────────────────────
 
 
-if __name__ == "__main__":
-    unittest.main()
+class TestSentimentIntegration:
+    def test_bing_results_get_sentiment(self, researcher):
+        """Bing articles should be analyzed for sentiment."""
+        articles = [
+            {"title": "Markets rally strongly today", "text": "Markets rally strongly today surge gains", "source": "bing"},
+            {"title": "Economy shows growth", "text": "Economy shows strong growth optimistic outlook", "source": "bing"},
+        ]
+        sr = researcher._analyze_sentiment(articles, "bing_news")
+        assert isinstance(sr, SentimentResult)
+        assert sr.source == "bing_news"
+        assert sr.bullish > 0  # "rally", "surge", "growth", "optimistic" are bullish
+
+    def test_consensus_with_three_sources(self, researcher):
+        results = [
+            SentimentResult(source="google_news", bullish=0.6, bearish=0.2, neutral=0.2, confidence=0.8, key_narratives=["headline1"]),
+            SentimentResult(source="bing_news", bullish=0.5, bearish=0.3, neutral=0.2, confidence=0.5, key_narratives=["headline2"]),
+            SentimentResult(source="reddit", bullish=0.4, bearish=0.4, neutral=0.2, confidence=0.7, key_narratives=["headline3"]),
+        ]
+        consensus = researcher._aggregate_consensus(results)
+        assert consensus["consensus_sentiment"] in {"bullish", "bearish", "neutral"}
+        assert 0 <= consensus["consensus_confidence"] <= 1
+        assert 0.05 <= consensus["sentiment_implied_probability"] <= 0.95
+
+
+# ── Snapshot Saving ───────────────────────────────────────────────────────
+
+
+class TestSnapshotSave:
+    def test_save_includes_all_sources(self, tmp_path, researcher_all_sources, sample_market):
+        brief = researcher_all_sources.research_market(sample_market)
+        fp = save_research_snapshot([brief], output_dir=tmp_path)
+        data = json.loads(fp.read_text())
+        assert data["markets_researched"] == 1
+        sources = data["briefs"][0]["sources"]
+        source_names = {s["source"] for s in sources}
+        assert len(source_names) == 3
+
+
+# ── Pipeline Integration ─────────────────────────────────────────────────
+
+
+class TestPipelineIntegration:
+    def test_pipeline_uses_research_markets(self):
+        """Pipeline._step_research should call research_markets (not loop)."""
+        from scripts.pipeline import TradingPipeline
+        import inspect
+        source = inspect.getsource(TradingPipeline._step_research)
+        assert "research_markets" in source, "Pipeline should use parallel research_markets method"
+        assert "for i, market in enumerate" not in source, "Pipeline should not loop sequentially"

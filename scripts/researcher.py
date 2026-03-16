@@ -2,25 +2,39 @@
 Step 2: RESEARCH — Gather Sentiment for Markets
 
 Takes market dicts (from Market dataclass via asdict()), extracts search
-queries from titles, fetches headlines from Google News RSS and Reddit
-public JSON, runs keyword-based sentiment analysis with bigram negation,
-aggregates consensus across sources, computes gap vs market price, and
-saves research briefs as JSON.
+queries from titles, fetches headlines from Google News RSS, Bing News RSS,
+and Reddit public JSON, optionally searches X/Twitter via Grok's x_search
+tool (top N markets only), runs keyword-based sentiment analysis with bigram
+negation, aggregates consensus across sources, computes gap vs market
+price, and saves research briefs as JSON.
+
+Sources are fetched in parallel (ThreadPoolExecutor) within each market.
+Multiple markets are also researched in parallel using configurable
+`parallel_workers` (default 3) from settings.yaml.
+
+Before researching, reads failure_log.md to check past mistakes and
+includes relevant warnings in the narrative summary so the prediction
+engine can factor in prior losses on similar markets.
 """
 
 import json
 import logging
+import os
 import re
 import sys
 import time
 import xml.etree.ElementTree as ET
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, asdict, field
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 
 import requests
+
+from dotenv import load_dotenv
+load_dotenv()
 
 # Allow running both as `python scripts/researcher.py` and as an import
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -136,22 +150,97 @@ class NewsResearcher:
         self.sentiment_threshold = research_cfg.get("sentiment_threshold", 0.6)
         self.sources = research_cfg.get("sources", ["google_news_rss", "reddit"])
 
+        # X Search config (via Grok 4 Responses API)
+        x_cfg = research_cfg.get("x_search", {})
+        self.x_search_enabled = x_cfg.get("enabled", False)
+        self.x_search_top_n = x_cfg.get("top_n", 5)
+        self.x_search_max_results = x_cfg.get("max_results", 10)
+        self.grok_api_key = os.environ.get("GROK_API_KEY", "")
+
+        # Parallel config
+        self.parallel_workers = research_cfg.get("parallel_workers", 3)
+
+        # Retry config
+        exec_cfg = s.get("execution", {})
+        self.retry_attempts = exec_cfg.get("retry_attempts", 3)
+        self.retry_delay = exec_cfg.get("retry_delay_seconds", 5)
+
         self.session = requests.Session()
         self.session.headers.update({
             "User-Agent": "predict-market-bot/0.1 (research-agent)",
         })
 
+        # Load past failures for context in research briefs
+        self.past_failures = self._load_past_failures()
+
+    # ------------------------------------------------------------------
+    # Failure log integration
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _load_past_failures() -> Dict[str, List[Dict[str, str]]]:
+        """
+        Load failure_log.md and build a lookup of market_id → failure info.
+
+        Returns dict mapping market_id to list of failure dicts.
+        Used to add warnings to research briefs for markets with past losses.
+        """
+        try:
+            from scripts.compounder import Compounder
+            entries = Compounder.load_failure_log()
+        except Exception as exc:
+            logger.debug("Could not load failure log: %s", exc)
+            return {}
+
+        failures_by_market: Dict[str, List[Dict[str, str]]] = {}
+        for entry in entries:
+            mid = entry.get("market_id", "")
+            if mid:
+                failures_by_market.setdefault(mid, []).append(entry)
+
+        if failures_by_market:
+            logger.info(
+                "Loaded %d past failures across %d markets from failure log",
+                sum(len(v) for v in failures_by_market.values()),
+                len(failures_by_market),
+            )
+
+        return failures_by_market
+
+    def _get_failure_context(self, market_id: str) -> str:
+        """
+        Build a warning string for markets with past failures.
+
+        Returns empty string if no past failures exist for this market.
+        """
+        failures = self.past_failures.get(market_id, [])
+        if not failures:
+            return ""
+
+        warnings = []
+        for f in failures:
+            cat = f.get("category", "Unknown")
+            lesson = f.get("lesson", "No details")
+            warnings.append(f"[{cat}] {lesson}")
+
+        return (
+            f"WARNING: Past failures on this market ({len(failures)} recorded): "
+            + " | ".join(warnings[:3])  # Cap at 3 to avoid bloat
+        )
+
     # ------------------------------------------------------------------
     # Public API
     # ------------------------------------------------------------------
 
-    def research_market(self, market_dict: Dict[str, Any]) -> ResearchBrief:
+    def research_market(self, market_dict: Dict[str, Any], use_x_search: bool = False) -> ResearchBrief:
         """
         Research a single market and return a ResearchBrief.
 
         Args:
             market_dict: Dict from asdict(Market) — must have
                          market_id, title, yes_price keys.
+            use_x_search: If True and x_search is enabled, also search X/Twitter
+                          via Grok 4 Responses API.
         """
         market_id = market_dict.get("market_id", "unknown")
         title = market_dict.get("title", "")
@@ -162,23 +251,47 @@ class NewsResearcher:
 
         source_results: List[SentimentResult] = []
 
-        # Google News RSS
-        if "google_news_rss" in self.sources:
-            articles = self._fetch_google_news(query)
-            logger.info("%s: Google News returned %d articles", market_id, len(articles))
-            if not articles:
-                logger.warning("%s: zero Google News results for query=%r", market_id, query)
-            sr = self._analyze_sentiment(articles, "google_news")
-            source_results.append(sr)
+        # Build list of source fetch tasks: (fetch_fn, args, source_label)
+        fetch_tasks: List[Tuple[Any, tuple, str]] = []
 
-        # Reddit
+        if "google_news_rss" in self.sources:
+            fetch_tasks.append((self._fetch_google_news, (query,), "google_news"))
+        if "bing_news_rss" in self.sources:
+            fetch_tasks.append((self._fetch_bing_news, (query,), "bing_news"))
         if "reddit" in self.sources:
-            posts = self._fetch_reddit(query)
-            logger.info("%s: Reddit returned %d posts", market_id, len(posts))
-            if not posts:
-                logger.warning("%s: zero Reddit results for query=%r", market_id, query)
-            sr = self._analyze_sentiment(posts, "reddit")
+            fetch_tasks.append((self._fetch_reddit, (query,), "reddit"))
+        if use_x_search and self.x_search_enabled and self.grok_api_key:
+            fetch_tasks.append((self._fetch_x_search, (query, title), "x_twitter"))
+
+        # Fetch all sources in parallel
+        def _fetch_source(task):
+            fn, args, label = task
+            try:
+                articles = fn(*args)
+                return label, articles
+            except Exception as exc:
+                logger.warning("%s: %s fetch failed: %s", market_id, label, exc)
+                return label, []
+
+        if len(fetch_tasks) > 1:
+            with ThreadPoolExecutor(max_workers=len(fetch_tasks)) as pool:
+                futures = {pool.submit(_fetch_source, t): t for t in fetch_tasks}
+                for future in as_completed(futures):
+                    label, articles = future.result()
+                    count = len(articles)
+                    logger.info("%s: %s returned %d items", market_id, label, count)
+                    if not articles:
+                        logger.warning("%s: zero results from %s for query=%r", market_id, label, query)
+                    sr = self._analyze_sentiment(articles, label)
+                    source_results.append(sr)
+        elif fetch_tasks:
+            # Single source — no thread overhead
+            label, articles = _fetch_source(fetch_tasks[0])
+            logger.info("%s: %s returned %d items", market_id, label, len(articles))
+            sr = self._analyze_sentiment(articles, label)
             source_results.append(sr)
+        else:
+            logger.warning("%s: no sources configured", market_id)
 
         # Consensus
         consensus = self._aggregate_consensus(source_results)
@@ -198,6 +311,12 @@ class NewsResearcher:
             title, source_results, consensus["consensus_sentiment"],
             consensus["consensus_confidence"], gap, gap_direction,
         )
+
+        # Append failure context if this market has past losses
+        failure_context = self._get_failure_context(market_id)
+        if failure_context:
+            narrative = f"{narrative} {failure_context}"
+            logger.info("%s: past failure context added to narrative", market_id)
 
         brief = ResearchBrief(
             market_id=market_id,
@@ -231,6 +350,63 @@ class NewsResearcher:
 
         logger.info("Brief saved: %s", fp)
         return fp
+
+    def research_markets(
+        self,
+        market_dicts: List[Dict[str, Any]],
+        x_search_top_n: int = 0,
+    ) -> List[ResearchBrief]:
+        """
+        Research multiple markets in parallel using ThreadPoolExecutor.
+
+        Args:
+            market_dicts: List of dicts from asdict(Market).
+            x_search_top_n: Enable X Search for the first N markets (0 = off).
+
+        Returns:
+            List of ResearchBriefs (order may differ from input).
+        """
+        if not market_dicts:
+            return []
+
+        workers = min(self.parallel_workers, len(market_dicts))
+        logger.info(
+            "Researching %d markets with %d parallel workers",
+            len(market_dicts), workers,
+        )
+
+        briefs: List[ResearchBrief] = []
+
+        def _research_one(idx_market):
+            idx, mkt = idx_market
+            use_x = idx < x_search_top_n
+            return self.research_market(mkt, use_x_search=use_x)
+
+        if workers > 1:
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                futures = {
+                    pool.submit(_research_one, (i, m)): m
+                    for i, m in enumerate(market_dicts)
+                }
+                for future in as_completed(futures):
+                    mkt = futures[future]
+                    ticker = mkt.get("market_id", "unknown")
+                    try:
+                        brief = future.result()
+                        briefs.append(brief)
+                    except Exception as exc:
+                        logger.error("Failed to research %s: %s", ticker, exc)
+        else:
+            # Single worker — sequential (avoids thread overhead for 1 market)
+            for i, mkt in enumerate(market_dicts):
+                try:
+                    brief = _research_one((i, mkt))
+                    briefs.append(brief)
+                except Exception as exc:
+                    logger.error("Failed to research %s: %s", mkt.get("market_id", "unknown"), exc)
+
+        logger.info("Completed research: %d/%d markets", len(briefs), len(market_dicts))
+        return briefs
 
     # ------------------------------------------------------------------
     # Query extraction
@@ -297,10 +473,16 @@ class NewsResearcher:
         url = f"https://news.google.com/rss/search?q={encoded}&hl=en&gl=US&ceid=US:en"
 
         try:
-            resp = self.session.get(url, timeout=15)
+            from scripts.retry import retry_call
+            resp = retry_call(
+                self.session.get, url, timeout=15,
+                max_attempts=self.retry_attempts,
+                base_delay=self.retry_delay,
+                context="Google News RSS",
+            )
             resp.raise_for_status()
         except requests.RequestException as exc:
-            logger.warning("Google News fetch error: %s", exc)
+            logger.warning("Google News fetch error after retries: %s", exc)
             return []
 
         articles = []
@@ -359,7 +541,13 @@ class NewsResearcher:
         }
 
         try:
-            resp = self.session.get(url, params=params, timeout=15)
+            from scripts.retry import retry_call
+            resp = retry_call(
+                self.session.get, url, params=params, timeout=15,
+                max_attempts=self.retry_attempts,
+                base_delay=self.retry_delay,
+                context="Reddit search",
+            )
 
             if resp.status_code == 429:
                 logger.warning("Reddit rate limited (429), returning empty")
@@ -367,7 +555,7 @@ class NewsResearcher:
 
             resp.raise_for_status()
         except requests.RequestException as exc:
-            logger.warning("Reddit fetch error: %s", exc)
+            logger.warning("Reddit fetch error after retries: %s", exc)
             return []
 
         posts = []
@@ -400,6 +588,184 @@ class NewsResearcher:
         time.sleep(1)
 
         return posts
+
+    # ------------------------------------------------------------------
+    # Bing News RSS
+    # ------------------------------------------------------------------
+
+    def _fetch_bing_news(self, query: str) -> List[Dict[str, str]]:
+        """
+        Fetch headlines from Bing News RSS.
+
+        Free, no API key needed. Returns list of dicts with keys:
+        title, source, pub_date, text — same shape as Google News.
+        """
+        encoded = requests.utils.quote(query)
+        url = f"https://www.bing.com/news/search?q={encoded}&format=rss"
+
+        try:
+            from scripts.retry import retry_call
+            resp = retry_call(
+                self.session.get, url, timeout=15,
+                max_attempts=self.retry_attempts,
+                base_delay=self.retry_delay,
+                context="Bing News RSS",
+            )
+            resp.raise_for_status()
+        except requests.RequestException as exc:
+            logger.warning("Bing News fetch error after retries: %s", exc)
+            return []
+
+        articles = []
+        try:
+            root = ET.fromstring(resp.content)
+            items = root.findall(".//item")
+
+            for item in items[:self.max_articles]:
+                headline = item.findtext("title", "").strip()
+                if not headline:
+                    continue
+
+                # Bing uses <news:Source> or plain <source> for publisher
+                source_name = ""
+                # Try namespace version first
+                for ns_prefix in ["news", "bing"]:
+                    for el in item:
+                        if el.tag.endswith("Source") or el.tag.endswith("source"):
+                            if el.text:
+                                source_name = el.text.strip()
+                                break
+                    if source_name:
+                        break
+
+                pub_date = item.findtext("pubDate", "")
+
+                articles.append({
+                    "title": headline,
+                    "source": source_name or "bing_news",
+                    "pub_date": pub_date,
+                    "text": headline,
+                })
+
+        except ET.ParseError as exc:
+            logger.warning("Bing News XML parse error: %s", exc)
+            return []
+
+        return articles
+
+    # ------------------------------------------------------------------
+    # X/Twitter via Grok x_search (Responses API)
+    # ------------------------------------------------------------------
+
+    def _fetch_x_search(self, query: str, full_title: str = "") -> List[Dict[str, str]]:
+        """
+        Search X/Twitter using Grok 4's built-in x_search tool.
+
+        Uses the xAI Responses API (not Chat Completions — x_search
+        requires Grok 4 family models). Returns a list of dicts with
+        keys: title, text, source — same shape as Google News / Reddit
+        results for unified sentiment analysis.
+
+        Cost: ~$0.22 per call (Grok 4 + x_search tool invocation).
+        """
+        if not self.grok_api_key:
+            logger.warning("X Search: GROK_API_KEY not set, skipping")
+            return []
+
+        prompt = (
+            f"Search X for the most recent posts about: {query}\n"
+            f"Full market question: {full_title}\n\n"
+            f"Return ONLY a JSON array of the {self.x_search_max_results} most "
+            f"relevant posts. Each element should have:\n"
+            f'  "text": the post content,\n'
+            f'  "author": the username,\n'
+            f'  "sentiment": "bullish" or "bearish" or "neutral"\n'
+            f"No other text — just the JSON array."
+        )
+
+        try:
+            # x_search requires Grok 4 family — Grok 3 is not supported
+            from scripts.retry import retry_call
+            resp = retry_call(
+                requests.post,
+                "https://api.x.ai/v1/responses",
+                headers={
+                    "Authorization": f"Bearer {self.grok_api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "model": "grok-4.20-beta-latest-non-reasoning",
+                    "input": [{"role": "user", "content": prompt}],
+                    "tools": [{"type": "x_search"}],
+                    "max_output_tokens": 1500,
+                },
+                timeout=60,
+                max_attempts=self.retry_attempts,
+                base_delay=self.retry_delay,
+                context="X Search (Grok 4)",
+            )
+
+            if resp.status_code != 200:
+                logger.warning("X Search API error %d: %s", resp.status_code, resp.text[:200])
+                return []
+
+            data = resp.json()
+
+            # Track cost
+            usage = data.get("usage", {})
+            cost_ticks = usage.get("cost_in_usd_ticks", 0)
+            cost_usd = cost_ticks / 1_000_000_000
+            logger.info("X Search cost: $%.4f (in=%s out=%s)",
+                        cost_usd,
+                        usage.get("input_tokens", "?"),
+                        usage.get("output_tokens", "?"))
+
+            # Extract text content from Responses API output
+            text_content = ""
+            for item in data.get("output", []):
+                if item.get("type") == "message":
+                    for c in item.get("content", []):
+                        if c.get("type") == "output_text":
+                            text_content = c["text"]
+
+            if not text_content:
+                logger.warning("X Search: no text content in response")
+                return []
+
+            # Parse JSON array from response
+            # Strip markdown code fences if present
+            cleaned = text_content.strip()
+            if cleaned.startswith("```"):
+                cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned)
+                cleaned = re.sub(r"\s*```\s*$", "", cleaned)
+
+            posts_data = json.loads(cleaned)
+            if not isinstance(posts_data, list):
+                logger.warning("X Search: expected JSON array, got %s", type(posts_data).__name__)
+                return []
+
+            # Convert to standard article format for sentiment analysis
+            articles = []
+            for post in posts_data[:self.x_search_max_results]:
+                text = post.get("text", "")
+                author = post.get("author", "unknown")
+                articles.append({
+                    "title": f"@{author}: {text[:100]}",
+                    "text": text,
+                    "source": "x_twitter",
+                })
+
+            return articles
+
+        except json.JSONDecodeError:
+            logger.warning("X Search: failed to parse JSON from Grok response")
+            return []
+        except requests.RequestException as exc:
+            logger.warning("X Search request error: %s", exc)
+            return []
+        except Exception as exc:
+            logger.error("X Search unexpected error: %s", exc, exc_info=True)
+            return []
 
     # ------------------------------------------------------------------
     # Sentiment analysis
@@ -657,32 +1023,31 @@ def _print_research_table(briefs: List[ResearchBrief]) -> None:
     emoji = {"bullish": "+", "bearish": "-", "neutral": "~"}
 
     header = (
-        f"{'#':>3}  {'Market Title':<45} {'Sent':>6} {'Conf':>5} "
-        f"{'YesP':>5} {'ImpP':>5} {'Gap':>6} {'Dir':<11} {'News':>4} {'Rdt':>4}"
+        f"{'#':>3}  {'Market Title':<42} {'Sent':>5} {'Conf':>5} "
+        f"{'YesP':>5} {'ImpP':>5} {'Gap':>6} {'Dir':<11} "
+        f"{'GNws':>4} {'Bing':>4} {'Rdt':>4} {'X':>3}"
     )
     print(header)
     print("-" * len(header))
 
     for i, b in enumerate(briefs, 1):
         sent_char = emoji.get(b.consensus_sentiment, "?")
-        title_trunc = b.market_title[:45].ljust(45)
+        title_trunc = b.market_title[:42].ljust(42)
 
         # Count articles per source
-        news_count = 0
-        reddit_count = 0
+        counts = {"google_news": 0, "bing_news": 0, "reddit": 0, "x_twitter": 0}
         for src in b.sources:
-            n = len(src.key_narratives)  # Proxy for article count from key_narratives
-            if src.source == "google_news":
-                news_count = n
-            elif src.source == "reddit":
-                reddit_count = n
+            n = len(src.key_narratives)
+            if src.source in counts:
+                counts[src.source] = n
 
         print(
             f"{i:3d}  {title_trunc} "
-            f"{sent_char:>6} {b.consensus_confidence:5.1%} "
+            f"{sent_char:>5} {b.consensus_confidence:5.1%} "
             f"{b.current_yes_price:5.2f} {b.sentiment_implied_probability:5.2f} "
             f"{b.gap:+6.1%} {b.gap_direction:<11} "
-            f"{news_count:4d} {reddit_count:4d}"
+            f"{counts['google_news']:4d} {counts['bing_news']:4d} "
+            f"{counts['reddit']:4d} {counts['x_twitter']:3d}"
         )
 
 
@@ -745,15 +1110,15 @@ if __name__ == "__main__":
     print(f"Markets to research: {len(targets)}\n")
 
     researcher = NewsResearcher()
-    briefs: List[ResearchBrief] = []
 
-    for market_dict in targets:
-        try:
-            brief = researcher.research_market(market_dict)
-            briefs.append(brief)
-        except Exception as exc:
-            ticker = market_dict.get("market_id", "unknown")
-            logger.error("Failed to research %s: %s", ticker, exc)
+    x_search_count = researcher.x_search_top_n if researcher.x_search_enabled else 0
+    if x_search_count:
+        print(f"X Search enabled for top {x_search_count} markets (~$0.22/market)")
+
+    print(f"Sources: {', '.join(researcher.sources)}")
+    print(f"Parallel workers: {researcher.parallel_workers}\n")
+
+    briefs = researcher.research_markets(targets, x_search_top_n=x_search_count)
 
     if briefs:
         print()

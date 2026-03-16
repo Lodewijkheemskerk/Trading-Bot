@@ -55,6 +55,7 @@ PREDICTIONS_DIR = DATA_DIR / "predictions"
 LOGS_DIR = PROJECT_ROOT / "logs"
 REFERENCES_DIR = PROJECT_ROOT / "references"
 KILL_SWITCH_FILE = PROJECT_ROOT / get_setting("execution.kill_switch_file", "STOP")
+PAUSE_FILE = PROJECT_ROOT / "PAUSE"
 
 # Auto-create data directories on import
 for _dir in (DATA_DIR, TRADES_DIR, MARKET_DIR, RESEARCH_DIR, PREDICTIONS_DIR, LOGS_DIR):

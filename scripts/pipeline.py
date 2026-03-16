@@ -1,7 +1,7 @@
 """
-TRADING PIPELINE — Full 5-Step Orchestrator
+TRADING PIPELINE — Full 7-Step Orchestrator
 
-Scan → Research → Predict → Execute → Compound
+Scan → Research → Predict → Execute → Monitor → Resolve → Compound
 
 Usage:
   python scripts/pipeline.py --mode once          # Single pipeline run
@@ -18,22 +18,24 @@ from pathlib import Path
 from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from config import load_settings, KILL_SWITCH_FILE, DATA_DIR, TRADES_DIR
+from config import load_settings, KILL_SWITCH_FILE, PAUSE_FILE, DATA_DIR, TRADES_DIR
 
 logger = logging.getLogger(__name__)
 
 
 class TradingPipeline:
-    """Orchestrates the complete 5-step trading pipeline."""
+    """Orchestrates the complete 7-step trading pipeline."""
 
     def __init__(self, settings: Optional[dict] = None, heuristic_only: bool = False):
         self.settings = settings or load_settings()
         self.heuristic_only = heuristic_only
         self._step_count = 0
+        self._nightly_review_done_date: Optional[str] = None  # ISO date string
 
     def run_once(self) -> dict:
         """
-        Execute one complete pipeline cycle: Scan → Research → Predict → Execute → Compound.
+        Execute one complete pipeline cycle:
+        Scan → Research → Predict → Execute → Monitor → Resolve → Compound.
 
         Returns a summary dict of what happened in each step.
         """
@@ -89,7 +91,17 @@ class TradingPipeline:
             logger.error("Execute step failed — aborting cycle")
             return summary
 
-        # Step 5: COMPOUND
+        # Step 5: MONITOR — Check open positions for exit conditions
+        monitor_result = self._step_monitor()
+        summary["steps"]["monitor"] = monitor_result
+        # Monitor failures are non-fatal — continue to resolve and compound
+
+        # Step 6: RESOLVE — Check settled markets and close trades
+        resolve_result = self._step_resolve()
+        summary["steps"]["resolve"] = resolve_result
+        # Resolve failures are non-fatal — we still want compound to run
+
+        # Step 6: COMPOUND — Analyze, classify, learn
         compound_result = self._step_compound()
         summary["steps"]["compound"] = compound_result
 
@@ -99,12 +111,15 @@ class TradingPipeline:
 
         return summary
 
-    def run_loop(self, interval_minutes: int = 15):
+    def run_loop(self, interval_minutes: int = None):
         """
         Run the pipeline in a continuous loop.
 
         Checks kill switch between cycles. Sleeps for interval_minutes.
+        If interval_minutes is None, reads from settings.yaml scanner.schedule_minutes.
         """
+        if interval_minutes is None:
+            interval_minutes = self.settings.get("scanner", {}).get("schedule_minutes", 15)
         logger.info("Starting pipeline loop with %d-minute interval", interval_minutes)
         logger.info("Create '%s' file to halt trading", KILL_SWITCH_FILE)
 
@@ -115,13 +130,21 @@ class TradingPipeline:
                 print("\n[!] Kill switch detected -- trading halted.")
                 break
 
-            try:
-                result = self.run_once()
-                if result.get("halted"):
-                    break
-            except Exception as exc:
-                logger.error("Pipeline cycle error: %s", exc, exc_info=True)
-                # Continue to next cycle — don't crash the loop
+            # Check pause — skip cycle but keep loop alive
+            if self._check_paused():
+                logger.info("Pipeline paused — skipping cycle")
+                print("[PAUSED] Pipeline paused -- skipping cycle, will check again in %d minutes" % interval_minutes)
+            else:
+                try:
+                    result = self.run_once()
+                    if result.get("halted"):
+                        break
+                except Exception as exc:
+                    logger.error("Pipeline cycle error: %s", exc, exc_info=True)
+                    # Continue to next cycle — don't crash the loop
+
+            # Check if it's time for nightly review
+            self._maybe_run_nightly_review()
 
             # Sleep until next cycle (check kill switch every 10 seconds)
             logger.info("Sleeping %d minutes until next cycle...", interval_minutes)
@@ -162,7 +185,7 @@ class TradingPipeline:
         try:
             from scripts.scanner import MarketScanner
             from dataclasses import asdict
-            logger.info("[Step 1/5] SCAN — Fetching Kalshi markets...")
+            logger.info("[Step 1/7] SCAN — Fetching Kalshi markets...")
 
             scanner = MarketScanner(settings=self.settings)
             result = scanner.scan_all()
@@ -184,19 +207,17 @@ class TradingPipeline:
         """Step 2: Research top markets."""
         try:
             from scripts.researcher import NewsResearcher, save_research_snapshot
-            logger.info("[Step 2/5] RESEARCH — Analyzing %d markets...", len(markets))
+            logger.info("[Step 2/7] RESEARCH — Analyzing %d markets...", len(markets))
 
             researcher = NewsResearcher(settings=self.settings)
             top_n = self.settings.get("research", {}).get("parallel_workers", 3)
             targets = markets[:top_n]
 
-            briefs = []
-            for market in targets:
-                try:
-                    brief = researcher.research_market(market)
-                    briefs.append(brief)
-                except Exception as exc:
-                    logger.warning("Research failed for %s: %s", market.get("market_id", "?"), exc)
+            x_search_n = researcher.x_search_top_n if researcher.x_search_enabled else 0
+            if x_search_n:
+                logger.info("X Search enabled for top %d markets", x_search_n)
+
+            briefs = researcher.research_markets(targets, x_search_top_n=x_search_n)
 
             if briefs:
                 save_research_snapshot(briefs)
@@ -218,7 +239,7 @@ class TradingPipeline:
                 save_prediction_snapshot,
             )
             import os
-            logger.info("[Step 3/5] PREDICT — Running ensemble prediction...")
+            logger.info("[Step 3/7] PREDICT — Running ensemble prediction...")
 
             # Force heuristic-only if configured
             if self.heuristic_only:
@@ -254,13 +275,24 @@ class TradingPipeline:
             return {"success": False, "error": str(exc)}
 
     def _step_execute(self) -> dict:
-        """Step 4: Execute paper trades."""
+        """Step 4: Execute paper trades (gated by trading hours)."""
+        # Trading hours gate — skip execution outside active window
+        hours_check = self._check_trading_hours()
+        if not hours_check["allowed"]:
+            logger.info("[Step 4/7] EXECUTE — SKIPPED: %s", hours_check["reason"])
+            return {
+                "success": True,
+                "executed": 0,
+                "blocked": 0,
+                "skipped_reason": hours_check["reason"],
+            }
+
         try:
             from scripts.executor import (
                 TradeExecutor, load_latest_prediction_snapshot,
                 save_execution_snapshot,
             )
-            logger.info("[Step 4/5] EXECUTE — Running risk checks and paper trades...")
+            logger.info("[Step 4/7] EXECUTE — Running risk checks and paper trades...")
 
             snapshot = load_latest_prediction_snapshot()
             if snapshot is None:
@@ -295,21 +327,104 @@ class TradingPipeline:
             logger.error("Execute failed: %s", exc, exc_info=True)
             return {"success": False, "error": str(exc)}
 
-    def _step_compound(self) -> dict:
-        """Step 5: Compound learning."""
+    def _step_monitor(self) -> dict:
+        """Step 5: Monitor open positions for exit conditions."""
         try:
-            from scripts.compounder import Compounder
-            logger.info("[Step 5/5] COMPOUND — Analyzing performance...")
+            from scripts.position_monitor import PositionMonitor, save_monitor_snapshot
+            logger.info("[Step 5/7] MONITOR — Checking open positions for exits...")
 
-            compounder = Compounder(settings=self.settings)
-            report = compounder.get_performance_report()
+            monitor = PositionMonitor(settings=self.settings)
+            summary = monitor.check_all()
+
+            if summary["exits_triggered"] > 0:
+                save_monitor_snapshot(summary)
 
             logger.info(
-                "Compound complete: %d total trades, win_rate=%.1f%%, P&L=$%.2f",
+                "Monitor complete: %d checked, %d exits (P&L=$%.2f), %d held",
+                summary["positions_checked"], summary["exits_triggered"],
+                summary["total_exit_pnl"], summary["held"],
+            )
+            return {
+                "success": True,
+                "positions_checked": summary["positions_checked"],
+                "exits_triggered": summary["exits_triggered"],
+                "exits_by_reason": summary.get("exits_by_reason", {}),
+                "exit_pnl": summary["total_exit_pnl"],
+                "held": summary["held"],
+            }
+        except Exception as exc:
+            logger.error("Monitor failed: %s", exc, exc_info=True)
+            return {"success": False, "error": str(exc)}
+
+    def _step_resolve(self) -> dict:
+        """Step 6: Resolve settled markets and close trades."""
+        try:
+            from scripts.resolver import TradeResolver, save_resolution_snapshot
+            logger.info("[Step 6/7] RESOLVE — Checking settled markets...")
+
+            resolver = TradeResolver(settings=self.settings)
+            summary = resolver.resolve_all()
+
+            # Update portfolio state if trades were resolved
+            if summary["resolved"] > 0:
+                resolver.update_portfolio_state(summary["resolutions"])
+                save_resolution_snapshot(summary)
+
+            logger.info(
+                "Resolve complete: %d resolved (P&L=$%.2f), %d still open",
+                summary["resolved"], summary["total_pnl_resolved"],
+                summary["still_open"],
+            )
+            return {
+                "success": True,
+                "resolved": summary["resolved"],
+                "still_open": summary["still_open"],
+                "pnl_resolved": summary["total_pnl_resolved"],
+            }
+        except Exception as exc:
+            logger.error("Resolve failed: %s", exc, exc_info=True)
+            return {"success": False, "error": str(exc)}
+
+    def _step_compound(self) -> dict:
+        """Step 6: Compound learning — analyze outcomes, classify failures, update knowledge base."""
+        try:
+            from scripts.compounder import Compounder
+            logger.info("[Step 7/7] COMPOUND — Analyzing performance and learning...")
+
+            compounder = Compounder(settings=self.settings)
+
+            # Analyze newly closed trades, classify failures, append to failure_log
+            trades = compounder.load_individual_trades()
+            if not trades:
+                trades = compounder.load_all_trades()
+
+            newly_closed = [
+                t for t in trades
+                if t.get("status") == "closed" and not t.get("analyzed")
+            ]
+
+            analyses = []
+            for trade in newly_closed:
+                analysis = compounder.analyze_trade(trade)
+                if analysis.get("status") != "no_outcome":
+                    analyses.append(analysis)
+                    compounder._mark_analyzed(trade.get("trade_id"))
+
+            failures_logged = compounder.append_failures_to_log(analyses)
+
+            # Generate performance report
+            report = compounder.get_performance_report(trades)
+
+            logger.info(
+                "Compound complete: %d trades analyzed, %d failures logged, "
+                "total=%d win_rate=%.1f%% P&L=$%.2f",
+                len(analyses), failures_logged,
                 report.total_trades, report.win_rate * 100, report.total_pnl,
             )
             return {
                 "success": True,
+                "newly_analyzed": len(analyses),
+                "failures_logged": failures_logged,
                 "total_trades": report.total_trades,
                 "win_rate": report.win_rate,
                 "total_pnl": report.total_pnl,
@@ -322,10 +437,111 @@ class TradingPipeline:
     # Helpers
     # ------------------------------------------------------------------
 
+    def _maybe_run_nightly_review(self) -> None:
+        """
+        Run the nightly review if the current hour matches the configured
+        nightly_review_hour and we haven't already run it today.
+
+        This triggers the full compound learning cycle: resolve outcomes,
+        classify failures, write failure_log.md, generate performance report.
+        """
+        review_hour = self.settings.get("compound", {}).get("nightly_review_hour", 23)
+        now = datetime.now()
+        today = now.strftime("%Y-%m-%d")
+
+        if now.hour != review_hour:
+            return
+
+        if self._nightly_review_done_date == today:
+            return  # Already ran today
+
+        logger.info("="*60)
+        logger.info("NIGHTLY REVIEW — triggered at hour %d", review_hour)
+        logger.info("="*60)
+
+        try:
+            from scripts.compounder import Compounder
+            compounder = Compounder(self.settings)
+            review_text = compounder.nightly_review()
+            self._nightly_review_done_date = today
+            logger.info("Nightly review complete")
+
+            # Save review to a dated file
+            review_fp = DATA_DIR / "reviews" / f"review_{today}.md"
+            review_fp.parent.mkdir(parents=True, exist_ok=True)
+            with open(review_fp, "w", encoding="utf-8") as f:
+                f.write(review_text)
+            logger.info("Review saved to %s", review_fp)
+
+        except Exception as exc:
+            logger.error("Nightly review failed: %s", exc, exc_info=True)
+
+    def _check_trading_hours(self) -> dict:
+        """
+        Check if we're inside Kalshi's maintenance blackout window.
+
+        Kalshi is 24/7 except Thursday 3–5 AM ET maintenance.
+        Returns {"allowed": bool, "reason": str}.
+        When maintenance_blackout is False, always allows trading.
+        """
+        hours_cfg = self.settings.get("trading_hours", {})
+        if not hours_cfg.get("maintenance_blackout", True):
+            return {"allowed": True, "reason": "Maintenance blackout check disabled"}
+
+        blackout_day = hours_cfg.get("blackout_day", 3)       # 0=Mon, 3=Thu
+        start_hour = hours_cfg.get("blackout_start_hour", 3)
+        end_hour = hours_cfg.get("blackout_end_hour", 5)
+        tz_name = hours_cfg.get("blackout_timezone", "America/New_York")
+
+        try:
+            from zoneinfo import ZoneInfo
+            tz = ZoneInfo(tz_name)
+        except Exception:
+            from datetime import timezone as tz_mod
+            tz = tz_mod.utc
+            tz_name = "UTC"
+
+        now = datetime.now(tz)
+        current_hour = now.hour
+        weekday = now.weekday()  # 0=Monday, 6=Sunday
+
+        if weekday == blackout_day and start_hour <= current_hour < end_hour:
+            return {
+                "allowed": False,
+                "reason": f"Kalshi maintenance window ({start_hour}:00–{end_hour}:00 {tz_name}, day={weekday})",
+            }
+
+        return {
+            "allowed": True,
+            "reason": "Outside maintenance window — trading allowed",
+        }
+
     @staticmethod
     def _check_kill_switch() -> bool:
         """Check if the kill switch file exists."""
         return KILL_SWITCH_FILE.exists()
+
+    @staticmethod
+    def _check_paused() -> bool:
+        """Check if the pause file exists."""
+        return PAUSE_FILE.exists()
+
+    @staticmethod
+    def pause():
+        """Create the PAUSE file to pause the pipeline loop."""
+        PAUSE_FILE.write_text(
+            f"PAUSED at {datetime.now(timezone.utc).isoformat()}\n"
+        )
+        logger.info("Pipeline PAUSED — created %s", PAUSE_FILE)
+
+    @staticmethod
+    def unpause():
+        """Remove the PAUSE file to resume the pipeline loop."""
+        if PAUSE_FILE.exists():
+            PAUSE_FILE.unlink()
+            logger.info("Pipeline RESUMED — removed %s", PAUSE_FILE)
+        else:
+            logger.info("Pipeline was not paused")
 
 
 # ---------------------------------------------------------------------------
@@ -364,6 +580,14 @@ if __name__ == "__main__":
         "--resume", action="store_true",
         help="Deactivate kill switch (remove STOP file).",
     )
+    parser.add_argument(
+        "--pause", action="store_true",
+        help="Pause the pipeline loop (skips cycles, loop stays alive).",
+    )
+    parser.add_argument(
+        "--unpause", action="store_true",
+        help="Resume the pipeline loop after a pause.",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -378,6 +602,16 @@ if __name__ == "__main__":
 
     if args.resume:
         TradingPipeline.deactivate_kill_switch()
+        sys.exit(0)
+
+    if args.pause:
+        TradingPipeline.pause()
+        print("[PAUSED] Pipeline will skip cycles until --unpause is called.")
+        sys.exit(0)
+
+    if args.unpause:
+        TradingPipeline.unpause()
+        print("[OK] Pipeline resumed.")
         sys.exit(0)
 
     # Show status

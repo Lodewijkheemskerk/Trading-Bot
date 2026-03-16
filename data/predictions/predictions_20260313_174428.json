@@ -1,0 +1,46 @@
+{
+  "timestamp": "2026-03-13T16:44:28.855551+00:00",
+  "markets_predicted": 1,
+  "signals": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.163,
+      "market_probability": 0.09,
+      "edge": 0.073,
+      "mispricing_score": 0.73,
+      "expected_value": 0.0358,
+      "direction": "buy_yes",
+      "signal_strength": 0.0358,
+      "confidence": 0.49,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "heuristic_bull",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.26,
+          "confidence": 0.4,
+          "reasoning": "Bull case: market at 0.09, sentiment is neutral (90% conf). Adjusting up by 17% for bull thesis."
+        },
+        {
+          "model_name": "gemini",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.05,
+          "confidence": 0.8,
+          "reasoning": "The film's indefinite delay and absence of a new, firm release date are significant obstacles. Studios typically release official trailers as part of a marketing push for a known release window; doing so without one risks premature hype and audience fatigue. Given past production challenges and the current uncertain status, an early 2026 trailer seems unlikely to be strategically viable."
+        },
+        {
+          "model_name": "heuristic_risk",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.1467,
+          "confidence": 0.3,
+          "reasoning": "Risk view: market at 0.09 is the best prior. Gap of +41.0% is suspicious. Adjusted +0.055 from market anchor."
+        }
+      ],
+      "timestamp": "2026-03-13T16:44:28.855551+00:00"
+    }
+  ]
+}

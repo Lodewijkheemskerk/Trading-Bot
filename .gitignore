@@ -31,3 +31,5 @@ vendor/
 coverage/
 .cache/
 tmp/
+*.pem
+nul

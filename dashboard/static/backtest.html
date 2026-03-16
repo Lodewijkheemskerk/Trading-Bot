@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PREDICT MKT — Backtest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0e17;
+  --bg-card: #111827;
+  --bg-card-alt: #0f1524;
+  --bg-hover: #1a2236;
+  --border: #1e293b;
+  --border-light: #2a3a52;
+  --text: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-dim: #475569;
+  --green: #34d399;
+  --green-bg: rgba(52,211,153,0.08);
+  --red: #f87171;
+  --red-bg: rgba(248,113,113,0.08);
+  --amber: #fbbf24;
+  --amber-bg: rgba(251,191,36,0.08);
+  --blue: #60a5fa;
+  --blue-bg: rgba(96,165,250,0.08);
+  --cyan: #22d3ee;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+  --radius: 10px;
+  --topbar-h: 60px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 15px; }
+body {
+  background: var(--bg); color: var(--text); font-family: var(--font-body);
+  line-height: 1.5; height: 100vh; overflow: hidden; -webkit-font-smoothing: antialiased;
+}
+
+/* ── Top Bar ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 28px; height: var(--topbar-h);
+  background: var(--bg-card); border-bottom: 1px solid var(--border);
+}
+.topbar-left { display: flex; align-items: center; gap: 20px; }
+.logo { font-family: var(--font-mono); font-size: 18px; font-weight: 700; letter-spacing: 4px; color: var(--amber); text-decoration: none; }
+.logo:hover { opacity: 0.8; }
+.logo-sub { font-size: 12px; color: var(--text-dim); letter-spacing: 0.5px; }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+/* ── Left Sidebar Nav ── */
+.app-layout { display: flex; height: calc(100vh - var(--topbar-h)); }
+.sidebar-nav {
+  width: 56px; flex-shrink: 0;
+  background: var(--bg-card); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 16px 0; gap: 4px;
+}
+.sidebar-nav-item {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim); text-decoration: none; transition: all 0.15s;
+  position: relative;
+}
+.sidebar-nav-item:hover { background: var(--bg-hover); color: var(--text-secondary); }
+.sidebar-nav-item.active { background: var(--amber-bg); color: var(--amber); }
+.sidebar-nav-item.active::before {
+  content: ''; position: absolute; left: 0; top: 8px; bottom: 8px;
+  width: 3px; border-radius: 0 2px 2px 0; background: var(--amber);
+}
+.sidebar-nav-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sidebar-nav-tooltip {
+  display: none; position: absolute; left: 54px; top: 50%;
+  transform: translateY(-50%); padding: 4px 10px; border-radius: 6px;
+  background: var(--bg-hover); border: 1px solid var(--border-light);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+  color: var(--text); white-space: nowrap; z-index: 200;
+  font-family: var(--font-mono);
+}
+.sidebar-nav-item:hover .sidebar-nav-tooltip { display: block; }
+
+/* ── Content ── */
+.content {
+  flex: 1;
+  min-width: 0;
+  height: calc(100vh - var(--topbar-h));
+  overflow-y: auto; padding: 28px 36px;
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 20px;
+}
+.stat-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+.stat-value { font-family: var(--font-mono); font-size: 28px; font-weight: 700; margin-top: 4px; }
+.stat-sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; font-family: var(--font-mono); }
+
+/* ── Panels ── */
+.panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin-bottom: 24px;
+}
+.panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+}
+.panel-title { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary); }
+.panel-meta { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); }
+.panel-body { padding: 20px; }
+
+/* ── Row layout ── */
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+/* ── Calibration Chart ── */
+.cal-chart { display: flex; align-items: flex-end; gap: 6px; height: 160px; padding: 0 4px; }
+.cal-bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+.cal-bars { display: flex; gap: 2px; align-items: flex-end; height: 130px; }
+.cal-bar { width: 18px; border-radius: 3px 3px 0 0; min-height: 2px; transition: height 0.3s; }
+.cal-bar.predicted { background: var(--blue); opacity: 0.7; }
+.cal-bar.actual { background: var(--green); }
+.cal-label { font-size: 10px; color: var(--text-dim); font-family: var(--font-mono); }
+.cal-count { font-size: 9px; color: var(--text-dim); font-family: var(--font-mono); }
+.cal-legend { display: flex; gap: 16px; margin-top: 12px; justify-content: center; }
+.cal-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-secondary); }
+.cal-legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+/* ── Trade table ── */
+.trade-table { width: 100%; border-collapse: collapse; }
+.trade-table th {
+  text-align: left; padding: 8px 12px; font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+.trade-table td {
+  padding: 10px 12px; font-size: 13px; border-bottom: 1px solid rgba(30,41,59,0.4);
+  font-family: var(--font-mono);
+}
+.trade-table tr:hover { background: var(--bg-hover); }
+.pnl-positive { color: var(--green); }
+.pnl-negative { color: var(--red); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+.badge-yes { background: var(--green-bg); color: var(--green); }
+.badge-no { background: var(--red-bg); color: var(--red); }
+.badge-win { background: var(--green-bg); color: var(--green); }
+.badge-loss { background: var(--red-bg); color: var(--red); }
+
+/* ── Run button ── */
+.run-btn {
+  padding: 10px 24px; border-radius: 8px; border: 1px solid rgba(52,211,153,0.3);
+  background: var(--green-bg); color: var(--green); font-family: var(--font-mono);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s;
+}
+.run-btn:hover { background: rgba(52,211,153,0.15); border-color: var(--green); }
+.run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.run-status { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); margin-left: 12px; }
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center; padding: 60px 20px; color: var(--text-dim);
+}
+.empty-state h2 { font-size: 18px; color: var(--text-secondary); margin-bottom: 8px; }
+.empty-state p { font-size: 14px; margin-bottom: 24px; }
+
+/* ── Brier gauge ── */
+.gauge-wrap { display: flex; align-items: center; gap: 16px; }
+.gauge-bar { flex: 1; height: 12px; background: var(--border); border-radius: 6px; overflow: hidden; position: relative; }
+.gauge-fill { height: 100%; border-radius: 6px; transition: width 0.5s; }
+.gauge-markers { display: flex; justify-content: space-between; margin-top: 4px; }
+.gauge-marker { font-size: 10px; color: var(--text-dim); font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div><a href="/" class="logo">PREDICT MKT</a><div class="logo-sub">AI Trading Terminal</div></div>
+  </div>
+  <div class="topbar-right"></div>
+</div>
+
+<!-- ── APP LAYOUT: sidebar + content ── -->
+<div class="app-layout">
+
+  <!-- Left nav sidebar -->
+  <nav class="sidebar-nav">
+    <a href="/" class="sidebar-nav-item" title="Dashboard">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span class="sidebar-nav-tooltip">Dashboard</span>
+    </a>
+    <a href="/backtest" class="sidebar-nav-item active" title="Backtest">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span class="sidebar-nav-tooltip">Backtest</span>
+    </a>
+    <a href="/settings" class="sidebar-nav-item" title="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="sidebar-nav-tooltip">Settings</span>
+    </a>
+  </nav>
+
+  <!-- Main content -->
+  <div class="content" id="mainContent">
+
+  <!-- Header row with run button -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+    <div>
+      <h1 style="font-size:20px;font-weight:700;">Backtest Results</h1>
+      <div style="font-size:13px;color:var(--text-dim);margin-top:2px;" id="dateRange">No backtest data yet</div>
+    </div>
+    <div style="display:flex;align-items:center;">
+      <button class="run-btn" id="runBtn" onclick="runBacktest()">RUN BACKTEST</button>
+      <span class="run-status" id="runStatus"></span>
+    </div>
+  </div>
+
+  <!-- Empty state (shown when no data) -->
+  <div class="empty-state" id="emptyState">
+    <h2>No Backtest Data</h2>
+    <p>Click "Run Backtest" to evaluate your predictions against actual market outcomes.<br>
+    The backtester will check which markets have settled on Kalshi and score your predictions.</p>
+  </div>
+
+  <!-- Results (hidden until data loads) -->
+  <div id="resultsWrap" style="display:none;">
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Win Rate</div>
+        <div class="stat-value" id="winRate">--</div>
+        <div class="stat-sub" id="winSub">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total P&L</div>
+        <div class="stat-value" id="totalPnl">--</div>
+        <div class="stat-sub" id="pnlSub">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sharpe Ratio</div>
+        <div class="stat-value" id="sharpe">--</div>
+        <div class="stat-sub" id="sharpeSub">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Brier Score</div>
+        <div class="stat-value" id="brier">--</div>
+        <div class="stat-sub" id="brierSub">--</div>
+      </div>
+    </div>
+
+    <!-- Secondary stats -->
+    <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:24px;">
+      <div class="stat-card">
+        <div class="stat-label">Markets Evaluated</div>
+        <div class="stat-value" style="font-size:22px;" id="totalMarkets">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Settled</div>
+        <div class="stat-value" style="font-size:22px;" id="settledCount">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Unsettled</div>
+        <div class="stat-value" style="font-size:22px;" id="unsettledCount">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Trades Taken</div>
+        <div class="stat-value" style="font-size:22px;" id="tradesTaken">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Max Drawdown</div>
+        <div class="stat-value" style="font-size:22px;" id="maxDrawdown">--</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Calibration chart -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Calibration Curve</span>
+          <span class="panel-meta" id="calMeta">--</span>
+        </div>
+        <div class="panel-body">
+          <div class="cal-chart" id="calChart"></div>
+          <div class="cal-legend">
+            <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--blue);opacity:0.7;"></div> Predicted</div>
+            <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--green);"></div> Actual</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Brier Score gauge -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Model Quality</span>
+          <span class="panel-meta">Lower Brier = better</span>
+        </div>
+        <div class="panel-body">
+          <div style="margin-bottom:20px;">
+            <div style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">Brier Score</div>
+            <div class="gauge-wrap">
+              <div class="gauge-bar"><div class="gauge-fill" id="brierGauge" style="width:0%;background:var(--green);"></div></div>
+              <span style="font-family:var(--font-mono);font-size:16px;font-weight:700;min-width:50px;text-align:right;" id="brierGaugeVal">--</span>
+            </div>
+            <div class="gauge-markers">
+              <span class="gauge-marker">0.00 (perfect)</span>
+              <span class="gauge-marker">0.25 (good)</span>
+              <span class="gauge-marker">0.50 (random)</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">Avg P&L per Trade</div>
+            <div style="font-family:var(--font-mono);font-size:24px;font-weight:700;" id="avgPnl">--</div>
+          </div>
+          <div style="margin-top:16px;">
+            <div style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">Trades Taken vs Skipped</div>
+            <div class="gauge-wrap">
+              <div class="gauge-bar"><div class="gauge-fill" id="tradeRatioBar" style="width:0%;background:var(--cyan);"></div></div>
+              <span style="font-family:var(--font-mono);font-size:13px;min-width:70px;text-align:right;color:var(--text-dim);" id="tradeRatioLabel">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trade log -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Trade Log</span>
+        <span class="panel-meta" id="tradeLogMeta">--</span>
+      </div>
+      <div class="panel-body" style="padding:0;overflow-x:auto;">
+        <table class="trade-table" id="tradeTable">
+          <thead>
+            <tr>
+              <th>Market</th>
+              <th>Predicted</th>
+              <th>Market</th>
+              <th>Edge</th>
+              <th>Direction</th>
+              <th>Outcome</th>
+              <th>P&L</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody id="tradeBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /content -->
+</div><!-- /app-layout -->
+
+<script>
+async function loadBacktest() {
+  try {
+    const data = await (await fetch('/api/backtest')).json();
+    if (data.empty) {
+      document.getElementById('emptyState').style.display = '';
+      document.getElementById('resultsWrap').style.display = 'none';
+      return;
+    }
+    renderResults(data);
+  } catch(e) { console.error('Backtest load error:', e); }
+}
+
+function renderResults(d) {
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resultsWrap').style.display = '';
+
+  document.getElementById('dateRange').textContent = d.date_range || '--';
+
+  // Primary stats
+  const wr = d.win_rate || 0;
+  document.getElementById('winRate').textContent = (wr * 100).toFixed(1) + '%';
+  document.getElementById('winRate').style.color = wr >= 0.5 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('winSub').textContent = `${d.wins || 0}W / ${d.losses || 0}L`;
+
+  const pnl = d.total_pnl || 0;
+  document.getElementById('totalPnl').textContent = (pnl >= 0 ? '+' : '') + '$' + pnl.toFixed(2);
+  document.getElementById('totalPnl').style.color = pnl >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('pnlSub').textContent = `${d.trades_taken || 0} trades`;
+
+  const sh = d.sharpe_ratio || 0;
+  document.getElementById('sharpe').textContent = sh.toFixed(2);
+  document.getElementById('sharpe').style.color = sh >= 1 ? 'var(--green)' : sh >= 0 ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('sharpeSub').textContent = sh >= 2 ? 'Excellent' : sh >= 1 ? 'Good' : sh >= 0 ? 'Fair' : 'Poor';
+
+  const bs = d.brier_score || 0;
+  document.getElementById('brier').textContent = bs.toFixed(4);
+  document.getElementById('brier').style.color = bs <= 0.2 ? 'var(--green)' : bs <= 0.25 ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('brierSub').textContent = bs <= 0.15 ? 'Excellent' : bs <= 0.2 ? 'Good' : bs <= 0.25 ? 'Decent' : 'Needs work';
+
+  // Secondary stats
+  document.getElementById('totalMarkets').textContent = d.total_markets_evaluated || 0;
+  document.getElementById('settledCount').textContent = d.settled_count || 0;
+  document.getElementById('unsettledCount').textContent = d.unsettled_count || 0;
+  document.getElementById('tradesTaken').textContent = d.trades_taken || 0;
+  const dd = d.max_drawdown || 0;
+  document.getElementById('maxDrawdown').textContent = '$' + dd.toFixed(2);
+  document.getElementById('maxDrawdown').style.color = dd < 0 ? 'var(--red)' : 'var(--text)';
+
+  // Brier gauge
+  const brierPct = Math.min(bs / 0.5 * 100, 100);
+  const brierFill = document.getElementById('brierGauge');
+  brierFill.style.width = brierPct + '%';
+  brierFill.style.background = bs <= 0.2 ? 'var(--green)' : bs <= 0.25 ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('brierGaugeVal').textContent = bs.toFixed(4);
+
+  // Avg PnL
+  const avgP = d.avg_pnl_per_trade || 0;
+  document.getElementById('avgPnl').textContent = (avgP >= 0 ? '+' : '') + '$' + avgP.toFixed(2);
+  document.getElementById('avgPnl').style.color = avgP >= 0 ? 'var(--green)' : 'var(--red)';
+
+  // Trade ratio bar
+  const total = (d.trades_taken || 0) + (d.trades_skipped || 0);
+  const ratio = total > 0 ? (d.trades_taken / total * 100) : 0;
+  document.getElementById('tradeRatioBar').style.width = ratio + '%';
+  document.getElementById('tradeRatioLabel').textContent = `${d.trades_taken || 0} / ${total}`;
+
+  // Calibration chart
+  renderCalibration(d.calibration_buckets || []);
+
+  // Trade table
+  renderTrades(d.trades || []);
+}
+
+function renderCalibration(buckets) {
+  const chart = document.getElementById('calChart');
+  const populated = buckets.filter(b => b.count > 0);
+  document.getElementById('calMeta').textContent = `${populated.length} buckets with data`;
+
+  if (!buckets.length) { chart.innerHTML = '<span style="color:var(--text-dim)">No calibration data</span>'; return; }
+
+  const maxVal = Math.max(...buckets.map(b => Math.max(b.avg_predicted, b.avg_actual, 0.01)));
+
+  chart.innerHTML = buckets.map(b => {
+    const predH = b.count > 0 ? (b.avg_predicted / maxVal * 120) : 0;
+    const actH = b.count > 0 ? (b.avg_actual / maxVal * 120) : 0;
+    return `<div class="cal-bar-group">
+      <div class="cal-count">${b.count}</div>
+      <div class="cal-bars">
+        <div class="cal-bar predicted" style="height:${predH}px" title="Predicted: ${(b.avg_predicted*100).toFixed(0)}%"></div>
+        <div class="cal-bar actual" style="height:${actH}px" title="Actual: ${(b.avg_actual*100).toFixed(0)}%"></div>
+      </div>
+      <div class="cal-label">${b.label}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTrades(trades) {
+  // Show settled trades that were taken, plus a few skipped
+  const taken = trades.filter(t => t.should_trade && t.outcome !== null);
+  const skipped = trades.filter(t => !t.should_trade && t.outcome !== null).slice(0, 5);
+  const shown = [...taken, ...skipped];
+
+  document.getElementById('tradeLogMeta').textContent = `${taken.length} traded, ${trades.filter(t=>t.outcome!==null).length - taken.length} skipped`;
+
+  const body = document.getElementById('tradeBody');
+  if (!shown.length) {
+    body.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:24px;">No settled trades to display</td></tr>';
+    return;
+  }
+
+  body.innerHTML = shown.map(t => {
+    const pnlClass = t.pnl >= 0 ? 'pnl-positive' : 'pnl-negative';
+    const outcomeLabel = t.outcome === 1 ? 'YES' : t.outcome === 0 ? 'NO' : '--';
+    const outcomeBadge = t.outcome === 1 ? 'badge-yes' : 'badge-no';
+    const resultBadge = t.correct === true ? 'badge-win' : t.correct === false ? 'badge-loss' : '';
+    const resultLabel = t.correct === true ? 'WIN' : t.correct === false ? 'LOSS' : '--';
+    const tradeIndicator = t.should_trade ? '' : ' style="opacity:0.5"';
+
+    return `<tr${tradeIndicator}>
+      <td style="font-family:var(--font-body);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.market_title || t.market_id}</td>
+      <td>${(t.ensemble_probability*100).toFixed(0)}%</td>
+      <td>${(t.market_probability*100).toFixed(0)}%</td>
+      <td>${(t.edge*100).toFixed(1)}%</td>
+      <td>${t.direction === 'buy_yes' ? 'YES' : 'NO'}</td>
+      <td><span class="badge ${outcomeBadge}">${outcomeLabel}</span></td>
+      <td class="${pnlClass}">${t.should_trade ? ((t.pnl>=0?'+':'')+t.pnl.toFixed(2)) : '--'}</td>
+      <td>${t.should_trade ? `<span class="badge ${resultBadge}">${resultLabel}</span>` : '<span style="color:var(--text-dim)">SKIP</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function runBacktest() {
+  const btn = document.getElementById('runBtn');
+  const status = document.getElementById('runStatus');
+  btn.disabled = true;
+  status.textContent = 'Running...';
+  status.style.color = 'var(--amber)';
+
+  try {
+    const resp = await fetch('/api/backtest/run', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ fetch_outcomes: true, bankroll: 1000 }),
+    });
+    const data = await resp.json();
+    if (data.success) {
+      status.textContent = 'Complete';
+      status.style.color = 'var(--green)';
+      renderResults(data.result);
+    } else {
+      status.textContent = data.error || 'Failed';
+      status.style.color = 'var(--red)';
+    }
+  } catch(e) {
+    status.textContent = 'Error: ' + e.message;
+    status.style.color = 'var(--red)';
+  }
+  btn.disabled = false;
+  setTimeout(() => { status.textContent = ''; }, 5000);
+}
+
+loadBacktest();
+</script>
+</body>
+</html>

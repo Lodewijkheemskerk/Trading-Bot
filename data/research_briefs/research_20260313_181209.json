@@ -1,0 +1,102 @@
+{
+  "timestamp": "2026-03-13T17:12:09.456285+00:00",
+  "markets_researched": 2,
+  "briefs": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "current_yes_price": 0.09,
+      "sources": [
+        {
+          "source": "google_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.9,
+          "key_narratives": [
+            "'Stay tuned': Spider-Man: Beyond the Spider-Verse producers drop a big hint that they might be ready to show us some footage — and say they're 'very confident' it'll meet its release date",
+            "Phil Lord and Chris Miller Give Update On Spider-Man: Beyond The Spider-Verse",
+            "Upcoming New Sony Spider-Man Universe Movies and TV Shows: 2026 Marvel Spin-Off Release Dates and Beyond",
+            "Spider-Man 4 release date, cast, leaks and theories, and everything else we know about the Marvel movie",
+            "Spider-Man: Beyond the Spider-Verse Is Coming to Our Universe",
+            "Spider-Man Beyond the Spider-Verse release date and everything you need to know",
+            "Spider-Man: Beyond the Spider-Verse receives another disappointing update",
+            "‘Spider-Man: Beyond the Spider-Verse’ Sets 2027 Release Date, Reveals First Look at CinemaCon"
+          ]
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.05,
+          "bearish": 0.05,
+          "neutral": 0.9,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Insider Cryptic HD QUALITY (@Cryptic4KQual) is teasing that the Moana Live-Action official trailer will be released very soon (swipe the images)",
+            "Official Discussion - Hoppers [SPOILERS]",
+            "“You have to be really good at this to do as bad as you did”",
+            "Dhurandhar: The Revenge Trailer releases tomorrow , official announcement:",
+            "Dhurandhar: The Revenge Trailer releases tomorrow , official announcement:",
+            "They were able to shoot,edit and post a video within 2hrs of official trailer release",
+            "Daniel RPK says the rumors going around about the SPIDER-MAN: BRAND NEW DAY trailer releasing next week are true",
+            "Am I the only one who feels Dhurandhar: The Revenge looks so different from the first movie?"
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.9,
+      "sentiment_implied_probability": 0.5,
+      "gap": 0.41,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across google_news (neutral, 90% conf), reddit (neutral, 90% conf) shows neutral sentiment with 90% confidence. Market appears underpriced by 41.0% based on sentiment signals. Key headline: \"'Stay tuned': Spider-Man: Beyond the Spider-Verse producers drop a big hint that\".",
+      "timestamp": "2026-03-13T17:12:07.104650+00:00"
+    },
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "current_yes_price": 0.06,
+      "sources": [
+        {
+          "source": "google_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Editorial: Pam Bondi’s legally suspect Bar fight",
+            "Bondi Is Said to Move to Military Housing Because of Threats - The New York Times",
+            "Attorney General Pam Bondi is said to have quietly relocated to one of several military bases in the Washington area where other Trump administration officials also live, after facing threats from drug cartels and critics of her actions in handling the Jeffrey Epste",
+            "Where is Pam Bondi Now? US Attorney General Missing From DC Home, Reportedly Moves to Secure Military Base Amid Jeffrey Epstein Case",
+            "Meet the Attorney General",
+            "House Oversight panel votes to subpoena AG Pam Bondi in Epstein probe",
+            "US congressional panel votes to subpoena Pam Bondi over Epstein files",
+            "Pam Bondi’s Contempt for Congress"
+          ]
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.15,
+          "bearish": 0.0,
+          "neutral": 0.85,
+          "confidence": 0.9,
+          "key_narratives": [
+            "MMW: The United States Attorney General Pam Bondi Will Plead The Fifth Amendment multiple times",
+            "Pam Bondi Declares Herself God-Empress Of Ethics",
+            "Most of the website is completely ignoring that Pam Bondi had to move to a military base because of assassination threats.",
+            "Extra! Extra! 3/8, Jess Craven's Weekly Good News",
+            "Personal thoughts about the book  \"Saint Luigi : How to respond to the violence of capitalism\" by Nicolas Framont",
+            "Trio of Habba successors are unlawfully leading NJ US attorney’s office, judge rules",
+            "Extra! Extra! 3/8, Jess Craven's Weekly Good News",
+            "[PIL] #1966 3/5/2026"
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.9,
+      "sentiment_implied_probability": 0.5337,
+      "gap": 0.4737,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across google_news (neutral, 90% conf), reddit (bullish, 90% conf) shows neutral sentiment with 90% confidence. Market appears underpriced by 47.4% based on sentiment signals. Key headline: \"Editorial: Pam Bondi’s legally suspect Bar fight\".",
+      "timestamp": "2026-03-13T17:12:09.456285+00:00"
+    }
+  ]
+}

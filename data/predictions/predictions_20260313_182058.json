@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-03-13T17:20:58.724284+00:00",
+  "markets_predicted": 2,
+  "signals": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.535,
+      "market_probability": 0.09,
+      "edge": 0.445,
+      "mispricing_score": 4.45,
+      "expected_value": 0.2848,
+      "direction": "buy_yes",
+      "signal_strength": 0.2848,
+      "confidence": 0.64,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.5,
+          "predicted_probability": 0.75,
+          "confidence": 0.7,
+          "reasoning": "The movie is scheduled for June 2027 release, giving over a year buffer before the April 2026 deadline. Recent headlines show producers are 'very confident' about meeting release dates and dropping hints about showing footage soon, suggesting active development and marketing preparation. Major animated sequels typically release trailers 12-18 months before release, making early 2026 a natural timeline."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.3,
+          "predicted_probability": 0.5,
+          "confidence": 0.7,
+          "reasoning": "The producers of Spider-Man: Beyond the Spider-Verse have indicated they are 'very confident' in meeting their release timeline, suggesting that promotional materials, including trailers, are likely to be released ahead of the film's launch. Additionally, the significant gap between the market price and the sentiment signals indicates that the market may be underestimating the likelihood of an early trailer release."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.09, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T17:20:53.394458+00:00"
+    },
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "ensemble_probability": 0.125,
+      "market_probability": 0.06,
+      "edge": 0.065,
+      "mispricing_score": 0.65,
+      "expected_value": 0.0416,
+      "direction": "buy_yes",
+      "signal_strength": 0.0416,
+      "confidence": 0.64,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.5,
+          "predicted_probability": 0.08,
+          "confidence": 0.7,
+          "reasoning": "Pam Bondi was just confirmed as Attorney General and moving to military housing for security suggests she's settling into the role, not preparing to leave. The question timeframe is very short (before April), and AG departures within months of confirmation are extremely rare absent major scandals. The headlines show operational concerns but no credible resignation signals."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.3,
+          "predicted_probability": 0.25,
+          "confidence": 0.7,
+          "reasoning": "The recent headlines indicate significant turmoil surrounding Pam Bondi, including threats that have led her to relocate to a military base for safety. This suggests a precarious position that could prompt her to leave her role as Attorney General sooner than expected, especially given the legal challenges she faces."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.06, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T17:20:58.717645+00:00"
+    }
+  ]
+}

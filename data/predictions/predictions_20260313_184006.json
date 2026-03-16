@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-03-13T17:40:06.429734+00:00",
+  "markets_predicted": 1,
+  "signals": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.4775,
+      "market_probability": 0.09,
+      "edge": 0.3875,
+      "mispricing_score": 3.88,
+      "expected_value": 0.2441,
+      "direction": "buy_yes",
+      "signal_strength": 0.2441,
+      "confidence": 0.63,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.65,
+          "confidence": 0.6,
+          "reasoning": "I estimate a 65% probability that the official trailer for Spider-Man: Beyond the Spider-Verse will be released before April 1, 2026, based on producer hints of upcoming footage and their confidence in meeting release timelines as reported in recent headlines. Historical precedent for animated sequels suggests trailers often drop 12-18 months before release, and with a potential 2026 release date, this timeline aligns. However, confidence is moderate due to lack of concrete release date confirmation and mixed sentiment signals, with the market price at 0.09 appearing undervalued relative to available evidence."
+        },
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.2,
+          "predicted_probability": 0.75,
+          "confidence": 0.8,
+          "reasoning": "The market at $0.09 seems significantly underpriced given recent producer comments hinting at imminent footage reveals and confidence in meeting release dates. With over 14 months until the April 2026 deadline and active development signals from creators, a trailer release appears highly likely within this timeframe."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.52,
+          "confidence": 0.7,
+          "reasoning": "The producers of Spider-Man: Beyond the Spider-Verse have expressed confidence in meeting the release date, indicating that promotional materials, including the official trailer, are likely to be released ahead of time. Additionally, the market appears to be underestimating the demand and anticipation surrounding this film, as evidenced by the positive sentiment from recent headlines."
+        },
+        {
+          "model_name": "gemini",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.07,
+          "confidence": 0.7,
+          "reasoning": "Despite producer hints about future footage, Spider-Man: Beyond the Spider-Verse currently lacks a firm release date and has a history of significant production delays. Studios typically release official trailers 6-12 months before a solidified premiere, making an early trailer before April 2026 unlikely given the ongoing uncertainties and potential for further shifts in the production timeline."
+        },
+        {
+          "model_name": "deepseek",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.12,
+          "confidence": 0.3,
+          "reasoning": "The market price of $0.09 is a strong anchor, but headlines hint at producer confidence and possible footage, suggesting some upside. However, the 2026 date is distant, and trailer timing is highly uncertain, so deviation from market is minimal. Low confidence reflects sparse concrete data and the speculative nature of long-term entertainment schedules."
+        }
+      ],
+      "timestamp": "2026-03-13T17:40:06.429734+00:00"
+    }
+  ]
+}

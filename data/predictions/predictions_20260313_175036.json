@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-03-13T16:50:36.876338+00:00",
+  "markets_predicted": 2,
+  "signals": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.535,
+      "market_probability": 0.09,
+      "edge": 0.445,
+      "mispricing_score": 4.45,
+      "expected_value": 0.2626,
+      "direction": "buy_yes",
+      "signal_strength": 0.2626,
+      "confidence": 0.59,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.5,
+          "predicted_probability": 0.75,
+          "confidence": 0.6,
+          "reasoning": "The recent headlines show producers are actively discussing the film and hinting at showing footage soon, which typically precedes trailer releases. With over a year until the April 2026 deadline and the film already in production, there's strong likelihood a trailer will be released in this timeframe. The market price of $0.09 seems significantly undervalued given these positive signals from the producers."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.3,
+          "predicted_probability": 0.5,
+          "confidence": 0.7,
+          "reasoning": "Recent headlines indicate that producers are hinting at upcoming footage for 'Spider-Man: Beyond the Spider-Verse,' suggesting a strong likelihood of a trailer release. Additionally, the confidence expressed by the creators about meeting the release date adds to the positive momentum, indicating that the market may be underpricing the probability of a trailer release before April 2026."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.09, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T16:50:28.688701+00:00"
+    },
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "ensemble_probability": 0.125,
+      "market_probability": 0.06,
+      "edge": 0.065,
+      "mispricing_score": 0.65,
+      "expected_value": 0.0396,
+      "direction": "buy_yes",
+      "signal_strength": 0.0396,
+      "confidence": 0.61,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.5,
+          "predicted_probability": 0.08,
+          "confidence": 0.7,
+          "reasoning": "Pam Bondi was just confirmed as Attorney General and is moving to secure military housing due to threats, indicating she's settling into the role rather than planning to leave. The headlines show controversy but no credible signals of resignation plans, and AGs typically serve full terms unless major scandals force them out."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.3,
+          "predicted_probability": 0.25,
+          "confidence": 0.6,
+          "reasoning": "Recent headlines indicate that Pam Bondi has faced significant threats, prompting her to relocate to a military base for safety. This unusual situation, coupled with the legal challenges she is facing, suggests that her position as Attorney General may be increasingly untenable, indicating a higher likelihood of her departure before April."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.06, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T16:50:36.876338+00:00"
+    }
+  ]
+}

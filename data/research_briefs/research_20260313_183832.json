@@ -1,0 +1,71 @@
+{
+  "timestamp": "2026-03-13T17:38:32.350257+00:00",
+  "markets_researched": 1,
+  "briefs": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "current_yes_price": 0.09,
+      "sources": [
+        {
+          "source": "google_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.9,
+          "key_narratives": [
+            "'Stay tuned': Spider-Man: Beyond the Spider-Verse producers drop a big hint that they might be ready to show us some footage — and say they're 'very confident' it'll meet its release date",
+            "Phil Lord and Chris Miller Give Update On Spider-Man: Beyond The Spider-Verse",
+            "Upcoming New Sony Spider-Man Universe Movies and TV Shows: 2026 Marvel Spin-Off Release Dates and Beyond",
+            "Spider-Man 4 release date, cast, leaks and theories, and everything else we know about the Marvel movie",
+            "Spider-Man: Beyond the Spider-Verse Is Coming to Our Universe",
+            "Spider-Man Beyond the Spider-Verse release date and everything you need to know",
+            "Spider-Man: Beyond the Spider-Verse receives another disappointing update",
+            "‘Spider-Man: Beyond the Spider-Verse’ Sets 2027 Release Date, Reveals First Look at CinemaCon"
+          ]
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.05,
+          "bearish": 0.05,
+          "neutral": 0.9,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Insider Cryptic HD QUALITY (@Cryptic4KQual) is teasing that the Moana Live-Action official trailer will be released very soon (swipe the images)",
+            "Official Discussion - Hoppers [SPOILERS]",
+            "“You have to be really good at this to do as bad as you did”",
+            "Dhurandhar: The Revenge Trailer releases tomorrow , official announcement:",
+            "Dhurandhar: The Revenge Trailer releases tomorrow , official announcement:",
+            "They were able to shoot,edit and post a video within 2hrs of official trailer release",
+            "Daniel RPK says the rumors going around about the SPIDER-MAN: BRAND NEW DAY trailer releasing next week are true",
+            "Am I the only one who feels Dhurandhar: The Revenge looks so different from the first movie?"
+          ]
+        },
+        {
+          "source": "x_twitter",
+          "bullish": 0.3,
+          "bearish": 0.1,
+          "neutral": 0.6,
+          "confidence": 0.5,
+          "key_narratives": [
+            "@Morbius496: We will get a first look at Spider-Man Beyond The Spider-Verse at CCXP this year in December if Sony",
+            "@Morbius496: Sony will probably attend CCXP this year to release the first trailer for Spider-Man: Beyond the Spi",
+            "@K_NewEvents: When will the official trailer for Spider-Man: Beyond the Spider-Verse be released?https://kalshi.co",
+            "@DEADLINE: ‘Spider-Man: Beyond the Spider-Verse’ first look revealed at #CinemaCon \n\n\"I can't lose one more fri",
+            "@marktonna1: Spider-Man Beyond the Spider-Verse OFFICIAL Release Date & Trailer News https://www.youtube.com/watc",
+            "@Rayshaw72892096: Spider-Man Beyond the Spider-Verse OFFICIAL Release Date & Trailer News https://www.youtube.com/watc",
+            "@SpiderMan_Newz: First look at the Beyond The Spider-Verse Trailer.",
+            "@DiscussingFilm: The first footage from ‘BEYOND THE SPIDER-VERSE’ reveals Miles & Gwen reuniting + Miles fighting The"
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.767,
+      "sentiment_implied_probability": 0.5167,
+      "gap": 0.4267,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across google_news (neutral, 90% conf), reddit (neutral, 90% conf), x_twitter (bullish, 50% conf) shows neutral sentiment with 77% confidence. Market appears underpriced by 42.7% based on sentiment signals. Key headline: \"'Stay tuned': Spider-Man: Beyond the Spider-Verse producers drop a big hint that\".",
+      "timestamp": "2026-03-13T17:38:32.344608+00:00"
+    }
+  ]
+}

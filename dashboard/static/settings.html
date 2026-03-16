@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PREDICT MKT — Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0e17;
+  --bg-card: #111827;
+  --bg-card-alt: #0f1524;
+  --bg-hover: #1a2236;
+  --border: #1e293b;
+  --border-light: #2a3a52;
+  --text: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-dim: #475569;
+  --green: #34d399;
+  --green-bg: rgba(52,211,153,0.08);
+  --red: #f87171;
+  --amber: #fbbf24;
+  --amber-bg: rgba(251,191,36,0.08);
+  --blue: #60a5fa;
+  --blue-bg: rgba(96,165,250,0.08);
+  --cyan: #22d3ee;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+  --radius: 10px;
+  --topbar-h: 60px;
+  --sidebar-w: 200px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 15px; }
+body {
+  background: var(--bg); color: var(--text); font-family: var(--font-body);
+  line-height: 1.5; height: 100vh; overflow: hidden; -webkit-font-smoothing: antialiased;
+}
+
+/* ── Top Bar ── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 28px; height: var(--topbar-h);
+  background: var(--bg-card); border-bottom: 1px solid var(--border);
+}
+.topbar-left { display: flex; align-items: center; gap: 20px; }
+.logo { font-family: var(--font-mono); font-size: 18px; font-weight: 700; letter-spacing: 4px; color: var(--amber); text-decoration: none; }
+.logo:hover { opacity: 0.8; }
+.logo-sub { font-size: 12px; color: var(--text-dim); letter-spacing: 0.5px; }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+
+/* ── Left Sidebar Nav (icons) ── */
+.sidebar-nav {
+  width: 56px; flex-shrink: 0;
+  background: var(--bg-card); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 16px 0; gap: 4px;
+}
+.sidebar-nav-item {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-dim); text-decoration: none; transition: all 0.15s;
+  position: relative;
+}
+.sidebar-nav-item:hover { background: var(--bg-hover); color: var(--text-secondary); }
+.sidebar-nav-item.active { background: var(--amber-bg); color: var(--amber); }
+.sidebar-nav-item.active::before {
+  content: ''; position: absolute; left: 0; top: 8px; bottom: 8px;
+  width: 3px; border-radius: 0 2px 2px 0; background: var(--amber);
+}
+.sidebar-nav-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sidebar-nav-tooltip {
+  display: none; position: absolute; left: 54px; top: 50%;
+  transform: translateY(-50%); padding: 4px 10px; border-radius: 6px;
+  background: var(--bg-hover); border: 1px solid var(--border-light);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+  color: var(--text); white-space: nowrap; z-index: 200;
+  font-family: var(--font-mono);
+}
+.sidebar-nav-item:hover .sidebar-nav-tooltip { display: block; }
+
+/* ── Layout ── */
+.layout {
+  display: flex;
+  flex: 1;
+}
+.app-layout {
+  display: flex;
+  height: calc(100vh - var(--topbar-h));
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  border-right: 1px solid var(--border); background: var(--bg-card);
+  display: flex; flex-direction: column; padding: 20px 0;
+  overflow-y: auto;
+}
+.sidebar-label {
+  padding: 0 16px; font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
+}
+.sidebar-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; color: var(--text-secondary); text-decoration: none;
+  font-size: 13px; font-weight: 500;
+  border-left: 3px solid transparent; transition: all 0.15s; cursor: pointer;
+  user-select: none;
+}
+.sidebar-link:hover { background: var(--bg-hover); color: var(--text); }
+.sidebar-link.active { color: var(--amber); border-left-color: var(--amber); background: var(--amber-bg); }
+.sidebar-icon {
+  width: 16px; height: 16px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.sidebar-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sidebar-count {
+  margin-left: auto; font-family: var(--font-mono); font-size: 11px;
+  color: var(--text-dim); background: var(--bg-card-alt); padding: 1px 6px; border-radius: 4px;
+}
+.sidebar-spacer { flex: 1; }
+.sidebar-footer {
+  padding: 12px 16px; border-top: 1px solid var(--border); margin-top: 12px;
+}
+.sidebar-save-btn {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 10px 0; border-radius: 8px;
+  border: 1px solid rgba(52,211,153,0.3); background: var(--green-bg);
+  color: var(--green); font-family: var(--font-mono); font-size: 12px;
+  font-weight: 600; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s;
+}
+.sidebar-save-btn:hover { background: rgba(52,211,153,0.15); border-color: var(--green); }
+.sidebar-status { text-align: center; margin-top: 6px; font-family: var(--font-mono); font-size: 11px; }
+.sidebar-status.saved { color: var(--green); }
+.sidebar-status.unsaved { color: var(--amber); }
+.sidebar-status.error { color: var(--red); }
+
+/* ── Content ── */
+.content {
+  flex: 1; overflow-y: auto; padding: 28px 36px;
+}
+
+/* ── Tab pane (only active one is visible) ── */
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+.section-header { margin-bottom: 16px; }
+.section-title { font-size: 17px; font-weight: 700; color: var(--text); }
+.section-desc { font-size: 13px; color: var(--text-dim); margin-top: 3px; }
+
+/* ── Panel ── */
+.panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+}
+.panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+}
+.panel-title { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-secondary); }
+.panel-meta { font-family: var(--font-mono); font-size: 12px; color: var(--text-dim); }
+.panel-body { padding: 0; }
+
+/* ── Weight bar ── */
+.weight-total-bar {
+  display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+  background: var(--bg-card-alt); border-bottom: 1px solid var(--border);
+}
+.weight-total-label { font-size: 12px; font-weight: 600; letter-spacing: 1px; color: var(--text-dim); }
+.weight-total-track { flex: 1; height: 8px; background: rgba(30,41,59,0.8); border-radius: 4px; overflow: hidden; }
+.weight-total-segments { display: flex; height: 100%; transition: all 0.3s; }
+.weight-segment { height: 100%; transition: width 0.3s; }
+.weight-total-value { font-family: var(--font-mono); font-size: 14px; font-weight: 700; min-width: 48px; text-align: right; }
+
+/* ── Model card ── */
+.model-card {
+  display: grid; grid-template-columns: 48px 1fr; gap: 16px; padding: 20px;
+  border-bottom: 1px solid rgba(30,41,59,0.5); transition: background 0.15s, opacity 0.3s;
+}
+.model-card:last-child { border-bottom: none; }
+.model-card:hover { background: var(--bg-hover); }
+.model-card.inactive { opacity: 0.45; }
+.toggle-col { display: flex; align-items: flex-start; padding-top: 4px; }
+.toggle { position: relative; width: 44px; height: 24px; cursor: pointer; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-track { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--border-light); border-radius: 12px; transition: background 0.2s; }
+.toggle input:checked + .toggle-track { background: var(--green); }
+.toggle-thumb { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: transform 0.2s; pointer-events: none; }
+.toggle input:checked ~ .toggle-thumb { transform: translateX(20px); }
+.model-info { display: flex; flex-direction: column; gap: 12px; }
+.model-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.model-name-wrap { display: flex; align-items: center; gap: 10px; }
+.model-label { font-size: 16px; font-weight: 600; color: var(--text); }
+.model-type-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+.model-type-badge.api { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+.model-type-badge.local { background: var(--green-bg); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+.api-status { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+.api-dot { width: 8px; height: 8px; border-radius: 50%; }
+.api-dot.connected { background: var(--green); }
+.api-dot.missing { background: var(--red); }
+.model-desc { font-size: 13px; color: var(--text-dim); }
+.model-controls { display: flex; align-items: center; gap: 24px; }
+.control-group { display: flex; flex-direction: column; gap: 4px; }
+.control-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+.weight-slider-wrap { display: flex; align-items: center; gap: 10px; }
+.weight-slider {
+  -webkit-appearance: none; appearance: none; width: 200px; height: 6px;
+  background: var(--border-light); border-radius: 3px; outline: none; cursor: pointer;
+}
+.weight-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--amber); border: 2px solid var(--bg); cursor: grab; box-shadow: 0 0 6px rgba(251,191,36,0.3); }
+.weight-slider::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--amber); border: 2px solid var(--bg); cursor: grab; }
+.weight-slider:disabled { opacity: 0.3; cursor: not-allowed; }
+.weight-value { font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--amber); min-width: 42px; text-align: right; }
+.role-select, .model-select {
+  background: var(--bg-card-alt); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-family: var(--font-mono); font-size: 12px;
+  padding: 6px 10px; cursor: pointer; outline: none;
+}
+.role-select:focus { border-color: var(--amber); }
+.model-select:focus { border-color: var(--cyan); }
+.role-select:disabled, .model-select:disabled { opacity: 0.3; cursor: not-allowed; }
+.model-select { min-width: 160px; }
+.model-color-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Threshold row ── */
+.threshold-row { display: flex; gap: 32px; padding: 20px; }
+.threshold-group { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.threshold-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+.threshold-input-wrap { display: flex; align-items: center; gap: 10px; }
+.threshold-slider {
+  -webkit-appearance: none; appearance: none; flex: 1; height: 6px;
+  background: var(--border-light); border-radius: 3px; outline: none; cursor: pointer;
+}
+.threshold-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--cyan); border: 2px solid var(--bg); cursor: grab; }
+.threshold-slider::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--cyan); border: 2px solid var(--bg); cursor: grab; }
+.threshold-value { font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--cyan); min-width: 50px; text-align: right; }
+
+/* ── Settings grid ── */
+.settings-grid { display: flex; flex-direction: column; }
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; border-bottom: 1px solid rgba(30,41,59,0.5); transition: background 0.15s;
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-row:hover { background: var(--bg-hover); }
+.setting-info { flex: 1; min-width: 0; }
+.setting-label { font-size: 14px; font-weight: 600; color: var(--text); }
+.setting-desc { font-size: 12px; color: var(--text-dim); margin-top: 1px; }
+.setting-control { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.setting-control .threshold-slider { width: 200px; }
+.setting-control .threshold-value { min-width: 54px; }
+</style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div><a href="/" class="logo">PREDICT MKT</a><div class="logo-sub">AI Trading Terminal</div></div>
+  </div>
+  <div class="topbar-right"></div>
+</div>
+
+<!-- ── APP LAYOUT: icon sidebar + settings layout ── -->
+<div class="app-layout">
+
+  <!-- Left nav sidebar (icons) -->
+  <nav class="sidebar-nav">
+    <a href="/" class="sidebar-nav-item" title="Dashboard">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <span class="sidebar-nav-tooltip">Dashboard</span>
+    </a>
+    <a href="/backtest" class="sidebar-nav-item" title="Backtest">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span class="sidebar-nav-tooltip">Backtest</span>
+    </a>
+    <a href="/settings" class="sidebar-nav-item active" title="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span class="sidebar-nav-tooltip">Settings</span>
+    </a>
+  </nav>
+
+  <!-- Settings layout (sub-sidebar + content) -->
+  <div class="layout">
+
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar">
+    <div class="sidebar-label">Settings</div>
+
+    <a class="sidebar-link active" data-tab="tab-ensemble">
+      <span class="sidebar-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="12" cy="12" r="2.5"/><path d="M7.5 7.5l3 3M13.5 13.5l3 3M16.5 7.5l-3 3M7.5 16.5l3-3"/></svg></span>
+      Ensemble
+      <span class="sidebar-count" id="sidebarModelCount">--</span>
+    </a>
+    <a class="sidebar-link" data-tab="tab-thresholds">
+      <span class="sidebar-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></span>
+      Thresholds
+    </a>
+    <a class="sidebar-link" data-tab="tab-monitor">
+      <span class="sidebar-icon"><svg viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>
+      Position Monitor
+      <span class="sidebar-count">5</span>
+    </a>
+    <a class="sidebar-link" data-tab="tab-risk">
+      <span class="sidebar-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      Risk Management
+      <span class="sidebar-count">9</span>
+    </a>
+    <a class="sidebar-link" data-tab="tab-hours">
+      <span class="sidebar-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      Trading Hours
+    </a>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-footer">
+      <button class="sidebar-save-btn" onclick="saveConfig()">SAVE ALL</button>
+      <div class="sidebar-status" id="sidebarStatus"></div>
+    </div>
+  </nav>
+
+  <!-- ── CONTENT ── -->
+  <div class="content">
+
+    <!-- ═══ TAB: Ensemble ═══ -->
+    <div class="tab-pane active" id="tab-ensemble">
+      <div class="section-header">
+        <div class="section-title">Ensemble Models</div>
+        <div class="section-desc">Choose which AI models to use and how much weight each carries in the prediction.</div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Models</span>
+          <span class="panel-meta" id="activeCount">--</span>
+        </div>
+        <div class="weight-total-bar">
+          <span class="weight-total-label">TOTAL WEIGHT</span>
+          <div class="weight-total-track"><div class="weight-total-segments" id="weightSegments"></div></div>
+          <span class="weight-total-value" id="weightTotal">--%</span>
+        </div>
+        <div class="panel-body" id="modelsBody"></div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: Thresholds ═══ -->
+    <div class="tab-pane" id="tab-thresholds">
+      <div class="section-header">
+        <div class="section-title">Trade Thresholds</div>
+        <div class="section-desc">Both conditions must pass before a trade signal is generated.</div>
+      </div>
+      <div class="panel">
+        <div class="threshold-row">
+          <div class="threshold-group">
+            <div class="threshold-label">Minimum Edge</div>
+            <div class="threshold-input-wrap">
+              <input type="range" class="threshold-slider" id="minEdgeSlider" min="0.01" max="0.20" step="0.005" value="0.04">
+              <span class="threshold-value" id="minEdgeValue">4.0%</span>
+            </div>
+          </div>
+          <div class="threshold-group">
+            <div class="threshold-label">Minimum Confidence</div>
+            <div class="threshold-input-wrap">
+              <input type="range" class="threshold-slider" id="minConfSlider" min="0.30" max="0.90" step="0.05" value="0.65">
+              <span class="threshold-value" id="minConfValue">65%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: Position Monitor ═══ -->
+    <div class="tab-pane" id="tab-monitor">
+      <div class="section-header">
+        <div class="section-title">Position Monitor</div>
+        <div class="section-desc">Auto-hedge exit rules — checked every pipeline cycle for open positions.</div>
+      </div>
+      <div class="panel"><div class="panel-body"><div class="settings-grid">
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Stop-Loss</div><div class="setting-desc">Exit when position is down this %</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="pm_stop_loss" min="0.05" max="0.50" step="0.01" value="0.15" oninput="updatePct(this,'pm_stop_loss_v')"><span class="threshold-value" id="pm_stop_loss_v">15%</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Take-Profit</div><div class="setting-desc">Exit when position is up this %</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="pm_take_profit" min="0.05" max="0.80" step="0.01" value="0.20" oninput="updatePct(this,'pm_take_profit_v')"><span class="threshold-value" id="pm_take_profit_v">20%</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Max Hold Time</div><div class="setting-desc">Force exit after this many hours</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="pm_max_hold" min="24" max="720" step="24" value="240" oninput="updateHours(this,'pm_max_hold_v')"><span class="threshold-value" id="pm_max_hold_v">240h</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Emergency Stop</div><div class="setting-desc">Hard safety floor — always exits at this loss %</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="pm_emergency" min="0.03" max="0.30" step="0.01" value="0.10" oninput="updatePct(this,'pm_emergency_v')"><span class="threshold-value" id="pm_emergency_v">10%</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Edge Floor</div><div class="setting-desc">Exit when edge drops below this (0 = negative edge)</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="pm_edge_floor" min="-0.05" max="0.10" step="0.005" value="0" oninput="updateEdge(this,'pm_edge_floor_v')"><span class="threshold-value" id="pm_edge_floor_v">0.0%</span></div></div>
+      </div></div></div>
+    </div>
+
+    <!-- ═══ TAB: Risk Management ═══ -->
+    <div class="tab-pane" id="tab-risk">
+      <div class="section-header">
+        <div class="section-title">Risk Management</div>
+        <div class="section-desc">Position sizing and portfolio-level limits. All checks must pass before a trade is placed.</div>
+      </div>
+      <div class="panel"><div class="panel-body"><div class="settings-grid">
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Kelly Fraction</div><div class="setting-desc">Multiply Kelly Criterion by this (lower = safer)</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="r_kelly" min="0.10" max="1.00" step="0.05" value="0.25" oninput="updatePct(this,'r_kelly_v')"><span class="threshold-value" id="r_kelly_v">25%</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Max Position Size</div><div class="setting-desc">Max % of bankroll per single trade</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="r_max_pos" min="0.01" max="0.15" step="0.01" value="0.05" oninput="updatePct(this,'r_max_pos_v')"><span class="threshold-value" id="r_max_pos_v">5%</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Max Concurrent Positions</div><div class="setting-desc">Maximum open positions at once</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="r_max_conc" min="1" max="30" step="1" value="15" oninput="updateInt(this,'r_max_conc_v')"><span class="threshold-value" id="r_max_conc_v">15</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Max Daily Loss</div><div class="setting-desc">Stop trading for the day at this loss %</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="r_daily_loss" min="0.05" max="0.30" step="0.01" value="0.15" oninput="updatePct(this,'r_daily_loss_v')"><span class="threshold-value" id="r_daily_loss_v">15%</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Max Drawdown</div><div class="setting-desc">Block all trades when drawdown exceeds this</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="r_drawdown" min="0.03" max="0.20" step="0.01" value="0.08" oninput="updatePct(this,'r_drawdown_v')"><span class="threshold-value" id="r_drawdown_v">8%</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Max Slippage</div><div class="setting-desc">Abort if price moves more than this % from signal</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="r_slippage" min="0.01" max="0.10" step="0.005" value="0.02" oninput="updatePct(this,'r_slippage_v')"><span class="threshold-value" id="r_slippage_v">2%</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">VaR Limit</div><div class="setting-desc">Block trade if portfolio VaR exceeds this % of bankroll</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="r_var" min="0.05" max="0.30" step="0.01" value="0.10" oninput="updatePct(this,'r_var_v')"><span class="threshold-value" id="r_var_v">10%</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Max Total Exposure</div><div class="setting-desc">Block trade if total open exposure exceeds this %</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="r_exposure" min="0.10" max="0.80" step="0.05" value="0.40" oninput="updatePct(this,'r_exposure_v')"><span class="threshold-value" id="r_exposure_v">40%</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Daily API Cost Cap</div><div class="setting-desc">Maximum daily AI API spending (USD)</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="r_api_cost" min="10" max="100" step="5" value="50" oninput="updateDollar(this,'r_api_cost_v')"><span class="threshold-value" id="r_api_cost_v">$50</span></div></div>
+      </div></div></div>
+    </div>
+
+    <!-- ── Trading Hours tab ── -->
+    <div class="tab-pane" id="tab-hours">
+      <div class="section-header">
+        <div class="section-title">Schedule &amp; Maintenance</div>
+        <div class="section-desc">Pipeline run interval and Kalshi maintenance blackout. Kalshi is 24/7 except scheduled maintenance.</div>
+      </div>
+      <div class="panel"><div class="panel-body"><div class="settings-grid">
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Run Interval</div><div class="setting-desc">Minutes between pipeline cycles (scan → research → predict → execute)</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="th_interval" min="5" max="60" step="5" value="15" oninput="updateMin(this,'th_interval_v')"><span class="threshold-value" id="th_interval_v">15 min</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Maintenance Blackout</div><div class="setting-desc">Skip execution during Kalshi's scheduled maintenance window</div></div>
+          <div class="setting-control"><label class="toggle"><input type="checkbox" id="th_blackout" checked><span class="toggle-slider"></span></label></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Blackout Day</div><div class="setting-desc">Day of week (0=Mon, 3=Thu, 6=Sun). Kalshi default: Thursday</div></div>
+          <div class="setting-control"><select id="th_day" style="padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card-alt);color:var(--text);font-family:var(--font-mono);font-size:12px;">
+            <option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option>
+            <option value="3" selected>Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option>
+          </select></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Blackout Start</div><div class="setting-desc">Hour maintenance begins (ET)</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="th_bstart" min="0" max="23" step="1" value="3" oninput="updateHour(this,'th_bstart_v')"><span class="threshold-value" id="th_bstart_v">3:00</span></div></div>
+        <div class="setting-row"><div class="setting-info"><div class="setting-label">Blackout End</div><div class="setting-desc">Hour maintenance ends (ET)</div></div>
+          <div class="setting-control"><input type="range" class="threshold-slider" id="th_bend" min="0" max="23" step="1" value="5" oninput="updateHour(this,'th_bend_v')"><span class="threshold-value" id="th_bend_v">5:00</span></div></div>
+      </div></div></div>
+    </div>
+
+  </div>
+</div><!-- /layout -->
+</div><!-- /app-layout -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// Tab switching
+// ═══════════════════════════════════════════════════════════════
+document.querySelectorAll('.sidebar-link[data-tab]').forEach(link => {
+  link.addEventListener('click', () => {
+    // Deactivate all
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    // Activate clicked
+    link.classList.add('active');
+    const pane = document.getElementById(link.dataset.tab);
+    if (pane) pane.classList.add('active');
+    // Scroll content to top
+    document.querySelector('.content').scrollTop = 0;
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// State
+// ═══════════════════════════════════════════════════════════════
+let _models = [], _roles = [], _savedState = null, _riskSavedState = null;
+
+const MODEL_COLORS = { grok:'#f87171', claude:'#22d3ee', gpt4o:'#34d399', gemini:'#60a5fa', deepseek:'#a78bfa', xgboost:'#fbbf24' };
+
+// ═══════════════════════════════════════════════════════════════
+// Value formatters
+// ═══════════════════════════════════════════════════════════════
+function updatePct(el, id)    { document.getElementById(id).textContent = (el.value*100).toFixed(0)+'%'; checkDirty(); }
+function updateHours(el, id)  { document.getElementById(id).textContent = parseInt(el.value)+'h'; checkDirty(); }
+function updateInt(el, id)    { document.getElementById(id).textContent = parseInt(el.value); checkDirty(); }
+function updateDollar(el, id) { document.getElementById(id).textContent = '$'+parseInt(el.value); checkDirty(); }
+function updateEdge(el, id)   { document.getElementById(id).textContent = (el.value*100).toFixed(1)+'%'; checkDirty(); }
+function updateHour(el, id)   { document.getElementById(id).textContent = parseInt(el.value)+':00'; checkDirty(); }
+function updateMin(el, id)    { document.getElementById(id).textContent = parseInt(el.value)+' min'; checkDirty(); }
+
+// ═══════════════════════════════════════════════════════════════
+// Dirty tracking
+// ═══════════════════════════════════════════════════════════════
+function snapshot() {
+  return JSON.stringify({
+    models: _models.map(m => ({ name:m.name, active:m.active, weight:m.weight, role:m.role, model_id:m.model_id||null })),
+    min_edge: parseFloat(document.getElementById('minEdgeSlider').value),
+    min_confidence: parseFloat(document.getElementById('minConfSlider').value),
+  });
+}
+function riskSnapshot() {
+  const v = id => { const el=document.getElementById(id); return el ? (el.step && el.step.includes('.')?parseFloat(el.value):parseInt(el.value)) : 0; };
+  return JSON.stringify({
+    pm_stop_loss:v('pm_stop_loss'), pm_take_profit:v('pm_take_profit'), pm_max_hold:parseInt(document.getElementById('pm_max_hold').value),
+    pm_emergency:v('pm_emergency'), pm_edge_floor:parseFloat(document.getElementById('pm_edge_floor').value),
+    r_kelly:v('r_kelly'), r_max_pos:v('r_max_pos'), r_max_conc:parseInt(document.getElementById('r_max_conc').value),
+    r_daily_loss:v('r_daily_loss'), r_drawdown:v('r_drawdown'), r_slippage:v('r_slippage'),
+    r_var:v('r_var'), r_exposure:v('r_exposure'), r_api_cost:parseFloat(document.getElementById('r_api_cost').value),
+  });
+}
+function setDirty(dirty) {
+  const el = document.getElementById('sidebarStatus');
+  if (dirty) { el.textContent = 'Unsaved changes'; el.className = 'sidebar-status unsaved'; }
+  else       { el.textContent = 'All saved';        el.className = 'sidebar-status saved'; }
+}
+function checkDirty() {
+  const eDirty = snapshot() !== _savedState;
+  const rDirty = _riskSavedState !== null && riskSnapshot() !== _riskSavedState;
+  setDirty(eDirty || rDirty);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Load ensemble
+// ═══════════════════════════════════════════════════════════════
+async function loadEnsemble() {
+  try {
+    const data = await (await fetch('/api/ensemble')).json();
+    _models = data.models; _roles = data.roles;
+    document.getElementById('minEdgeSlider').value = data.min_edge;
+    document.getElementById('minEdgeValue').textContent = (data.min_edge*100).toFixed(1)+'%';
+    document.getElementById('minConfSlider').value = data.min_confidence;
+    document.getElementById('minConfValue').textContent = (data.min_confidence*100).toFixed(0)+'%';
+    _savedState = snapshot();
+    renderModels(); updateWeightBar(); setDirty(false);
+  } catch(e) { console.error('Load error:', e); }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Load risk + monitor
+// ═══════════════════════════════════════════════════════════════
+function setSlider(id, val, lbl, fmt) {
+  const el = document.getElementById(id); if(el) el.value = val;
+  const l = document.getElementById(lbl); if(l) l.textContent = fmt(val);
+}
+async function loadRiskSettings() {
+  try {
+    const data = await (await fetch('/api/risk-settings')).json();
+    const pm = data.position_monitor, r = data.risk;
+    setSlider('pm_stop_loss', pm.stop_loss_pct, 'pm_stop_loss_v', v=>(v*100).toFixed(0)+'%');
+    setSlider('pm_take_profit', pm.take_profit_pct, 'pm_take_profit_v', v=>(v*100).toFixed(0)+'%');
+    setSlider('pm_max_hold', pm.max_hold_hours, 'pm_max_hold_v', v=>parseInt(v)+'h');
+    setSlider('pm_emergency', pm.emergency_stop_pct, 'pm_emergency_v', v=>(v*100).toFixed(0)+'%');
+    setSlider('pm_edge_floor', pm.edge_floor, 'pm_edge_floor_v', v=>(v*100).toFixed(1)+'%');
+    setSlider('r_kelly', r.kelly_fraction, 'r_kelly_v', v=>(v*100).toFixed(0)+'%');
+    setSlider('r_max_pos', r.max_position_pct, 'r_max_pos_v', v=>(v*100).toFixed(0)+'%');
+    setSlider('r_max_conc', r.max_concurrent_positions, 'r_max_conc_v', v=>parseInt(v));
+    setSlider('r_daily_loss', r.max_daily_loss_pct, 'r_daily_loss_v', v=>(v*100).toFixed(0)+'%');
+    setSlider('r_drawdown', r.max_drawdown_pct, 'r_drawdown_v', v=>(v*100).toFixed(0)+'%');
+    setSlider('r_slippage', r.max_slippage_pct, 'r_slippage_v', v=>(v*100).toFixed(0)+'%');
+    setSlider('r_var', r.max_var_pct, 'r_var_v', v=>(v*100).toFixed(0)+'%');
+    setSlider('r_exposure', r.max_total_exposure_pct, 'r_exposure_v', v=>(v*100).toFixed(0)+'%');
+    setSlider('r_api_cost', r.max_daily_api_cost, 'r_api_cost_v', v=>'$'+parseInt(v));
+    _riskSavedState = riskSnapshot();
+  } catch(e) { console.error('Risk load error:', e); }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Render models
+// ═══════════════════════════════════════════════════════════════
+function renderModelSelect(m, idx) {
+  if (!m.model_options || !m.model_options.length) return '';
+  const opts = m.model_options.map(o => `<option value="${o.id}" ${m.model_id===o.id?'selected':''}>${o.label}</option>`).join('');
+  return `<div class="control-group"><div class="control-label">Model</div>
+    <select class="model-select" ${m.active?'':'disabled'} onchange="setModelId(${idx},this.value)">${opts}</select></div>`;
+}
+function renderModels() {
+  const el = document.getElementById('modelsBody');
+  const n = _models.filter(m=>m.active).length;
+  document.getElementById('activeCount').textContent = n+' active';
+  document.getElementById('sidebarModelCount').textContent = n;
+  el.innerHTML = _models.map((m,i) => {
+    const c = MODEL_COLORS[m.name]||'var(--text-dim)';
+    const api = m.type==='api'
+      ? `<div class="api-status"><span class="api-dot ${m.has_api_key?'connected':'missing'}"></span><span style="color:${m.has_api_key?'var(--green)':'var(--red)'}">${m.has_api_key?'KEY SET':'NO KEY'}</span></div>`
+      : `<div class="api-status"><span class="api-dot ${m.has_api_key?'connected':'missing'}"></span><span style="color:${m.has_api_key?'var(--green)':'var(--amber)'}">${m.has_api_key?'TRAINED':'NOT TRAINED'}</span></div>`;
+    const roles = _roles.map(r=>`<option value="${r}" ${m.role===r?'selected':''}>${r.replace(/_/g,' ')}</option>`).join('');
+    return `<div class="model-card ${m.active?'':'inactive'}">
+      <div class="toggle-col"><label class="toggle"><input type="checkbox" ${m.active?'checked':''} onchange="toggleModel(${i},this.checked)"><span class="toggle-track"></span><span class="toggle-thumb"></span></label></div>
+      <div class="model-info">
+        <div class="model-top"><div class="model-name-wrap"><span class="model-color-dot" style="background:${c}"></span><span class="model-label">${m.label}</span><span class="model-type-badge ${m.type}">${m.type.toUpperCase()}</span></div>${api}</div>
+        <div class="model-desc">${m.description}</div>
+        <div class="model-controls">
+          <div class="control-group"><div class="control-label">Weight</div><div class="weight-slider-wrap">
+            <input type="range" class="weight-slider" min="0" max="0.50" step="0.05" value="${m.weight}" ${m.active?'':'disabled'} oninput="setWeight(${i},parseFloat(this.value))">
+            <span class="weight-value" id="wv-${i}">${(m.weight*100).toFixed(0)}%</span></div></div>
+          <div class="control-group"><div class="control-label">Role</div>
+            <select class="role-select" ${m.active?'':'disabled'} onchange="setRole(${i},this.value)">${roles}</select></div>
+          ${renderModelSelect(m,i)}
+        </div>
+      </div></div>`;
+  }).join('');
+}
+function updateWeightBar() {
+  const segs = document.getElementById('weightSegments'), tot = document.getElementById('weightTotal');
+  const active = _models.filter(m=>m.active), total = active.reduce((s,m)=>s+m.weight,0);
+  segs.innerHTML = active.map(m => {
+    const pct = (m.weight/Math.max(total,0.01))*100*Math.min(total,1);
+    return `<div class="weight-segment" style="width:${pct}%;background:${MODEL_COLORS[m.name]||'var(--text-dim)'}"></div>`;
+  }).join('');
+  tot.textContent = (total*100).toFixed(0)+'%';
+  tot.style.color = Math.abs(total-1)<0.01 ? 'var(--green)' : 'var(--red)';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Actions
+// ═══════════════════════════════════════════════════════════════
+function toggleModel(i,a) { _models[i].active=a; renderModels(); updateWeightBar(); checkDirty(); }
+function setWeight(i,v)   { _models[i].weight=v; document.getElementById('wv-'+i).textContent=(v*100).toFixed(0)+'%'; updateWeightBar(); checkDirty(); }
+function setRole(i,r)     { _models[i].role=r; checkDirty(); }
+function setModelId(i,id) { _models[i].model_id=id; checkDirty(); }
+document.getElementById('minEdgeSlider').addEventListener('input', function() { document.getElementById('minEdgeValue').textContent=(this.value*100).toFixed(1)+'%'; checkDirty(); });
+document.getElementById('minConfSlider').addEventListener('input', function() { document.getElementById('minConfValue').textContent=(this.value*100).toFixed(0)+'%'; checkDirty(); });
+
+// ═══════════════════════════════════════════════════════════════
+// Save
+// ═══════════════════════════════════════════════════════════════
+async function saveConfig() {
+  const active = _models.filter(m=>m.active), total = active.reduce((s,m)=>s+m.weight,0);
+  const st = document.getElementById('sidebarStatus');
+  if (Math.abs(total-1)>0.01) { st.textContent='Weights must = 100%'; st.className='sidebar-status error'; return; }
+  try {
+    const r1 = await fetch('/api/ensemble', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ models:_models.map(m=>({name:m.name,active:m.active,weight:m.weight,role:m.role,model_id:m.model_id||null})),
+        min_edge:parseFloat(document.getElementById('minEdgeSlider').value),
+        min_confidence:parseFloat(document.getElementById('minConfSlider').value) }) });
+    if(!r1.ok){const d=await r1.json();st.textContent=d.error||'Failed';st.className='sidebar-status error';return;}
+    const r2 = await fetch('/api/risk-settings', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        risk:{ kelly_fraction:parseFloat(document.getElementById('r_kelly').value), max_position_pct:parseFloat(document.getElementById('r_max_pos').value),
+          max_concurrent_positions:parseInt(document.getElementById('r_max_conc').value), max_daily_loss_pct:parseFloat(document.getElementById('r_daily_loss').value),
+          max_drawdown_pct:parseFloat(document.getElementById('r_drawdown').value), max_slippage_pct:parseFloat(document.getElementById('r_slippage').value),
+          max_var_pct:parseFloat(document.getElementById('r_var').value), max_total_exposure_pct:parseFloat(document.getElementById('r_exposure').value),
+          max_daily_api_cost:parseFloat(document.getElementById('r_api_cost').value) },
+        position_monitor:{ stop_loss_pct:parseFloat(document.getElementById('pm_stop_loss').value), take_profit_pct:parseFloat(document.getElementById('pm_take_profit').value),
+          max_hold_hours:parseInt(document.getElementById('pm_max_hold').value), emergency_stop_pct:parseFloat(document.getElementById('pm_emergency').value),
+          edge_floor:parseFloat(document.getElementById('pm_edge_floor').value) }
+      }) });
+    if(!r2.ok){const d=await r2.json();st.textContent=d.error||'Failed';st.className='sidebar-status error';return;}
+    const r3 = await saveTradingHours();
+    if(!r3.ok){st.textContent='Hours save failed';st.className='sidebar-status error';return;}
+    _savedState=snapshot(); _riskSavedState=riskSnapshot(); setDirty(false);
+  } catch(e) { st.textContent='Network error'; st.className='sidebar-status error'; }
+}
+function resetToSaved() { loadEnsemble(); loadRiskSettings(); loadTradingHours(); }
+
+// ═══════════════════════════════════════════════════════════════
+// Trading Hours
+// ═══════════════════════════════════════════════════════════════
+async function loadTradingHours() {
+  try {
+    const d = await (await fetch('/api/trading-hours')).json();
+    document.getElementById('th_interval').value = d.schedule_minutes;
+    document.getElementById('th_interval_v').textContent = d.schedule_minutes + ' min';
+    document.getElementById('th_blackout').checked = d.maintenance_blackout;
+    document.getElementById('th_day').value = d.blackout_day;
+    document.getElementById('th_bstart').value = d.blackout_start_hour;
+    document.getElementById('th_bstart_v').textContent = d.blackout_start_hour + ':00';
+    document.getElementById('th_bend').value = d.blackout_end_hour;
+    document.getElementById('th_bend_v').textContent = d.blackout_end_hour + ':00';
+  } catch(e) { console.error('Trading hours load error:', e); }
+}
+
+async function saveTradingHours() {
+  return fetch('/api/trading-hours', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      schedule_minutes: parseInt(document.getElementById('th_interval').value),
+      maintenance_blackout: document.getElementById('th_blackout').checked,
+      blackout_day: parseInt(document.getElementById('th_day').value),
+      blackout_start_hour: parseInt(document.getElementById('th_bstart').value),
+      blackout_end_hour: parseInt(document.getElementById('th_bend').value),
+    })
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Init
+// ═══════════════════════════════════════════════════════════════
+loadEnsemble();
+loadRiskSettings();
+loadTradingHours();
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+{
+  "timestamp": "2026-03-13T16:20:08.791046+00:00",
+  "markets_predicted": 2,
+  "signals": [
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.535,
+      "market_probability": 0.09,
+      "edge": 0.445,
+      "mispricing_score": 4.45,
+      "expected_value": 0.2848,
+      "direction": "buy_yes",
+      "signal_strength": 0.2848,
+      "confidence": 0.64,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.5,
+          "predicted_probability": 0.75,
+          "confidence": 0.7,
+          "reasoning": "The recent headline from producers saying 'Stay tuned' and hinting they're ready to show footage, combined with their confidence about meeting the release date, suggests significant progress. With over a year until the deadline (April 2026), there's ample time for a trailer release, and animated sequels typically release trailers 6-12 months before the film. The market at 9% appears severely underpriced given these positive signals."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.3,
+          "predicted_probability": 0.5,
+          "confidence": 0.7,
+          "reasoning": "The producers of Spider-Man: Beyond the Spider-Verse have hinted at upcoming footage and expressed confidence in meeting the release date, indicating positive momentum. Additionally, the market price appears significantly underpriced given the strong interest and anticipation surrounding the franchise."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.09, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T16:20:01.943168+00:00"
+    },
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "ensemble_probability": 0.125,
+      "market_probability": 0.06,
+      "edge": 0.065,
+      "mispricing_score": 0.65,
+      "expected_value": 0.0384,
+      "direction": "buy_yes",
+      "signal_strength": 0.0384,
+      "confidence": 0.59,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.5,
+          "predicted_probability": 0.08,
+          "confidence": 0.6,
+          "reasoning": "The question appears to contain a typo ('leaves Attorney General in before April' is grammatically unclear), but assuming it asks if Bondi will leave as AG before April, the base rate for cabinet officials leaving within 2-3 months is very low. While headlines show controversy around Epstein investigations and security threats, these don't typically force immediate resignations of recently confirmed AGs."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.3,
+          "predicted_probability": 0.25,
+          "confidence": 0.7,
+          "reasoning": "Recent headlines indicate significant pressure on Pam Bondi, including threats that have forced her relocation to a military base for security. Additionally, the House Oversight panel's decision to subpoena her suggests increasing scrutiny, which may prompt her to leave the position sooner than expected."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.06, sentiment is neutral (90% conf). Adjusting down by 7% for bear thesis."
+        }
+      ],
+      "timestamp": "2026-03-13T16:20:08.788955+00:00"
+    }
+  ]
+}

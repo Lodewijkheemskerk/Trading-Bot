@@ -1,0 +1,52 @@
+{
+  "type": "cold_start",
+  "n_samples": 2000,
+  "n_features": 18,
+  "feature_names": [
+    "yes_price",
+    "spread",
+    "spread_pct",
+    "volume_24h_log",
+    "open_interest_log",
+    "days_to_expiry",
+    "price_move_24h",
+    "volume_spike",
+    "volume_oi_ratio",
+    "bullish_avg",
+    "bearish_avg",
+    "neutral_avg",
+    "sentiment_spread",
+    "consensus_confidence",
+    "gap",
+    "gap_abs",
+    "source_count",
+    "source_agreement"
+  ],
+  "metrics": {
+    "rmse": 0.013861649669706821,
+    "mae": 0.007937922142446041,
+    "r2": 0.9972204566001892,
+    "cv_rmse": 0.02371460311114788
+  },
+  "feature_importance": {
+    "yes_price": 0.23348094522953033,
+    "spread": 0.0010759268188849092,
+    "spread_pct": 0.005152946338057518,
+    "volume_24h_log": 0.0013159760273993015,
+    "open_interest_log": 0.000905369408428669,
+    "days_to_expiry": 0.001167663256637752,
+    "price_move_24h": 0.0008562658913433552,
+    "volume_spike": 0.0008118404657579958,
+    "volume_oi_ratio": 0.0011200837325304747,
+    "bullish_avg": 0.0067939963191747665,
+    "bearish_avg": 0.007072350941598415,
+    "neutral_avg": 0.003993685357272625,
+    "sentiment_spread": 0.6478589773178101,
+    "consensus_confidence": 0.0008028825395740569,
+    "gap": 0.056657686829566956,
+    "gap_abs": 0.029360750690102577,
+    "source_count": 0.0003978657186962664,
+    "source_agreement": 0.0011747663374990225
+  },
+  "timestamp": "2026-03-16T14:08:23.217719"
+}
