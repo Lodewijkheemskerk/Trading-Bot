@@ -592,6 +592,23 @@ def api_trading_hours_save():
     return jsonify({"saved": True})
 
 
+@app.route("/api/balances", methods=["GET", "POST"])
+def api_balances():
+    """GET: fetch all provider balances. POST: update a manual balance."""
+    try:
+        from scripts.balance_checker import get_all_balances, update_balance
+        if request.method == "GET":
+            return jsonify(get_all_balances())
+        else:
+            data = request.get_json(force=True)
+            provider = data.get("provider", "")
+            balance = float(data.get("balance", 0))
+            result = update_balance(provider, balance)
+            return jsonify(result)
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
 @app.route("/api/runs", methods=["GET"])
 def api_runs():
     """Return recent pipeline run history with costs."""

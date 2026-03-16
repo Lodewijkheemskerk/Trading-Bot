@@ -693,6 +693,58 @@ body {
   font-size: 13px;
 }
 
+/* ── Balance grid ── */
+.balance-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.balance-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.balance-card .provider-name {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.balance-card .balance-value {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.balance-card .balance-value.low { color: var(--red); }
+.balance-card .balance-value.medium { color: var(--amber); }
+.balance-card .balance-value.high { color: var(--green); }
+.balance-card .balance-value.unknown { color: var(--text-dim); font-size: 14px; }
+.balance-card .balance-source {
+  font-size: 10px;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.balance-card .balance-source .dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  display: inline-block;
+}
+.balance-card .balance-source .dot.api { background: var(--green); }
+.balance-card .balance-source .dot.manual { background: var(--amber); }
+.balance-card .edit-btn {
+  background: none; border: 1px solid var(--border); border-radius: 4px;
+  color: var(--text-dim); font-size: 10px; padding: 2px 8px; cursor: pointer;
+  margin-left: auto;
+}
+.balance-card .edit-btn:hover { color: var(--amber); border-color: var(--amber); }
+
 /* ── Runs table ── */
 .runs-table {
   width: 100%;
@@ -918,6 +970,19 @@ body {
         <span class="panel-meta" id="tradeMeta">--</span>
       </div>
       <div class="panel-body" id="tradeBody"></div>
+    </div>
+  </div>
+
+  <!-- AI Provider Balances -->
+  <div class="panel">
+    <div class="panel-header">
+      <span class="panel-title">AI Provider Balances</span>
+      <span class="panel-meta" id="balanceMeta">--</span>
+    </div>
+    <div class="panel-body" id="balanceBody">
+      <div class="balance-grid" id="balanceGrid">
+        <div class="empty">Loading balances...</div>
+      </div>
     </div>
   </div>
 
@@ -1416,6 +1481,66 @@ function updateCountdown() {
 }
 fetchPipelineStatus();
 setInterval(fetchPipelineStatus, 30000);
+
+// ── AI Balances ──
+async function fetchBalances() {
+  try {
+    const data = await (await fetch('/api/balances')).json();
+    renderBalances(data);
+  } catch(e) { console.error('Balance fetch error:', e); }
+}
+
+function renderBalances(data) {
+  const grid = document.getElementById('balanceGrid');
+  const meta = document.getElementById('balanceMeta');
+  const order = ['openai', 'anthropic', 'deepseek', 'grok', 'gemini'];
+
+  let total = 0;
+  let known = 0;
+
+  let html = '';
+  for (const key of order) {
+    const p = data[key];
+    if (!p) continue;
+    const bal = p.balance;
+    const hasBalance = bal !== null && bal !== undefined;
+    if (hasBalance) { total += bal; known++; }
+
+    const balClass = !hasBalance ? 'unknown' : bal < 2 ? 'low' : bal < 10 ? 'medium' : 'high';
+    const balText = hasBalance ? '$' + bal.toFixed(2) : 'Not set';
+    const sourceClass = p.source === 'api' ? 'api' : 'manual';
+    const sourceLabel = p.source === 'api' ? 'Auto' : 'Manual';
+    const updated = p.updated ? new Date(p.updated).toLocaleDateString([], {month:'short',day:'numeric'}) : '--';
+
+    html += `<div class="balance-card">
+      <div class="provider-name">${p.name || key}</div>
+      <div class="balance-value ${balClass}">${balText}</div>
+      <div class="balance-source">
+        <span class="dot ${sourceClass}"></span>
+        ${sourceLabel} · ${updated}
+        ${p.source !== 'api' ? `<button class="edit-btn" onclick="editBalance('${key}','${p.name||key}',${bal||0})">Edit</button>` : ''}
+      </div>
+    </div>`;
+  }
+
+  grid.innerHTML = html;
+  meta.textContent = known + '/5 set · total: $' + total.toFixed(2);
+}
+
+function editBalance(key, name, current) {
+  const val = prompt('Enter current ' + name + ' balance ($):', current || '');
+  if (val === null) return;
+  const num = parseFloat(val);
+  if (isNaN(num) || num < 0) { alert('Invalid amount'); return; }
+  fetch('/api/balances', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({provider: key, balance: num})
+  }).then(() => fetchBalances());
+}
+
+fetchBalances();
+setInterval(fetchBalances, 60000);
 
 // ── Run History ──
 async function fetchRuns() {
