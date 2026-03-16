@@ -1512,7 +1512,7 @@ function renderBalances(data) {
     const sourceLabel = p.source === 'api' ? 'Auto' : 'Manual';
     const updated = p.updated ? new Date(p.updated).toLocaleDateString([], {month:'short',day:'numeric'}) : '--';
 
-    html += `<div class="balance-card">
+    html += `<div class="balance-card" data-balance-key="${key}">
       <div class="provider-name">${p.name || key}</div>
       <div class="balance-value ${balClass}">${balText}</div>
       <div class="balance-source">
@@ -1528,15 +1528,39 @@ function renderBalances(data) {
 }
 
 function editBalance(key, name, current) {
-  const val = prompt('Enter current ' + name + ' balance ($):', current || '');
-  if (val === null) return;
-  const num = parseFloat(val);
-  if (isNaN(num) || num < 0) { alert('Invalid amount'); return; }
-  fetch('/api/balances', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({provider: key, balance: num})
-  }).then(() => fetchBalances());
+  const card = document.querySelector(`[data-balance-key="${key}"]`);
+  if (!card || card.querySelector('.balance-edit')) return;
+
+  const valueEl = card.querySelector('.balance-value');
+  const origText = valueEl.textContent;
+  const origVal = current || 0;
+
+  valueEl.innerHTML = `<input type="number" class="balance-edit" value="${origVal}" min="0" step="0.01"
+    style="background:var(--bg-surface);border:1px solid var(--amber);border-radius:4px;color:var(--text-primary);
+    font-family:var(--font-mono);font-size:16px;font-weight:700;width:100px;padding:4px 8px;outline:none;">`;
+
+  const input = card.querySelector('.balance-edit');
+  input.focus();
+  input.select();
+
+  const save = () => {
+    const num = parseFloat(input.value);
+    if (isNaN(num) || num < 0) {
+      valueEl.textContent = origText;
+      return;
+    }
+    fetch('/api/balances', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({provider: key, balance: num})
+    }).then(() => fetchBalances());
+  };
+
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { valueEl.textContent = origText; }
+  });
 }
 
 fetchBalances();
