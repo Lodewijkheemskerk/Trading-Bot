@@ -276,6 +276,7 @@ class TradingPipeline:
 
             return {
                 "success": True,
+                "markets_scanned": result.markets_scanned,
                 "markets_found": len(markets),
                 "markets": markets[:10],  # Top 10 for research
             }
