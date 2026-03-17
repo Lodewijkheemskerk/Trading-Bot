@@ -10,13 +10,14 @@ import subprocess
 import threading
 from dataclasses import asdict
 from pathlib import Path
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 import yaml
 from flask import Flask, jsonify, send_from_directory, request
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import load_settings, DATA_DIR, TRADES_DIR, PREDICTIONS_DIR, RESEARCH_DIR, MARKET_DIR, KILL_SWITCH_FILE, PAUSE_FILE
+from scripts.pipeline import next_aligned_time
 
 app = Flask(__name__, static_folder="static")
 
@@ -256,7 +257,10 @@ def api_run_pipeline():
 
 @app.route("/api/pipeline_status")
 def api_pipeline_status():
-    """Check if a pipeline run is in progress, and compute next loop run time."""
+    """Check if a pipeline run is in progress, and compute next clock-aligned run time."""
+    settings = load_settings()
+    interval = settings.get("scanner", {}).get("schedule_minutes", 30)
+
     # Find last prediction snapshot timestamp as proxy for last completed cycle
     last_cycle = None
     preds = sorted(PREDICTIONS_DIR.glob("predictions_*.json"), reverse=True)
@@ -272,11 +276,16 @@ def api_pipeline_status():
         except ValueError:
             pass
 
+    # Compute next clock-aligned run time
+    target = next_aligned_time(interval)
+    next_run_epoch_ms = target.timestamp() * 1000
+
     return jsonify({
         "running": _pipeline_running,
         "last_run": _pipeline_last_run or last_cycle,
         "last_error": _pipeline_last_error,
-        "loop_interval_minutes": 30,
+        "loop_interval_minutes": interval,
+        "next_run": next_run_epoch_ms,
     })
 
 

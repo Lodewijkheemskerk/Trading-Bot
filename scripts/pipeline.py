@@ -11,9 +11,10 @@ Usage:
 
 import json
 import logging
+import math
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -22,6 +23,31 @@ from config import load_settings, KILL_SWITCH_FILE, PAUSE_FILE, DATA_DIR, TRADES
 
 logger = logging.getLogger(__name__)
 
+
+def next_aligned_time(interval_minutes: int, now: datetime = None) -> datetime:
+    """Compute the next clock-aligned run time.
+
+    For a 30-min interval, runs land on :00 and :30.
+    For a 15-min interval, runs land on :00, :15, :30, :45.
+    For a 60-min interval, runs land on :00.
+
+    Returns a UTC datetime of the next slot boundary strictly after `now`.
+    """
+    if now is None:
+        now = datetime.now(timezone.utc)
+    # Work in minutes-since-midnight (local wall clock for intuitive alignment)
+    local_now = now.astimezone()
+    minutes_since_midnight = local_now.hour * 60 + local_now.minute
+    current_slot = minutes_since_midnight // interval_minutes
+    next_slot_minutes = (current_slot + 1) * interval_minutes
+
+    # Build the target time from today's date at next_slot_minutes
+    target = local_now.replace(
+        hour=0, minute=0, second=0, microsecond=0
+    ) + timedelta(minutes=next_slot_minutes)
+
+    # If next_slot_minutes >= 1440 it rolls into tomorrow, which is fine
+    return target.astimezone(timezone.utc)
 
 class TradingPipeline:
     """Orchestrates the complete 7-step trading pipeline."""
@@ -152,15 +178,23 @@ class TradingPipeline:
 
     def run_loop(self, interval_minutes: int = None):
         """
-        Run the pipeline in a continuous loop.
+        Run the pipeline in a continuous loop, aligned to clock boundaries.
 
-        Checks kill switch between cycles. Sleeps for interval_minutes.
+        Runs land on clean clock slots:
+          30-min interval → :00 and :30
+          15-min interval → :00, :15, :30, :45
+          60-min interval → top of every hour
+
+        Checks kill switch between cycles. Sleeps until next aligned slot.
         If interval_minutes is None, reads from settings.yaml scanner.schedule_minutes.
         """
         if interval_minutes is None:
             interval_minutes = self.settings.get("scanner", {}).get("schedule_minutes", 15)
-        logger.info("Starting pipeline loop with %d-minute interval", interval_minutes)
+        logger.info("Starting pipeline loop with %d-minute interval (clock-aligned)", interval_minutes)
         logger.info("Create '%s' file to halt trading", KILL_SWITCH_FILE)
+
+        # Run immediately on first iteration, then align to clock
+        first_run = True
 
         while True:
             # Check kill switch
@@ -172,7 +206,7 @@ class TradingPipeline:
             # Check pause — skip cycle but keep loop alive
             if self._check_paused():
                 logger.info("Pipeline paused — skipping cycle")
-                print("[PAUSED] Pipeline paused -- skipping cycle, will check again in %d minutes" % interval_minutes)
+                print("[PAUSED] Pipeline paused -- skipping cycle, will check again at next slot")
             else:
                 try:
                     result = self.run_once()
@@ -185,16 +219,23 @@ class TradingPipeline:
             # Check if it's time for nightly review
             self._maybe_run_nightly_review()
 
-            # Sleep until next cycle (check kill switch every 10 seconds)
-            logger.info("Sleeping %d minutes until next cycle...", interval_minutes)
-            sleep_seconds = interval_minutes * 60
-            while sleep_seconds > 0:
+            # Sleep until next clock-aligned slot (check kill switch every 10s)
+            target = next_aligned_time(interval_minutes)
+            target_local = target.astimezone()
+            logger.info("Next run at %s (clock-aligned)", target_local.strftime("%H:%M"))
+            print(f"[NEXT] Sleeping until {target_local.strftime('%H:%M')} ...")
+
+            while True:
+                now = datetime.now(timezone.utc)
+                remaining = (target - now).total_seconds()
+                if remaining <= 0:
+                    break
                 if self._check_kill_switch():
                     logger.warning("Kill switch activated during sleep — stopping")
                     print("\n[!] Kill switch detected -- trading halted.")
                     return
-                time.sleep(min(10, sleep_seconds))
-                sleep_seconds -= 10
+                time.sleep(min(10, remaining))
+
 
     @staticmethod
     def activate_kill_switch():
