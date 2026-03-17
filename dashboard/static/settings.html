@@ -32,10 +32,15 @@
   --sidebar-w: 200px;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { font-size: 15px; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+* { scrollbar-width: thin; scrollbar-color: var(--border-light) var(--bg); }
+html { font-size: 15px; background: var(--bg); }
 body {
   background: var(--bg); color: var(--text); font-family: var(--font-body);
-  line-height: 1.5; height: 100vh; overflow: hidden; -webkit-font-smoothing: antialiased;
+  line-height: 1.5; min-height: 100vh; overflow-x: hidden; -webkit-font-smoothing: antialiased;
 }
 
 /* ── Top Bar ── */
@@ -88,7 +93,7 @@ body {
 }
 .app-layout {
   display: flex;
-  height: calc(100vh - var(--topbar-h));
+  min-height: calc(100vh - var(--topbar-h));
 }
 
 /* ── Sidebar ── */
@@ -251,6 +256,79 @@ body {
 .setting-control { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 .setting-control .threshold-slider { width: 200px; }
 .setting-control .threshold-value { min-width: 54px; }
+
+/* ── Mobile Bottom Nav ── */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 56px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  align-items: center;
+  justify-content: space-around;
+}
+.mobile-nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  color: var(--text-dim); text-decoration: none;
+  font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.5px;
+  padding: 6px 16px; border-radius: 8px; transition: all 0.15s;
+}
+.mobile-nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mobile-nav-item.active { color: var(--amber); }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .topbar { padding: 0 16px; }
+  .sidebar { width: 160px; }
+  .content { padding: 20px; }
+  .threshold-row { flex-wrap: wrap; gap: 16px; }
+  .model-controls { flex-wrap: wrap; gap: 12px; }
+  .weight-slider { width: 140px; }
+  .setting-control .threshold-slider { width: 140px; }
+}
+@media (max-width: 640px) {
+  .topbar { height: 48px; padding: 0 12px; }
+  :root { --topbar-h: 48px; }
+  .logo { font-size: 13px; letter-spacing: 2px; }
+  .logo-sub { display: none; }
+
+  .sidebar-nav { display: none; }
+  .sidebar { display: none; }
+  .mobile-nav { display: flex; }
+  .app-layout { min-height: calc(100vh - 48px); padding-bottom: 56px; }
+
+  .content { padding: 16px; }
+  .threshold-row { flex-direction: column; gap: 16px; padding: 16px; }
+  .model-card { grid-template-columns: 1fr; gap: 12px; }
+  .model-controls { flex-direction: column; gap: 12px; }
+  .weight-slider { width: 100%; }
+  .setting-row { flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px 16px; }
+  .setting-control { width: 100%; }
+  .setting-control .threshold-slider { width: 100%; flex: 1; }
+
+  /* Mobile: show tab selector instead of sidebar */
+  .mobile-tab-bar {
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-card);
+    padding: 0 12px;
+  }
+  .mobile-tab-bar .sidebar-link {
+    white-space: nowrap;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+  .mobile-tab-bar .sidebar-link.active {
+    border-bottom-color: var(--amber);
+    border-left-color: transparent;
+    background: none;
+  }
+}
 </style>
 </head>
 <body>
@@ -284,6 +362,9 @@ body {
 
   <!-- Settings layout (sub-sidebar + content) -->
   <div class="layout">
+
+  <!-- ── Mobile Tab Bar (replaces sidebar on mobile) ── -->
+  <div class="mobile-tab-bar" style="display:none"></div>
 
   <!-- ── SIDEBAR ── -->
   <nav class="sidebar">
@@ -705,6 +786,43 @@ async function saveTradingHours() {
 loadEnsemble();
 loadRiskSettings();
 loadTradingHours();
+
+// Mobile: clone sidebar links into mobile-tab-bar
+(function() {
+  const bar = document.querySelector('.mobile-tab-bar');
+  const links = document.querySelectorAll('.sidebar .sidebar-link');
+  if (bar && links.length) {
+    links.forEach(l => bar.appendChild(l.cloneNode(true)));
+    bar.querySelectorAll('.sidebar-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const tab = this.getAttribute('data-tab') || this.textContent.trim().toLowerCase().replace(/\s+/g,'-');
+        if (typeof switchTab === 'function') switchTab(tab, this);
+        // also update real sidebar
+        document.querySelectorAll('.sidebar .sidebar-link').forEach(s => {
+          if (s.getAttribute('data-tab') === tab) switchTab(tab, s);
+        });
+      });
+    });
+  }
+})();
 </script>
+
+<!-- Mobile bottom nav -->
+<nav class="mobile-nav">
+  <a href="/" class="mobile-nav-item">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </a>
+  <a href="/backtest" class="mobile-nav-item">
+    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Backtest
+  </a>
+  <a href="/settings" class="mobile-nav-item active">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Settings
+  </a>
+</nav>
+
 </body>
 </html>
