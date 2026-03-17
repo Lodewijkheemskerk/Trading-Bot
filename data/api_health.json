@@ -2,27 +2,27 @@
   "openai": {
     "status": "ok",
     "ok": true,
-    "checked_at": "2026-03-16T16:23:07.028594+00:00"
+    "checked_at": "2026-03-17T09:00:00.030635+00:00"
   },
   "anthropic": {
     "status": "ok",
     "ok": true,
-    "checked_at": "2026-03-16T16:23:07.028594+00:00"
+    "checked_at": "2026-03-17T09:00:00.030635+00:00"
   },
   "deepseek": {
     "status": "ok",
     "ok": true,
-    "checked_at": "2026-03-16T16:23:07.028594+00:00"
+    "checked_at": "2026-03-17T09:00:00.030635+00:00"
   },
   "grok": {
     "status": "ok",
     "ok": true,
-    "checked_at": "2026-03-16T16:23:07.028594+00:00"
+    "checked_at": "2026-03-17T09:00:00.030635+00:00"
   },
   "gemini": {
     "status": "ok",
     "ok": true,
-    "checked_at": "2026-03-16T16:23:07.028594+00:00"
+    "checked_at": "2026-03-17T09:00:00.030635+00:00"
   },
   "kalshi": {
     "status": "ok",
@@ -30,8 +30,8 @@
     "balance": {
       "balance": 100000,
       "portfolio_value": 0,
-      "updated_ts": 1773678192
+      "updated_ts": 1773738003
     },
-    "checked_at": "2026-03-16T16:23:07.028594+00:00"
+    "checked_at": "2026-03-17T09:00:00.030635+00:00"
   }
 }

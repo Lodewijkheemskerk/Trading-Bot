@@ -1,0 +1,306 @@
+{
+  "timestamp": "2026-03-16T23:52:10.074136+00:00",
+  "duration_seconds": 22836.9,
+  "cycle_number": 2,
+  "scan": {
+    "success": true,
+    "markets_found": 3,
+    "markets": [
+      {
+        "platform": "kalshi",
+        "market_id": "KXBONDIOUT-26APR01",
+        "title": "Will Pam Bondi leaves Attorney General in before April?",
+        "description": "::",
+        "category": "Politics",
+        "event_ticker": "KXBONDIOUT",
+        "yes_price": 0.06,
+        "no_price": 0.95,
+        "yes_bid": 0.05,
+        "spread": 0.01,
+        "volume_24h": 1414.0,
+        "total_volume": 51666.0,
+        "liquidity": 0.0,
+        "open_interest": 29839.0,
+        "expiry_date": "2026-04-08T14:00:00Z",
+        "days_to_expiry": 22,
+        "last_price": 0.05,
+        "url": "https://kalshi.com/markets/KXBONDIOUT-26APR01",
+        "price_move_24h": 0.0,
+        "volume_spike": 0.92,
+        "is_anomaly": false,
+        "anomaly_reasons": "",
+        "opportunity_score": 53.0
+      },
+      {
+        "platform": "kalshi",
+        "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+        "title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+        "description": "",
+        "category": "Entertainment",
+        "event_ticker": "KXMEDIARELEASESPIDERMAN",
+        "yes_price": 0.07,
+        "no_price": 0.97,
+        "yes_bid": 0.03,
+        "spread": 0.04,
+        "volume_24h": 1189.0,
+        "total_volume": 4432.0,
+        "liquidity": 0.0,
+        "open_interest": 2575.0,
+        "expiry_date": "2026-04-08T14:00:00Z",
+        "days_to_expiry": 22,
+        "last_price": 0.08,
+        "url": "https://kalshi.com/markets/KXMEDIARELEASESPIDERMAN-APR26",
+        "price_move_24h": 0.0,
+        "volume_spike": 1.1,
+        "is_anomaly": false,
+        "anomaly_reasons": "",
+        "opportunity_score": 47.0
+      },
+      {
+        "platform": "kalshi",
+        "market_id": "KXNETANYAHUPARDON-26-APR01",
+        "title": "Will Benjamin Netanyahu be pardoned before Apr 1, 2026?",
+        "description": "",
+        "category": "Politics",
+        "event_ticker": "KXNETANYAHUPARDON-26",
+        "yes_price": 0.08,
+        "no_price": 0.96,
+        "yes_bid": 0.04,
+        "spread": 0.04,
+        "volume_24h": 1819.0,
+        "total_volume": 7238.0,
+        "liquidity": 0.0,
+        "open_interest": 5180.0,
+        "expiry_date": "2026-04-15T04:00:00Z",
+        "days_to_expiry": 29,
+        "last_price": 0.07,
+        "url": "https://kalshi.com/markets/KXNETANYAHUPARDON-26-APR01",
+        "price_move_24h": 0.0,
+        "volume_spike": 0.0,
+        "is_anomaly": false,
+        "anomaly_reasons": "",
+        "opportunity_score": 47.0
+      }
+    ]
+  },
+  "research": {
+    "success": true,
+    "markets_researched": 3
+  },
+  "predict": {
+    "success": true,
+    "signals": 3,
+    "tradeable": 0,
+    "signals_data": [
+      {
+        "market_id": "KXBONDIOUT-26APR01",
+        "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+        "ensemble_probability": 0.1245,
+        "market_probability": 0.06,
+        "edge": 0.0645,
+        "mispricing_score": 0.65,
+        "expected_value": 0.0352,
+        "direction": "buy_yes",
+        "signal_strength": 0.0352,
+        "confidence": 0.545,
+        "should_trade": false,
+        "model_predictions": [
+          {
+            "model_name": "grok",
+            "role": "primary_forecaster",
+            "weight": 0.3,
+            "predicted_probability": 0.15,
+            "confidence": 0.4,
+            "reasoning": "The probability of Pam Bondi leaving her Attorney General position before April is estimated at 0.15, higher than the market price of 0.06, due to recent headlines about security threats and her relocation to a military base, which could signal instability. However, there is no concrete evidence of resignation or removal, and historical precedent suggests Attorneys General rarely leave abruptly without clear cause. Confidence is low at 0.4 because the data is speculative and lacks direct indicators of her departure."
+          },
+          {
+            "model_name": "claude",
+            "role": "news_analyst",
+            "weight": 0.2,
+            "predicted_probability": 0.08,
+            "confidence": 0.7,
+            "reasoning": "The question appears malformed ('leaves Attorney General in before April'), but interpreting it as asking if Bondi will leave her AG position before April, the headlines show she moved to secure housing due to threats, not resignation signals. Her moving to a military base for security reasons actually suggests she's staying in the role despite challenges, making early departure unlikely."
+          },
+          {
+            "model_name": "gpt4o",
+            "role": "bull_advocate",
+            "weight": 0.2,
+            "predicted_probability": 0.25,
+            "confidence": 0.6,
+            "reasoning": "The headlines indicate significant security concerns surrounding Pam Bondi, including her relocation to a military base due to threats. This situation may prompt her to leave her position as Attorney General sooner than anticipated, especially given the mounting pressures from ongoing investigations and public scrutiny."
+          },
+          {
+            "model_name": "gemini",
+            "role": "bear_advocate",
+            "weight": 0.15,
+            "predicted_probability": 0.01,
+            "confidence": 0.9,
+            "reasoning": "Pam Bondi previously served as Florida Attorney General and left that position in January 2019. A headline explicitly states she 'is leaving her Democratic successor a mess,' strongly implying her departure has already occurred and that she does not currently hold the Attorney General position. Therefore, she cannot 'leave Attorney General' again before April."
+          },
+          {
+            "model_name": "deepseek",
+            "role": "risk_manager",
+            "weight": 0.15,
+            "predicted_probability": 0.08,
+            "confidence": 0.2,
+            "reasoning": "The market price of $0.06 is the primary anchor, but headlines suggest heightened security concerns and potential instability, slightly increasing departure risk. However, evidence is speculative and ambiguous regarding a formal resignation before April, warranting low confidence due to sparse, noisy data and unclear resolution criteria."
+          }
+        ],
+        "timestamp": "2026-03-17T02:26:48.366632+00:00"
+      },
+      {
+        "market_id": "KXNETANYAHUPARDON-26-APR01",
+        "market_title": "Will Benjamin Netanyahu be pardoned before Apr 1, 2026?",
+        "ensemble_probability": 0.14,
+        "market_probability": 0.08,
+        "edge": 0.06,
+        "mispricing_score": 0.6,
+        "expected_value": 0.0336,
+        "direction": "buy_yes",
+        "signal_strength": 0.0336,
+        "confidence": 0.56,
+        "should_trade": false,
+        "model_predictions": [
+          {
+            "model_name": "grok",
+            "role": "primary_forecaster",
+            "weight": 0.3,
+            "predicted_probability": 0.15,
+            "confidence": 0.5,
+            "reasoning": "The probability of Benjamin Netanyahu being pardoned before April 1, 2026, is estimated at 0.15, slightly above the market price of 0.08, due to recent statements from Donald Trump advocating for a pardon as seen in Google News headlines. However, there are significant uncertainties around whether such a pardon would be legally or politically feasible, and sentiment data is mixed with neutral consensus and low confidence in some sources. Confidence is moderate at 0.5 due to the lack of concrete legal or procedural developments supporting a pardon."
+          },
+          {
+            "model_name": "claude",
+            "role": "news_analyst",
+            "weight": 0.2,
+            "predicted_probability": 0.12,
+            "confidence": 0.6,
+            "reasoning": "Trump has publicly stated Netanyahu should be pardoned, and with Trump taking office in January 2026, there's a narrow window for action. However, pardons typically require formal charges or convictions, and Netanyahu's corruption trial is ongoing in Israeli courts where US presidential pardons don't apply. The market price of 8% seems roughly appropriate given these structural limitations."
+          },
+          {
+            "model_name": "gpt4o",
+            "role": "bull_advocate",
+            "weight": 0.2,
+            "predicted_probability": 0.25,
+            "confidence": 0.7,
+            "reasoning": "Recent headlines indicate a significant bet on Netanyahu's release, suggesting strong belief in a potential pardon. Additionally, Trump's public support for Netanyahu's pardon adds momentum to the possibility, indicating that influential figures may be advocating for this outcome."
+          },
+          {
+            "model_name": "gemini",
+            "role": "bear_advocate",
+            "weight": 0.15,
+            "predicted_probability": 0.05,
+            "confidence": 0.8,
+            "reasoning": "Netanyahu is currently on trial for serious corruption charges, and a pardon typically follows conviction, which is unlikely to occur with subsequent appeals before April 2026. Such a highly controversial pardon for a sitting or former PM would face immense political and public opposition, making any Israeli President extremely reluctant to grant it."
+          },
+          {
+            "model_name": "deepseek",
+            "role": "risk_manager",
+            "weight": 0.15,
+            "predicted_probability": 0.09,
+            "confidence": 0.2,
+            "reasoning": "The market price of $0.08 is the strongest signal, and while headlines mention Trump advocating for a pardon, political pardons are highly uncertain and speculative. Sentiment analysis is noisy, and the large whale bet does not guarantee outcome\u2014illiquidity and ambiguous resolution criteria further reduce confidence."
+          }
+        ],
+        "timestamp": "2026-03-17T06:12:07.851948+00:00"
+      },
+      {
+        "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+        "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+        "ensemble_probability": 0.201,
+        "market_probability": 0.07,
+        "edge": 0.131,
+        "mispricing_score": 1.31,
+        "expected_value": 0.0655,
+        "direction": "buy_yes",
+        "signal_strength": 0.0655,
+        "confidence": 0.5,
+        "should_trade": false,
+        "model_predictions": [
+          {
+            "model_name": "grok",
+            "role": "primary_forecaster",
+            "weight": 0.3,
+            "predicted_probability": 0.15,
+            "confidence": 0.3,
+            "reasoning": "The probability of the official trailer for Spider-Man: Beyond the Spider-Verse being released before April 1, 2026, is estimated at 0.15 due to significant delays in the film's production and a confirmed release date in 2027 as per recent headlines. Historical precedent with animated sequels, especially in the Spider-Verse franchise, suggests trailers often release 6-12 months prior to the film, making a pre-April 2026 trailer unlikely. Confidence is low due to mixed signals in sentiment data and limited concrete evidence on trailer release plans."
+          },
+          {
+            "model_name": "claude",
+            "role": "news_analyst",
+            "weight": 0.2,
+            "predicted_probability": 0.15,
+            "confidence": 0.7,
+            "reasoning": "The movie has been delayed to 2027 according to recent headlines, making an official trailer release before April 2026 unlikely given typical marketing timelines. While sentiment analysis suggests underpricing, the concrete 2027 release date is a strong signal against early trailer release."
+          },
+          {
+            "model_name": "gpt4o",
+            "role": "bull_advocate",
+            "weight": 0.2,
+            "predicted_probability": 0.54,
+            "confidence": 0.6,
+            "reasoning": "The recent headlines indicate that there is ongoing discussion about 'Spider-Man: Beyond the Spider-Verse,' with producers confirming plans for first footage and a trailer release. Additionally, the market appears to be underpricing the likelihood of a trailer release, given the positive momentum and anticipation surrounding the film."
+          },
+          {
+            "model_name": "gemini",
+            "role": "bear_advocate",
+            "weight": 0.15,
+            "predicted_probability": 0.04,
+            "confidence": 0.8,
+            "reasoning": "The film is reportedly set for a 2027 release, making an official trailer release before April 1, 2026, strategically improbable. Studios typically release official trailers closer to the film's premiere, usually within 6-12 months, to maintain audience engagement. Given the previous film's delays and the complexity of these animated productions, an earlier official trailer is unlikely."
+          },
+          {
+            "model_name": "deepseek",
+            "role": "risk_manager",
+            "weight": 0.15,
+            "predicted_probability": 0.08,
+            "confidence": 0.2,
+            "reasoning": "The market price of $0.07 is the strongest signal, and headlines indicate a 2027 release date, making a trailer before April 2026 unlikely. Sentiment analysis is noisy and unreliable for precise timing, and the market's low price reflects skepticism about early promotion. Low confidence due to sparse, contradictory information and the distant, uncertain timeline."
+          }
+        ],
+        "timestamp": "2026-03-17T06:12:31.241895+00:00"
+      }
+    ]
+  },
+  "execute": {
+    "success": true,
+    "executed": 0,
+    "blocked": 0
+  },
+  "monitor": {
+    "success": true,
+    "positions_checked": 0,
+    "exits_triggered": 0,
+    "exits_by_reason": {},
+    "exit_pnl": 0.0,
+    "held": 0
+  },
+  "resolve": {
+    "success": true,
+    "resolved": 0,
+    "still_open": 0,
+    "pnl_resolved": 0.0
+  },
+  "compound": {
+    "success": true,
+    "newly_analyzed": 0,
+    "failures_logged": 0,
+    "total_trades": 1,
+    "win_rate": 0.0,
+    "total_pnl": 0
+  },
+  "markets_scanned": 0,
+  "markets_passed": 3,
+  "markets_researched": 3,
+  "predictions_made": 3,
+  "trades_executed": 0,
+  "trades_blocked": 0,
+  "estimated_cost_usd": 0.040581,
+  "models_called": [
+    "claude",
+    "deepseek",
+    "gemini",
+    "gpt4o",
+    "grok"
+  ]
+}

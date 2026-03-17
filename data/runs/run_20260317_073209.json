@@ -1,0 +1,225 @@
+{
+  "timestamp": "2026-03-17T06:30:00.008971+00:00",
+  "duration_seconds": 129.3,
+  "cycle_number": 3,
+  "scan": {
+    "success": true,
+    "markets_found": 2,
+    "markets": [
+      {
+        "platform": "kalshi",
+        "market_id": "KXBONDIOUT-26APR01",
+        "title": "Will Pam Bondi leaves Attorney General in before April?",
+        "description": "::",
+        "category": "Politics",
+        "event_ticker": "KXBONDIOUT",
+        "yes_price": 0.06,
+        "no_price": 0.95,
+        "yes_bid": 0.05,
+        "spread": 0.01,
+        "volume_24h": 1094.0,
+        "total_volume": 51717.0,
+        "liquidity": 0.0,
+        "open_interest": 29890.0,
+        "expiry_date": "2026-04-08T14:00:00Z",
+        "days_to_expiry": 22,
+        "last_price": 0.05,
+        "url": "https://kalshi.com/markets/KXBONDIOUT-26APR01",
+        "price_move_24h": 0.0,
+        "volume_spike": 0.71,
+        "is_anomaly": false,
+        "anomaly_reasons": "",
+        "opportunity_score": 53.0
+      },
+      {
+        "platform": "kalshi",
+        "market_id": "KXNETANYAHUPARDON-26-APR01",
+        "title": "Will Benjamin Netanyahu be pardoned before Apr 1, 2026?",
+        "description": "",
+        "category": "Politics",
+        "event_ticker": "KXNETANYAHUPARDON-26",
+        "yes_price": 0.06,
+        "no_price": 0.97,
+        "yes_bid": 0.03,
+        "spread": 0.03,
+        "volume_24h": 2581.0,
+        "total_volume": 8046.0,
+        "liquidity": 0.0,
+        "open_interest": 5988.0,
+        "expiry_date": "2026-04-15T04:00:00Z",
+        "days_to_expiry": 28,
+        "last_price": 0.07,
+        "url": "https://kalshi.com/markets/KXNETANYAHUPARDON-26-APR01",
+        "price_move_24h": 0.0,
+        "volume_spike": 0.0,
+        "is_anomaly": false,
+        "anomaly_reasons": "",
+        "opportunity_score": 49.0
+      }
+    ]
+  },
+  "research": {
+    "success": true,
+    "markets_researched": 2
+  },
+  "predict": {
+    "success": true,
+    "signals": 2,
+    "tradeable": 0,
+    "signals_data": [
+      {
+        "market_id": "KXBONDIOUT-26APR01",
+        "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+        "ensemble_probability": 0.1245,
+        "market_probability": 0.06,
+        "edge": 0.0645,
+        "mispricing_score": 0.65,
+        "expected_value": 0.0339,
+        "direction": "buy_yes",
+        "signal_strength": 0.0339,
+        "confidence": 0.525,
+        "should_trade": false,
+        "model_predictions": [
+          {
+            "model_name": "grok",
+            "role": "primary_forecaster",
+            "weight": 0.3,
+            "predicted_probability": 0.15,
+            "confidence": 0.4,
+            "reasoning": "While headlines indicate Pam Bondi has left her DC residence for a military base due to security threats, there is no clear evidence linking this to a likelihood of leaving her position as Attorney General before April. The neutral sentiment across sources and lack of concrete data on resignation or replacement suggest the market price of 0.06 may be slightly undervalued, but not significantly. Confidence is low due to speculative nature of security concerns and absence of direct statements or precedents indicating departure."
+          },
+          {
+            "model_name": "claude",
+            "role": "news_analyst",
+            "weight": 0.2,
+            "predicted_probability": 0.08,
+            "confidence": 0.6,
+            "reasoning": "The headlines about Bondi moving to a secure military base due to security threats suggest temporary relocation for safety, not resignation. The question's ambiguous phrasing ('leaves Attorney General in before April') is unclear, but assuming it means resignation, the base rate for cabinet officials resigning within ~3 months is very low, and security concerns typically don't drive resignations at this level."
+          },
+          {
+            "model_name": "gpt4o",
+            "role": "bull_advocate",
+            "weight": 0.2,
+            "predicted_probability": 0.25,
+            "confidence": 0.6,
+            "reasoning": "The recent headlines indicate significant security concerns for Pam Bondi, suggesting that her current position may be untenable. The move to a military base amid rising threats indicates a serious situation that could prompt her to leave her role sooner rather than later. Additionally, the market appears to be underestimating the potential for her departure given the escalating circumstances."
+          },
+          {
+            "model_name": "gemini",
+            "role": "bear_advocate",
+            "weight": 0.15,
+            "predicted_probability": 0.01,
+            "confidence": 0.9,
+            "reasoning": "Pam Bondi is not currently an Attorney General, having left the Florida AG position in January 2019. Therefore, she cannot 'leave Attorney General' before April as she does not hold that office. The question appears to be predicated on an outdated assumption of her role, making the event practically impossible."
+          },
+          {
+            "model_name": "deepseek",
+            "role": "risk_manager",
+            "weight": 0.15,
+            "predicted_probability": 0.08,
+            "confidence": 0.2,
+            "reasoning": "The market price of $0.06 is the primary anchor, but headlines suggest Bondi is facing security threats and political pressure, which could increase departure likelihood. However, the resolution criteria are ambiguous (leaves 'Attorney General' role unclear), and news sentiment is noisy, so confidence is low."
+          }
+        ],
+        "timestamp": "2026-03-17T06:31:38.204332+00:00"
+      },
+      {
+        "market_id": "KXNETANYAHUPARDON-26-APR01",
+        "market_title": "Will Benjamin Netanyahu be pardoned before Apr 1, 2026?",
+        "ensemble_probability": 0.1415,
+        "market_probability": 0.06,
+        "edge": 0.0815,
+        "mispricing_score": 0.81,
+        "expected_value": 0.0444,
+        "direction": "buy_yes",
+        "signal_strength": 0.0444,
+        "confidence": 0.545,
+        "should_trade": false,
+        "model_predictions": [
+          {
+            "model_name": "grok",
+            "role": "primary_forecaster",
+            "weight": 0.3,
+            "predicted_probability": 0.15,
+            "confidence": 0.4,
+            "reasoning": "The probability of Benjamin Netanyahu being pardoned before April 1, 2026, is estimated at 0.15, higher than the market price of 0.06, due to recent headlines suggesting Trump\u2019s support for a pardon. However, confidence is low at 0.4 because the evidence is mixed, with disputes from Herzog's office and no concrete legal or political mechanism confirmed for such a pardon. Historical precedent for international pardons of this nature is rare, and much depends on unverified political developments."
+          },
+          {
+            "model_name": "claude",
+            "role": "news_analyst",
+            "weight": 0.2,
+            "predicted_probability": 0.15,
+            "confidence": 0.6,
+            "reasoning": "Trump has explicitly stated Netanyahu should be pardoned and that one is 'on its way', which is a significant signal given Trump's incoming presidency. However, Netanyahu would need to be convicted first or accept guilt for a pardon to be meaningful, and the Israeli legal process may not conclude before April 2026. The market at 6% seems too low given Trump's clear statements, but significant procedural hurdles remain."
+          },
+          {
+            "model_name": "gpt4o",
+            "role": "bull_advocate",
+            "weight": 0.2,
+            "predicted_probability": 0.25,
+            "confidence": 0.7,
+            "reasoning": "Recent headlines indicate that Trump is vocal about supporting a pardon for Netanyahu, suggesting potential political momentum behind this action. Additionally, a significant bet of $180K on Netanyahu's release by March 31 indicates that some investors believe a pardon is likely, which could reflect broader sentiment that the market is currently underpricing."
+          },
+          {
+            "model_name": "gemini",
+            "role": "bear_advocate",
+            "weight": 0.15,
+            "predicted_probability": 0.03,
+            "confidence": 0.8,
+            "reasoning": "The Israeli President's office explicitly disputes claims of a pardon being 'on its way', indicating significant institutional resistance. Pardoning a high-profile figure like Netanyahu for corruption charges before April 2026 would be a highly controversial and politically risky move, making it unlikely to happen within the given timeframe."
+          },
+          {
+            "model_name": "deepseek",
+            "role": "risk_manager",
+            "weight": 0.15,
+            "predicted_probability": 0.08,
+            "confidence": 0.3,
+            "reasoning": "The market price of $0.06 is the primary anchor, but headlines indicate Trump has publicly discussed a pardon, introducing a plausible though uncertain pathway. However, the resolution criteria are ambiguous (pardoned for what, by whom?), and reddit contains conflicting/unverified claims, so confidence remains low."
+          }
+        ],
+        "timestamp": "2026-03-17T06:32:00.131882+00:00"
+      }
+    ]
+  },
+  "execute": {
+    "success": true,
+    "executed": 0,
+    "blocked": 0
+  },
+  "monitor": {
+    "success": true,
+    "positions_checked": 0,
+    "exits_triggered": 0,
+    "exits_by_reason": {},
+    "exit_pnl": 0.0,
+    "held": 0
+  },
+  "resolve": {
+    "success": true,
+    "resolved": 0,
+    "still_open": 0,
+    "pnl_resolved": 0.0
+  },
+  "compound": {
+    "success": true,
+    "newly_analyzed": 0,
+    "failures_logged": 0,
+    "total_trades": 1,
+    "win_rate": 0.0,
+    "total_pnl": 0
+  },
+  "markets_scanned": 0,
+  "markets_passed": 2,
+  "markets_researched": 2,
+  "predictions_made": 2,
+  "trades_executed": 0,
+  "trades_blocked": 0,
+  "estimated_cost_usd": 0.027054,
+  "models_called": [
+    "claude",
+    "deepseek",
+    "gemini",
+    "gpt4o",
+    "grok"
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "timestamp": "2026-03-16T21:05:58.793952+00:00",
+  "duration_seconds": 50.7,
+  "cycle_number": 1,
+  "scan": {
+    "success": true,
+    "markets_found": 1,
+    "markets": [
+      {
+        "platform": "kalshi",
+        "market_id": "KXBONDIOUT-26APR01",
+        "title": "Will Pam Bondi leaves Attorney General in before April?",
+        "description": "::",
+        "category": "Politics",
+        "event_ticker": "KXBONDIOUT",
+        "yes_price": 0.07,
+        "no_price": 0.95,
+        "yes_bid": 0.05,
+        "spread": 0.02,
+        "volume_24h": 1532.0,
+        "total_volume": 51420.0,
+        "liquidity": 0.0,
+        "open_interest": 29663.0,
+        "expiry_date": "2026-04-08T14:00:00Z",
+        "days_to_expiry": 22,
+        "last_price": 0.06,
+        "url": "https://kalshi.com/markets/KXBONDIOUT-26APR01",
+        "price_move_24h": 0.0,
+        "volume_spike": 0.0,
+        "is_anomaly": false,
+        "anomaly_reasons": "",
+        "opportunity_score": 51.0
+      }
+    ]
+  },
+  "research": {
+    "success": true,
+    "markets_researched": 1
+  },
+  "predict": {
+    "success": true,
+    "signals": 1,
+    "tradeable": 0,
+    "signals_data": [
+      {
+        "market_id": "KXBONDIOUT-26APR01",
+        "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+        "ensemble_probability": 0.1895,
+        "market_probability": 0.07,
+        "edge": 0.1195,
+        "mispricing_score": 1.19,
+        "expected_value": 0.0574,
+        "direction": "buy_yes",
+        "signal_strength": 0.0574,
+        "confidence": 0.48,
+        "should_trade": false,
+        "model_predictions": [
+          {
+            "model_name": "grok",
+            "role": "primary_forecaster",
+            "weight": 0.3,
+            "predicted_probability": 0.15,
+            "confidence": 0.3,
+            "reasoning": "The probability of Pam Bondi leaving her Attorney General position before April is estimated at 0.15, slightly above the market price of 0.07, due to recent headlines about her relocation to a military base amid security threats, which could signal instability. However, there is no direct evidence of resignation or intent to leave, and historical precedent suggests Attorneys General rarely resign abruptly without clear cause. Confidence is low at 0.3 due to thin and speculative data, with headlines focusing more on security than job status."
+          },
+          {
+            "model_name": "claude",
+            "role": "news_analyst",
+            "weight": 0.2,
+            "predicted_probability": 0.12,
+            "confidence": 0.6,
+            "reasoning": "The headlines indicate Bondi has relocated to a military base due to security threats, not resignation. Moving residences for safety reasons is different from leaving office - the market price of 7% seems roughly appropriate given no credible resignation signals in the news."
+          },
+          {
+            "model_name": "gpt4o",
+            "role": "bull_advocate",
+            "weight": 0.2,
+            "predicted_probability": 0.52,
+            "confidence": 0.6,
+            "reasoning": "Pam Bondi's recent relocation to a secure military base due to rising threats indicates significant pressure on her position as Attorney General. The headlines suggest a growing concern around her safety and effectiveness, which could lead to her departure before April. Additionally, the market appears to be underpricing the likelihood of her leaving, given the escalating circumstances."
+          },
+          {
+            "model_name": "gemini",
+            "role": "bear_advocate",
+            "weight": 0.15,
+            "predicted_probability": 0.03,
+            "confidence": 0.8,
+            "reasoning": "Pam Bondi is not currently an Attorney General, having left the Florida AG position in 2019; headlines referring to her as 'AG' likely use a past title. Therefore, she cannot 'leave Attorney General in' before April. Furthermore, ongoing security concerns or past scandals do not inherently indicate an imminent departure from any current public role she might hold."
+          },
+          {
+            "model_name": "deepseek",
+            "role": "risk_manager",
+            "weight": 0.15,
+            "predicted_probability": 0.08,
+            "confidence": 0.2,
+            "reasoning": "The market price at $0.07 is the strongest signal, and headlines about relocation or threats do not clearly indicate she will leave the Attorney General role before April. Sentiment analysis is noisy and ambiguous for resolution. Low confidence due to sparse, contradictory information and unclear resolution criteria."
+          }
+        ],
+        "timestamp": "2026-03-16T21:06:48.615959+00:00"
+      }
+    ]
+  },
+  "execute": {
+    "success": true,
+    "executed": 0,
+    "blocked": 0
+  },
+  "monitor": {
+    "success": true,
+    "positions_checked": 0,
+    "exits_triggered": 0,
+    "exits_by_reason": {},
+    "exit_pnl": 0.0,
+    "held": 0
+  },
+  "resolve": {
+    "success": true,
+    "resolved": 0,
+    "still_open": 0,
+    "pnl_resolved": 0.0
+  },
+  "compound": {
+    "success": true,
+    "newly_analyzed": 0,
+    "failures_logged": 0,
+    "total_trades": 1,
+    "win_rate": 0.0,
+    "total_pnl": 0
+  },
+  "markets_scanned": 0,
+  "markets_passed": 1,
+  "markets_researched": 1,
+  "predictions_made": 1,
+  "trades_executed": 0,
+  "trades_blocked": 0,
+  "estimated_cost_usd": 0.013527,
+  "models_called": [
+    "claude",
+    "deepseek",
+    "gemini",
+    "gpt4o",
+    "grok"
+  ]
+}

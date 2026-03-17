@@ -1,0 +1,190 @@
+{
+  "timestamp": "2026-03-17T08:30:09.415323+00:00",
+  "markets_researched": 3,
+  "briefs": [
+    {
+      "market_id": "KXNETANYAHUPARDON-26-APR01",
+      "market_title": "Will Benjamin Netanyahu be pardoned before Apr 1, 2026?",
+      "current_yes_price": 0.06,
+      "sources": [
+        {
+          "source": "bing_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.1,
+          "key_narratives": []
+        },
+        {
+          "source": "google_news",
+          "bullish": 0.05,
+          "bearish": 0.0,
+          "neutral": 0.95,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Daily Briefing Dec. 30: Day 816 – In Florida, a jovial Trump is hawkish on Gaza and Iran",
+            "Trump renews Netanyahu pardon call, saying only Iran should be troubling him",
+            "What does Netanyahu want to be pardoned for and is it possible?",
+            "Trump to Times of Israel: It’ll be a ‘mutual’ decision with Netanyahu regarding when Iran war ends",
+            "Trump says Netanyahu should be pardoned for corruption",
+            "Pardons and prizes: five key takeaways from Trump’s meeting with Netanyahu",
+            "Why Netanyahu’s visit to Mar-a-Lago is the opening act to Israeli Prime Minister’s reelection bid",
+            "Israeli president’s ally threatens leaks over political pardon for Netanyahu"
+          ]
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.05,
+          "bearish": 0.0,
+          "neutral": 0.95,
+          "confidence": 0.9,
+          "key_narratives": [
+            "A whale just bet $180K that Benjamin Netanyahu will be out by March 31. He’ll win $2M if the conspiracy theorists are right",
+            "Benjamin Netanyahu is dead. His last video was all AI. Iranian media claims he has been killed via missle.",
+            "It seems he is seeking to take our position!",
+            "Benjamin Netanyahu is alive",
+            "Ranking the 24 Pulitzer Prize for Fiction Winners I've Read",
+            "'I'm what?' Israeli PM Benjamin Netanyahu mocks death rumour, shows off five fingers…",
+            "I tested a 2,000-year-old astrology method to check if a viral rumor about Benjamin Netanyahu was true",
+            "In Virginia Giuffres memoir, she talks about a former minister (referred to as ‘prime minster’ in the US version) being the most sadistic man she was trafficked to. The theory that it is Ehud Barak is no secret but here is some additional details and corroborating bits iv found."
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.633,
+      "sentiment_implied_probability": 0.515,
+      "gap": 0.455,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across bing_news (neutral, 10% conf), google_news (bullish, 90% conf), reddit (bullish, 90% conf) shows neutral sentiment with 63% confidence. Market appears underpriced by 45.5% based on sentiment signals. Key headline: \"Daily Briefing Dec. 30: Day 816 – In Florida, a jovial Trump is hawkish on Gaza \".",
+      "timestamp": "2026-03-17T08:30:09.349352+00:00"
+    },
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "current_yes_price": 0.05,
+      "sources": [
+        {
+          "source": "bing_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.42,
+          "key_narratives": [
+            "'Spider-Man: Beyond the Spider-Verse': what we know so far about the final Miles Morales animated movie (release date, cast, plot)",
+            "Spider-Man Beyond the Spider-Verse release date and everything you need to know",
+            "'Spider-Man: Beyond the Spider-Verse' producers discuss first footage plans and release date delays",
+            "‘Spider-Man: Beyond the Spider-Verse’ Sets 2027 Release Date, Reveals First Look at CinemaCon",
+            "Why Is Spider-Man: Beyond the Spider-Verse Taking So Long? Producers Phil Lord and Chris Miller Explain",
+            "Jake Johnson Shuts Down Live-Action Peter B. Parker; Confirms SPIDER-MAN: BEYOND THE SPIDER-VERSE Recording",
+            "Spider-Man: Beyond The Spider-Verse Delays Explained By Producers",
+            "SPIDER-MAN: BEYOND THE SPIDER-VERSE Producers Detail Major Changes To Long-Delayed Threequel"
+          ]
+        },
+        {
+          "source": "google_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.9,
+          "key_narratives": [
+            "'Stay tuned': Spider-Man: Beyond the Spider-Verse producers drop a big hint that they might be ready to show us some footage — and say they're 'very confident' it'll meet its release date",
+            "Phil Lord and Chris Miller Give Update On Spider-Man: Beyond The Spider-Verse",
+            "Upcoming New Sony Spider-Man Universe Movies and TV Shows: 2026 Marvel Spin-Off Release Dates and Beyond",
+            "Spider-Man: Beyond the Spider-Verse release date, plot, cast, and everything we know so far",
+            "Spider-Man: Beyond the Spider-Verse Is Coming to Our Universe",
+            "SPIDER-MAN: BEYOND THE SPIDER-VERSE Lands a New, Earlier Release Date",
+            "Spider-Man: Beyond the Spider-Verse receives another disappointing update",
+            "‘Spider-Man: Beyond the Spider-Verse’ Sets 2027 Release Date, Reveals First Look at CinemaCon"
+          ]
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.4,
+          "bearish": 0.0,
+          "neutral": 0.6,
+          "confidence": 0.9,
+          "key_narratives": [
+            "The first trailer for “Spider-man brand new day” will be released march 18 according to a official Sony distributer",
+            "Beyond the villa 2 official cast photos",
+            "Spider Man Brand New Day Trailer will also release tomorrow",
+            "do you think they’ll release a trailer for the official launch of Hytale?",
+            "Alex Perez is teasing something related to the SPIDER-MAN: BRAND NEW DAY trailer will be released tomorrow",
+            "Sousou no Frieren Episode 36 (Season 2 Episode 8) - Discussion Thread",
+            "Peerless Pikachu &amp; Exquisite Eevee PLUS | Official Announcement",
+            "Christopher Miller says ‘SPIDER-MAN: BEYOND THE SPIDER-VERSE’ will be a “very emotional” movie"
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.74,
+      "sentiment_implied_probability": 0.56,
+      "gap": 0.51,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across bing_news (neutral, 42% conf), google_news (neutral, 90% conf), reddit (bullish, 90% conf) shows neutral sentiment with 74% confidence. Market appears underpriced by 51.0% based on sentiment signals. Key headline: \"'Spider-Man: Beyond the Spider-Verse': what we know so far about the final Miles\".",
+      "timestamp": "2026-03-17T08:30:09.394591+00:00"
+    },
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "current_yes_price": 0.06,
+      "sources": [
+        {
+          "source": "bing_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.34,
+          "key_narratives": [
+            "Where Is Pam Bondi? Attorney General No Longer At DC Residence Amid Security Concerns",
+            "Where is Pam Bondi? AG leaves Washington DC residence, moves into secure military base amid rising threats",
+            "Pam Bondi Flees to U.S. Military Base After Reported Spike in Threats",
+            "Everything to Know About Pam Bondi, the Trump-Loyal Attorney General",
+            "Pam Bondi is leaving her Democratic successor a mess",
+            "US Attorney General Pam Bondi to face questions in Epstein probe"
+          ]
+        },
+        {
+          "source": "google_news",
+          "bullish": 0.05,
+          "bearish": 0.1,
+          "neutral": 0.85,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Epstein files scandal 'infinitely worse than Watergate' as Bondi could face blame, Rep. Garcia says",
+            "Attorney General Bondi likely to hang onto Florida law license despite evidence of misconduct",
+            "Pam Bondi's Fox News Mini-Scandal Was An Embarrassing Reach For The Spotlight",
+            "Proposed rule allowing DOJ to interfere with state bar discipline proceedings ‘legally flawed’",
+            "Pam Bondi’s in trouble with Republicans on Capitol Hill",
+            "Where is Pam Bondi Now? US Attorney General Missing From DC Home, Reportedly Moves to Secure Military Base Amid Jeffrey Epstein Case",
+            "House Oversight panel votes to subpoena AG Pam Bondi in Epstein probe",
+            "US congressional panel votes to subpoena Pam Bondi over Epstein files"
+          ]
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.2,
+          "bearish": 0.0,
+          "neutral": 0.8,
+          "confidence": 0.9,
+          "key_narratives": [
+            "In a massive blow to the first amendment, Trump administration wins its first “antifa case”. Pam Bondi made the stakes clear: \"Today's verdict will not be the last.\"",
+            "MMW: The United States Attorney General Pam Bondi Will Plead The Fifth Amendment multiple times",
+            "Most of the website is completely ignoring that Pam Bondi had to move to a military base because of assassination threats.",
+            "Pam Bondi moves into secure military housing amid Epstein outrage",
+            "Personal thoughts about the book  \"Saint Luigi : How to respond to the violence of capitalism\" by Nicolas Framont",
+            "DOJ Plans to Lower Bar for States to Fast-Track Executions",
+            "The Zorro Ranch Dossier: Beyond the \"Massage Parlor\" Cover-Up",
+            "What A Day: ICE Barbie's Next Act by Matt Berg &amp; Crooked Media (03/11/26)"
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.713,
+      "sentiment_implied_probability": 0.5225,
+      "gap": 0.4625,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across bing_news (neutral, 34% conf), google_news (bearish, 90% conf), reddit (bullish, 90% conf) shows neutral sentiment with 71% confidence. Market appears underpriced by 46.2% based on sentiment signals. Key headline: \"Where Is Pam Bondi? Attorney General No Longer At DC Residence Amid Security Con\".",
+      "timestamp": "2026-03-17T08:30:09.412320+00:00"
+    }
+  ]
+}

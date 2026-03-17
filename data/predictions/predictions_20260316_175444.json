@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-03-16T16:54:44.564940+00:00",
+  "markets_predicted": 1,
+  "signals": [
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "ensemble_probability": 0.1245,
+      "market_probability": 0.06,
+      "edge": 0.0645,
+      "mispricing_score": 0.65,
+      "expected_value": 0.0319,
+      "direction": "buy_yes",
+      "signal_strength": 0.0319,
+      "confidence": 0.495,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.15,
+          "confidence": 0.3,
+          "reasoning": "The probability of Pam Bondi leaving her Attorney General position before April is estimated at 0.15, higher than the market price of 0.06, due to recent headlines about her moving to a secure military base amid security threats, which could signal instability. However, there is no concrete evidence of resignation or intent to leave, and historical precedent suggests Attorneys General rarely depart abruptly without clear cause. Confidence is low due to thin and speculative data, with sentiment analysis being neutral and contradictory across sources."
+        },
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.2,
+          "predicted_probability": 0.08,
+          "confidence": 0.6,
+          "reasoning": "The question appears to have a typo ('leaves Attorney General in before April') but likely asks if Bondi will leave her AG position before April. Headlines show she moved to a secure military base due to security threats, not resignation signals. Early resignation of AGs is historically rare, and security relocations don't indicate departure from office."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.25,
+          "confidence": 0.6,
+          "reasoning": "The recent headlines indicate a significant shift in Pam Bondi's circumstances, particularly her relocation to a secure military base due to rising threats, which suggests a potential exit from her role as Attorney General. Additionally, the market appears to be underpricing the likelihood of her departure, given the growing concerns surrounding her position and the implications of her current situation."
+        },
+        {
+          "model_name": "gemini",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.01,
+          "confidence": 0.9,
+          "reasoning": "Pam Bondi is not currently holding any Attorney General position, having left her role as Florida Attorney General in January 2019. Since she is not 'in' the position of Attorney General, she cannot 'leave' it, making the event as stated impossible. The market appears to be misinformed about her current professional status."
+        },
+        {
+          "model_name": "deepseek",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.08,
+          "confidence": 0.2,
+          "reasoning": "The market price of $0.06 is the primary anchor, but headlines suggest Bondi has already left her DC residence, which could indicate she is no longer serving as Attorney General. However, the resolution criteria are ambiguous—'leaves Attorney General' could mean resigns, is removed, or changes roles, and the headlines do not confirm this definitively. Given the low liquidity and high information asymmetry typical for such markets, confidence remains low."
+        }
+      ],
+      "timestamp": "2026-03-16T16:54:44.564940+00:00"
+    }
+  ]
+}

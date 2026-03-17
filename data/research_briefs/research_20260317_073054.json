@@ -1,0 +1,125 @@
+{
+  "timestamp": "2026-03-17T06:30:54.569749+00:00",
+  "markets_researched": 2,
+  "briefs": [
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "current_yes_price": 0.06,
+      "sources": [
+        {
+          "source": "bing_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.34,
+          "key_narratives": [
+            "Where Is Pam Bondi? Attorney General No Longer At DC Residence Amid Security Concerns",
+            "Where is Pam Bondi? AG leaves Washington DC residence, moves into secure military base amid rising threats",
+            "Pam Bondi Flees to U.S. Military Base After Reported Spike in Threats",
+            "Everything to Know About Pam Bondi, the Trump-Loyal Attorney General",
+            "Pam Bondi is leaving her Democratic successor a mess",
+            "US Attorney General Pam Bondi to face questions in Epstein probe"
+          ]
+        },
+        {
+          "source": "google_news",
+          "bullish": 0.05,
+          "bearish": 0.1,
+          "neutral": 0.85,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Epstein files scandal 'infinitely worse than Watergate' as Bondi could face blame, Rep. Garcia says",
+            "Attorney General Bondi likely to hang onto Florida law license despite evidence of misconduct",
+            "Pam Bondi's Fox News Mini-Scandal Was An Embarrassing Reach For The Spotlight",
+            "Proposed rule allowing DOJ to interfere with state bar discipline proceedings ‘legally flawed’",
+            "Pam Bondi’s in trouble with Republicans on Capitol Hill",
+            "Where is Pam Bondi Now? US Attorney General Missing From DC Home, Reportedly Moves to Secure Military Base Amid Jeffrey Epstein Case",
+            "House Oversight panel votes to subpoena AG Pam Bondi in Epstein probe",
+            "US congressional panel votes to subpoena Pam Bondi over Epstein files"
+          ]
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.2,
+          "bearish": 0.0,
+          "neutral": 0.8,
+          "confidence": 0.9,
+          "key_narratives": [
+            "In a massive blow to the first amendment, Trump administration wins its first “antifa case”. Pam Bondi made the stakes clear: \"Today's verdict will not be the last.\"",
+            "MMW: The United States Attorney General Pam Bondi Will Plead The Fifth Amendment multiple times",
+            "Most of the website is completely ignoring that Pam Bondi had to move to a military base because of assassination threats.",
+            "Pam Bondi moves into secure military housing amid Epstein outrage",
+            "Personal thoughts about the book  \"Saint Luigi : How to respond to the violence of capitalism\" by Nicolas Framont",
+            "DOJ Plans to Lower Bar for States to Fast-Track Executions",
+            "The Zorro Ranch Dossier: Beyond the \"Massage Parlor\" Cover-Up",
+            "What A Day: ICE Barbie's Next Act by Matt Berg &amp; Crooked Media (03/11/26)"
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.713,
+      "sentiment_implied_probability": 0.5225,
+      "gap": 0.4625,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across bing_news (neutral, 34% conf), google_news (bearish, 90% conf), reddit (bullish, 90% conf) shows neutral sentiment with 71% confidence. Market appears underpriced by 46.2% based on sentiment signals. Key headline: \"Where Is Pam Bondi? Attorney General No Longer At DC Residence Amid Security Con\".",
+      "timestamp": "2026-03-17T06:30:54.527442+00:00"
+    },
+    {
+      "market_id": "KXNETANYAHUPARDON-26-APR01",
+      "market_title": "Will Benjamin Netanyahu be pardoned before Apr 1, 2026?",
+      "current_yes_price": 0.06,
+      "sources": [
+        {
+          "source": "bing_news",
+          "bullish": 0.0,
+          "bearish": 0.0,
+          "neutral": 1.0,
+          "confidence": 0.1,
+          "key_narratives": []
+        },
+        {
+          "source": "google_news",
+          "bullish": 0.05,
+          "bearish": 0.0,
+          "neutral": 0.95,
+          "confidence": 0.9,
+          "key_narratives": [
+            "Daily Briefing Dec. 30: Day 816 – In Florida, a jovial Trump is hawkish on Gaza and Iran",
+            "What does Netanyahu want to be pardoned for and is it possible?",
+            "Trump to Times of Israel: It’ll be a ‘mutual’ decision with Netanyahu regarding when Iran war ends",
+            "Trump says Netanyahu should be pardoned for corruption",
+            "Trump says Netanyahu pardon 'on its way'; Herzog's office disputes it",
+            "Pardons and prizes: five key takeaways from Trump’s meeting with Netanyahu",
+            "WATCH: Trump holds news conference as Netanyahu visits Mar-a-Lago",
+            "Israeli president’s ally threatens leaks over political pardon for Netanyahu"
+          ]
+        },
+        {
+          "source": "reddit",
+          "bullish": 0.05,
+          "bearish": 0.0,
+          "neutral": 0.95,
+          "confidence": 0.9,
+          "key_narratives": [
+            "A whale just bet $180K that Benjamin Netanyahu will be out by March 31. He’ll win $2M if the conspiracy theorists are right",
+            "Benjamin Netanyahu is dead. His last video was all AI. Iranian media claims he has been killed via missle.",
+            "It seems he is seeking to take our position!",
+            "Benjamin Netanyahu is alive",
+            "Ranking the 24 Pulitzer Prize for Fiction Winners I've Read",
+            "'I'm what?' Israeli PM Benjamin Netanyahu mocks death rumour, shows off five fingers…",
+            "I tested a 2,000-year-old astrology method to check if a viral rumor about Benjamin Netanyahu was true",
+            "In Virginia Giuffres memoir, she talks about a former minister (referred to as ‘prime minster’ in the US version) being the most sadistic man she was trafficked to. The theory that it is Ehud Barak is no secret but here is some additional details and corroborating bits iv found."
+          ]
+        }
+      ],
+      "consensus_sentiment": "neutral",
+      "consensus_confidence": 0.633,
+      "sentiment_implied_probability": 0.515,
+      "gap": 0.455,
+      "gap_direction": "underpriced",
+      "narrative_summary": "Research across bing_news (neutral, 10% conf), google_news (bullish, 90% conf), reddit (bullish, 90% conf) shows neutral sentiment with 63% confidence. Market appears underpriced by 45.5% based on sentiment signals. Key headline: \"Daily Briefing Dec. 30: Day 816 – In Florida, a jovial Trump is hawkish on Gaza \".",
+      "timestamp": "2026-03-17T06:30:54.562757+00:00"
+    }
+  ]
+}
