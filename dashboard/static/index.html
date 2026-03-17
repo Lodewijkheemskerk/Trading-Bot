@@ -1062,6 +1062,37 @@ body {
   vertical-align: middle;
 }
 
+/* ── Mobile Bottom Nav ── */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  align-items: center;
+  justify-content: space-around;
+}
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.5px;
+  padding: 6px 16px;
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+.mobile-nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mobile-nav-item.active { color: var(--amber); }
+
 /* ── Responsive ── */
 
 /* Tablet / medium screens */
@@ -1112,7 +1143,10 @@ body {
   .clock { display: none; }
 
   .sidebar-nav { display: none; }
-  .app-layout { min-height: calc(100vh - 48px); }
+  .app-layout { min-height: calc(100vh - 48px); padding-bottom: 56px; }
+
+  /* Mobile bottom tab bar */
+  .mobile-nav { display: flex; }
 
   .container { padding: 12px; gap: 12px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
@@ -2195,5 +2229,22 @@ setInterval(fetchRuns, 30000);
 fetchAll();
 setInterval(fetchAll, 15000);
 </script>
+
+<!-- Mobile bottom nav (hidden on desktop via CSS) -->
+<nav class="mobile-nav">
+  <a href="/" class="mobile-nav-item active">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </a>
+  <a href="/backtest" class="mobile-nav-item">
+    <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Backtest
+  </a>
+  <a href="/settings" class="mobile-nav-item">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Settings
+  </a>
+</nav>
+
 </body>
 </html>
