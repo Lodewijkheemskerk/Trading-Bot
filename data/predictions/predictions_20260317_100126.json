@@ -1,0 +1,174 @@
+{
+  "timestamp": "2026-03-17T09:01:26.477568+00:00",
+  "markets_predicted": 3,
+  "signals": [
+    {
+      "market_id": "KXNETANYAHUPARDON-26-APR01",
+      "market_title": "Will Benjamin Netanyahu be pardoned before Apr 1, 2026?",
+      "ensemble_probability": 0.1415,
+      "market_probability": 0.06,
+      "edge": 0.0815,
+      "mispricing_score": 0.81,
+      "expected_value": 0.0416,
+      "direction": "buy_yes",
+      "signal_strength": 0.0416,
+      "confidence": 0.51,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.15,
+          "confidence": 0.4,
+          "reasoning": "The probability of Benjamin Netanyahu being pardoned before April 1, 2026, is estimated at 0.15, slightly above the market price of 0.06, due to mixed signals from recent headlines suggesting potential support from Trump, though disputed by Herzog's office. Historical precedent for such pardons is rare, and the legal and political barriers in Israel remain significant, with no clear mechanism or authority for a foreign leader to grant a pardon. Confidence is low due to contradictory information and speculative nature of social media claims on Reddit."
+        },
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.2,
+          "predicted_probability": 0.15,
+          "confidence": 0.6,
+          "reasoning": "Recent headlines show Trump stating Netanyahu should be pardoned and that a pardon is 'on its way', which is a significant signal given Trump's incoming presidency. However, Netanyahu would need to be convicted first or face imminent legal jeopardy requiring a preemptive pardon, and Israeli legal processes typically move slowly. The market at 6% seems too low given Trump's explicit statements, but substantial legal and procedural hurdles remain."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.25,
+          "confidence": 0.6,
+          "reasoning": "Recent statements from Trump indicate a strong possibility of a pardon for Netanyahu, suggesting political support for such a move. Additionally, the significant bet placed on Netanyahu's potential release by March 31 indicates confidence among investors that a pardon could happen sooner than expected, further supporting the notion that the market may be undervaluing this outcome."
+        },
+        {
+          "model_name": "gemini",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.03,
+          "confidence": 0.8,
+          "reasoning": "Benjamin Netanyahu's corruption trial is still ongoing, making a pardon before a conviction exceptionally rare and politically incendiary. President Herzog's office has explicitly disputed claims of an impending pardon, indicating a lack of intention from the sole authority to grant one. Granting such a pardon would face overwhelming legal and public opposition, severely undermining the integrity of the Israeli justice system."
+        },
+        {
+          "model_name": "deepseek",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.08,
+          "confidence": 0.2,
+          "reasoning": "The market price of $0.06 is the primary anchor, but headlines indicate Trump has publicly discussed a pardon, introducing a plausible though uncertain pathway. However, the resolution criteria are ambiguous (what constitutes 'pardoned' and by whom?), and reddit posts show conflicting, low-quality information, severely limiting confidence."
+        }
+      ],
+      "timestamp": "2026-03-17T09:00:31.535394+00:00"
+    },
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "ensemble_probability": 0.1245,
+      "market_probability": 0.06,
+      "edge": 0.0645,
+      "mispricing_score": 0.65,
+      "expected_value": 0.0329,
+      "direction": "buy_yes",
+      "signal_strength": 0.0329,
+      "confidence": 0.51,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.15,
+          "confidence": 0.3,
+          "reasoning": "The probability of Pam Bondi leaving the Attorney General position before April is estimated at 0.15, higher than the market price of 0.06, due to recent headlines about her relocating to a secure military base amid security threats and potential legal controversies like the Epstein files. However, there is no concrete evidence of resignation or intent to leave, and such moves could be temporary or unrelated to her role, leading to low confidence of 0.3. The neutral sentiment consensus and lack of definitive signals keep this estimate cautious."
+        },
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.2,
+          "predicted_probability": 0.08,
+          "confidence": 0.6,
+          "reasoning": "The headlines indicate Bondi has temporarily relocated to a secure military base due to security threats, not that she's leaving her position. This is a security precaution, not a resignation signal. The market price of 6% seems roughly appropriate given the low base rate of AGs leaving office early and lack of credible resignation indicators."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.25,
+          "confidence": 0.6,
+          "reasoning": "The recent headlines indicate significant security concerns for Pam Bondi, prompting her to relocate to a military base. This situation suggests a potential for her to step down from her position as Attorney General, especially given the mounting pressures and controversies surrounding her. The market may be underestimating the likelihood of her departure given these escalating circumstances."
+        },
+        {
+          "model_name": "gemini",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.01,
+          "confidence": 0.9,
+          "reasoning": "Pam Bondi is not currently serving as an Attorney General for any state or the federal government. Therefore, she cannot 'leave Attorney General in' before April, as she does not hold such a position to resign from. There is no public information suggesting she will be appointed to an Attorney General role and subsequently leave it within the specified timeframe."
+        },
+        {
+          "model_name": "deepseek",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.08,
+          "confidence": 0.3,
+          "reasoning": "The market price of $0.06 is the primary anchor, but headlines suggest unusual circumstances (security concerns, relocation) that could slightly increase the probability of departure. However, the resolution criteria are ambiguous ('leaves Attorney General' is unclear—temporary vs. permanent, role change vs. resignation), and news sentiment can be noisy, so confidence remains low."
+        }
+      ],
+      "timestamp": "2026-03-17T09:01:02.680058+00:00"
+    },
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.307,
+      "market_probability": 0.05,
+      "edge": 0.257,
+      "mispricing_score": 2.57,
+      "expected_value": 0.1581,
+      "direction": "buy_yes",
+      "signal_strength": 0.1581,
+      "confidence": 0.615,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.1,
+          "confidence": 0.5,
+          "reasoning": "The probability of the official trailer for Spider-Man: Beyond the Spider-Verse being released before April 1, 2026, is estimated at 0.10, given the reported release date of the movie in June 2027. Trailers typically release within 6-12 months of a film's debut, making an early 2026 trailer unlikely. While sentiment is neutral to slightly bullish, concrete evidence from headlines about delays and a 2027 release date drives this low estimate."
+        },
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.2,
+          "predicted_probability": 0.75,
+          "confidence": 0.8,
+          "reasoning": "The film has a confirmed June 2027 release date, and industry standard practice dictates that major animated films release their official trailers 12-18 months before theatrical release. With April 2026 being 14 months before the June 2027 release, this timeline aligns perfectly with typical marketing schedules for Sony's Spider-Verse franchise."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.56,
+          "confidence": 0.7,
+          "reasoning": "Recent headlines indicate that producers are hinting at the readiness to show footage, suggesting that the marketing push for 'Spider-Man: Beyond the Spider-Verse' is ramping up. Additionally, despite the announced release date being set for 2027, the strong interest and confidence from the producers indicate that a trailer could be released well before that date, making the current market price undervalued."
+        },
+        {
+          "model_name": "gemini",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.02,
+          "confidence": 0.8,
+          "reasoning": "The film 'Spider-Man: Beyond the Spider-Verse' is currently slated for a June 2027 release, making an official worldwide trailer before April 2026 exceptionally early in a typical marketing cycle. Furthermore, headlines consistently report the film has faced significant production delays and is 'taking so long,' suggesting that polished, trailer-ready footage is unlikely to be available so far in advance."
+        },
+        {
+          "model_name": "deepseek",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.08,
+          "confidence": 0.3,
+          "reasoning": "The market price of $0.05 is a strong anchor, but multiple headlines indicate a 2027 release date, making a trailer before April 2026 unlikely. Sentiment analysis is noisy and not compelling enough for a large deviation; low confidence due to ambiguous timing of trailer releases relative to distant film dates."
+        }
+      ],
+      "timestamp": "2026-03-17T09:01:26.477568+00:00"
+    }
+  ]
+}

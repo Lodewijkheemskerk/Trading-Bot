@@ -1,0 +1,174 @@
+{
+  "timestamp": "2026-03-17T13:31:04.098483+00:00",
+  "markets_predicted": 3,
+  "signals": [
+    {
+      "market_id": "KXBONDIOUT-26APR01",
+      "market_title": "Will Pam Bondi leaves Attorney General in before April?",
+      "ensemble_probability": 0.1505,
+      "market_probability": 0.06,
+      "edge": 0.0905,
+      "mispricing_score": 0.9,
+      "expected_value": 0.0425,
+      "direction": "buy_yes",
+      "signal_strength": 0.0425,
+      "confidence": 0.47,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.15,
+          "confidence": 0.35,
+          "reasoning": "The probability of Pam Bondi leaving her position as Attorney General before April is estimated at 0.15, higher than the market price of 0.06, due to recent headlines about security threats and her relocation to a military base, which could signal instability. However, there is no concrete evidence of resignation or dismissal, and historical precedent suggests Attorneys General rarely leave abruptly without significant cause. Confidence is low due to the speculative nature of the headlines and lack of corroborating data on her intent to resign."
+        },
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.2,
+          "predicted_probability": 0.08,
+          "confidence": 0.7,
+          "reasoning": "The question appears to have a grammatical error but likely asks if Pam Bondi will leave the Attorney General position before April. Headlines show security concerns causing her to relocate to a military base, but no credible reporting suggests resignation is imminent. The market price of 6% seems appropriately low given the short timeframe and lack of concrete resignation signals."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.35,
+          "confidence": 0.6,
+          "reasoning": "The recent headlines indicate a rising level of scrutiny and security concerns surrounding Pam Bondi, which could prompt her to leave her position as Attorney General. Additionally, the narrative suggests that the market may be underestimating the likelihood of her departure given the significant gap between the current market price and the inferred probability based on sentiment signals."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.06, sentiment is neutral (73% conf). Adjusting down by 7% for bear thesis."
+        },
+        {
+          "model_name": "deepseek",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.08,
+          "confidence": 0.3,
+          "reasoning": "The market price of $0.06 anchors the probability, but headlines suggest unusual circumstances (security threats, scandals) that may slightly increase departure risk. However, evidence is speculative and ambiguous for timing before April, so deviation is minimal and confidence is low."
+        }
+      ],
+      "timestamp": "2026-03-17T13:30:26.040740+00:00"
+    },
+    {
+      "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+      "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+      "ensemble_probability": 0.5065,
+      "market_probability": 0.05,
+      "edge": 0.4565,
+      "mispricing_score": 4.56,
+      "expected_value": 0.2739,
+      "direction": "buy_yes",
+      "signal_strength": 0.2739,
+      "confidence": 0.6,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.75,
+          "confidence": 0.65,
+          "reasoning": "I estimate a 75% probability that the official trailer for Spider-Man: Beyond the Spider-Verse will be released before April 1, 2026, based on the film's scheduled release in June 2027 and typical marketing timelines for major animated films, which often see trailers released 12-18 months prior. Recent headlines indicate active development and producer confidence in meeting deadlines, supporting the likelihood of a trailer within the specified timeframe. However, confidence is moderated to 65% due to past delays in the franchise and potential production challenges."
+        },
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.2,
+          "predicted_probability": 0.75,
+          "confidence": 0.8,
+          "reasoning": "The movie has an official June 2027 release date, giving 15+ months before the April 2026 deadline for a trailer release. Major animated sequels typically release official trailers 12-18 months before release, and recent headlines indicate producers are 'very confident' about the release date and hint at showing footage soon. The extremely low market price of $0.05 appears to significantly undervalue this high-probability event."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.56,
+          "confidence": 0.7,
+          "reasoning": "The producers have expressed confidence in meeting their release date, indicating that a trailer could be released well before the film's premiere. Additionally, the buzz and anticipation surrounding the project suggest that marketing efforts will ramp up, further supporting the likelihood of an early trailer release."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.05, sentiment is neutral (74% conf). Adjusting down by 7% for bear thesis."
+        },
+        {
+          "model_name": "deepseek",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.08,
+          "confidence": 0.3,
+          "reasoning": "The market price of $0.05 anchors the estimate, but multiple headlines indicate a 2027 release date, making a trailer before April 2026 unlikely. However, producers hint at possible early footage, slightly raising the probability above the market. Confidence is low due to typical Hollywood delays and ambiguous timing for trailer releases."
+        }
+      ],
+      "timestamp": "2026-03-17T13:30:46.798670+00:00"
+    },
+    {
+      "market_id": "KXNETANYAHUPARDON-26-APR01",
+      "market_title": "Will Benjamin Netanyahu be pardoned before Apr 1, 2026?",
+      "ensemble_probability": 0.194,
+      "market_probability": 0.05,
+      "edge": 0.144,
+      "mispricing_score": 1.44,
+      "expected_value": 0.0634,
+      "direction": "buy_yes",
+      "signal_strength": 0.0634,
+      "confidence": 0.44,
+      "should_trade": false,
+      "model_predictions": [
+        {
+          "model_name": "grok",
+          "role": "primary_forecaster",
+          "weight": 0.3,
+          "predicted_probability": 0.15,
+          "confidence": 0.3,
+          "reasoning": "The probability of Benjamin Netanyahu being pardoned by April 1, 2026, is estimated at 0.15, considering the low market price of $0.05 and limited concrete evidence supporting a pardon. While headlines mention the Israeli President considering a pardon and Trump's involvement in Israeli politics, these are speculative and lack confirmation of intent or action. Confidence is low due to thin, non-convergent data and reliance on unverified news narratives."
+        },
+        {
+          "model_name": "claude",
+          "role": "news_analyst",
+          "weight": 0.2,
+          "predicted_probability": 0.15,
+          "confidence": 0.6,
+          "reasoning": "While headlines mention Israeli President considering a Netanyahu pardon and Trump's involvement, pardons typically require either conviction or formal charges, and Netanyahu's legal proceedings are ongoing with uncertain timelines. The market price of 5% seems too low given these discussions, but the complexity of Israeli legal/political processes and the 15-month timeframe suggest moderate probability rather than the sentiment-implied 52%."
+        },
+        {
+          "model_name": "gpt4o",
+          "role": "bull_advocate",
+          "weight": 0.2,
+          "predicted_probability": 0.52,
+          "confidence": 0.7,
+          "reasoning": "Recent headlines indicate a potential shift in sentiment regarding Netanyahu's pardon, particularly with Trump's involvement and the Israeli President's consideration. The market appears to be underestimating the likelihood of a pardon, especially given the significant bet placed by a whale, suggesting that influential players believe in a favorable outcome."
+        },
+        {
+          "model_name": "heuristic_bear",
+          "role": "bear_advocate",
+          "weight": 0.15,
+          "predicted_probability": 0.05,
+          "confidence": 0.4,
+          "reasoning": "Bear case: market at 0.05, sentiment is neutral (63% conf). Adjusting down by 7% for bear thesis."
+        },
+        {
+          "model_name": "deepseek",
+          "role": "risk_manager",
+          "weight": 0.15,
+          "predicted_probability": 0.05,
+          "confidence": 0.2,
+          "reasoning": "The market price at $0.05 (5% probability) is the strongest available signal, and the headlines provide insufficient evidence to justify a large deviation. While some news mentions potential pardons, these are speculative and lack concrete developments, and reddit posts contain contradictory or irrelevant information. The low confidence reflects sparse data, ambiguous resolution criteria, and the long time horizon to April 2026."
+        }
+      ],
+      "timestamp": "2026-03-17T13:31:04.094612+00:00"
+    }
+  ]
+}

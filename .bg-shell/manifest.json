@@ -1,26 +1,26 @@
 [
   {
-    "id": "1a3e3c2f",
+    "id": "8ab2b3f4",
+    "label": "pipeline",
+    "command": "cd \"C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot\" && python scripts/pipeline.py --mode loop",
+    "cwd": "C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot",
+    "startedAt": 1773695158300,
+    "processType": "server",
+    "group": null,
+    "readyPattern": null,
+    "readyPort": null,
+    "pid": 17256
+  },
+  {
+    "id": "387d35f2",
     "label": "dashboard",
     "command": "cd \"C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot\" && python dashboard/app.py",
     "cwd": "C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot",
-    "startedAt": 1773678177960,
+    "startedAt": 1773753058971,
     "processType": "server",
     "group": null,
     "readyPattern": null,
     "readyPort": 5000,
-    "pid": 41540
-  },
-  {
-    "id": "ce5ad25b",
-    "label": "pipeline-loop",
-    "command": "cd \"C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot\" && python scripts/pipeline.py --mode loop 2>&1",
-    "cwd": "C:\\Users\\lodewijk.heemskerk\\Documents\\Persoonlijk\\Trading Bot",
-    "startedAt": 1773678185068,
-    "processType": "server",
-    "group": null,
-    "readyPattern": "Sleeping",
-    "readyPort": null,
-    "pid": 7528
+    "pid": 41644
   }
 ]

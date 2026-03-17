@@ -1,4 +1,4 @@
-# PREDICT MKT
+# EDGE
 
 An AI-powered trading bot for [Kalshi](https://kalshi.com) prediction markets. It scans thousands of event markets, researches news sentiment from multiple sources, generates probability estimates using a 5-model LLM ensemble, enforces 12 deterministic risk checks with Kelly Criterion sizing, and automatically places limit orders on Kalshi's demo exchange. Every trade outcome is resolved, scored, and fed back into the system through a failure classification loop. A real-time dashboard lets you monitor and control everything.
 

@@ -1,0 +1,27 @@
+{
+  "trade_id": "ff1a4367bcd2",
+  "market_id": "KXMEDIARELEASESPIDERMAN-APR26",
+  "market_title": "Will the official trailer for Spider-Man: Beyond the Spider-Verse be released Worldwide before Apr 1, 2026?",
+  "direction": "buy_yes",
+  "entry_price": 0.05,
+  "signal_price": 0.05,
+  "slippage": 0.0,
+  "position_size_usd": 0.0,
+  "model_probability": 0.522,
+  "signal_strength": 0.3115,
+  "edge": 0.472,
+  "status": "blocked",
+  "pnl": 0.0,
+  "risk_passed": false,
+  "risk_failures": [
+    "Portfolio VaR(95%) $358.52 > limit $100.00 (10% of bankroll)"
+  ],
+  "kelly_fraction": 0.124211,
+  "timestamp": "2026-03-17T10:31:47.158972+00:00",
+  "execution_mode": "demo",
+  "kalshi_order_id": "",
+  "kalshi_status": "",
+  "contracts": 0,
+  "limit_price": 0.05,
+  "fill_count": 0.0
+}
