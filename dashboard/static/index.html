@@ -1399,7 +1399,7 @@ body {
 
 <script>
 const fmt = (n, d=2) => n != null ? Number(n).toFixed(d) : '--';
-const fmtPct = (n) => n != null ? (n * 100).toFixed(1) + '%' : '--';
+const fmtPct = (n) => n != null ? (n * 100).toFixed(2) + '%' : '--';
 const fmtUsd = (n) => n != null ? '$' + Number(n).toFixed(2) : '--';
 
 function kalshiMarketUrl(marketId, eventTicker) {
